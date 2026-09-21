@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aposento Alto | Portal de Oração e Espiritualidade Cristã</title>
+  <meta name="description" content="Um lugar de encontro com Deus. Versículo do dia, timer de oração, diário espiritual e loja cristã — tudo em um só lugar.">
+  <meta name="keywords" content="oração, versículo do dia, timer de oração, diário espiritual, loja cristã, devocional, Bíblia">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Aposento Alto | Portal de Oração">
+  <meta property="og:description" content="Um lugar de encontro com Deus. Versículo, oração e espiritualidade.">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Canvas de estrelas -->
+  <canvas id="stars-canvas"></canvas>
+
+  <!-- ==========================================
+       HEADER
+       ========================================== -->
+  <header class="header" id="header">
+    <div class="container header-container">
+      <a href="index.html" class="logo-link" aria-label="Aposento Alto - Início">
+        <svg class="logo-dove" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M30 8C22 8 10 16 10 28C10 34 14 39 20 42C18 45 14 48 10 50C16 50 24 47 28 44C29 44.3 30 44.5 30 44.5C38 44.5 50 37 50 28C50 16 38 8 30 8Z" fill="#D4AF37" opacity="0.9"/>
+          <circle cx="23" cy="24" r="2" fill="#0a0f1e"/>
+          <path d="M30 8L38 2L34 12" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-text">Aposento <span>Alto</span></span>
+      </a>
+
+      <nav class="nav-menu" aria-label="Menu Principal">
+        <ul class="nav-list">
+          <li><a href="#versiculo" class="nav-link">Versículo</a></li>
+          <li><a href="#oracao" class="nav-link">Oração</a></li>
+          <li><a href="#diario" class="nav-link">Diário</a></li>
+          <li><a href="#pedidos" class="nav-link">Intercessão</a></li>
+          <li><a href="#loja" class="nav-link">Loja</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="#oracao" class="btn btn-sm btn-primary">
+          <span>Entrar em Oração</span>
+        </a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menu Mobile -->
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="mobile-drawer-header">
+      <span class="logo-text" style="color:#D4AF37;">Aposento Alto</span>
+      <button class="mobile-drawer-close" id="mobile-drawer-close">&#x2715;</button>
+    </div>
+    <ul class="mobile-nav-list">
+      <li><a href="#versiculo" class="mobile-nav-link">Versículo do Dia</a></li>
+      <li><a href="#oracao" class="mobile-nav-link">Timer de Oração</a></li>
+      <li><a href="#diario" class="mobile-nav-link">Diário Espiritual</a></li>
+      <li><a href="#pedidos" class="mobile-nav-link">Pedidos de Intercessão</a></li>
+      <li><a href="#loja" class="mobile-nav-link">Loja Cristã</a></li>
+    </ul>
+  </div>
+
+  <main>
+
+    <!-- ==========================================
+         HERO
+         ========================================== -->
+    <section class="hero" id="hero">
+      <div class="hero-glow"></div>
+      <div class="container hero-container">
+        <div class="hero-tag reveal-up">
+          <span>✦ Um lugar de encontro com Deus ✦</span>
+        </div>
+        <h1 class="hero-title reveal-up">
+          <span class="hero-title-small">Bem-vindo ao</span>
+          Aposento Alto
+        </h1>
+        <p class="hero-subtitle reveal-up">
+          Como os discípulos que se reuniram no aposento alto e receberam o poder do alto,<br>
+          <strong>este é o seu lugar de encontro, oração e renovação.</strong>
+        </p>
+        <div class="hero-cta-group reveal-up">
+          <a href="#oracao" class="btn btn-lg btn-primary btn-glow">
+            <span>✦ Começar em Oração</span>
+          </a>
+          <a href="#versiculo" class="btn btn-lg btn-glass">
+            <span>Versículo do Dia</span>
+          </a>
+        </div>
+        <div class="hero-verse reveal-up">
+          <p>"E estando todos juntos no mesmo lugar, de repente veio do céu um som, como de um vento veemente e impetuoso."</p>
+          <span>— Atos 2:1-2</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VERSÍCULO DO DIA
+         ========================================== -->
+    <section class="section section-versiculo" id="versiculo">
+      <div class="container">
+        <div class="section-header text-center reveal-up">
+          <span class="badge-pill">📖 PALAVRA VIVA</span>
+          <h2 class="section-title">Versículo do Dia</h2>
+          <p class="section-subtitle">Deixe a Palavra de Deus guiar cada momento do seu dia.</p>
+        </div>
+
+        <div class="versiculo-card reveal-up">
+          <div class="versiculo-candle">
+            <svg viewBox="0 0 40 80" fill="none" class="candle-svg">
+              <rect x="15" y="30" width="10" height="50" rx="3" fill="#D4AF37" opacity="0.6"/>
+              <ellipse cx="20" cy="28" rx="5" ry="3" fill="#D4AF37" opacity="0.4"/>
+              <path d="M20 5 C18 10 15 16 18 22 C19 24 21 24 22 22 C25 16 22 10 20 5Z" fill="#FFD700"/>
+              <path d="M20 10 C19 13 18 17 19.5 20 C20.5 18 21 14 20 10Z" fill="#FFF" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="versiculo-content">
+            <p class="versiculo-text" id="verse-text">Carregando...</p>
+            <span class="versiculo-ref" id="verse-ref"></span>
+          </div>
+          <div class="versiculo-actions">
+            <button class="btn btn-glass btn-sm" id="btn-share-verse" onclick="shareVerse()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Compartilhar
+            </button>
+            <button class="btn btn-glass btn-sm" onclick="newVerse()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              Novo Versículo
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TIMER DE ORAÇÃO
+         ========================================== -->
+    <section class="section section-oracao" id="oracao">
+      <div class="container">
+        <div class="section-header text-center reveal-up">
+          <span class="badge-pill">🕯️ TEMPO COM DEUS</span>
+          <h2 class="section-title">Timer de Oração</h2>
+          <p class="section-subtitle">Reserve um tempo sagrado. Aquiete sua alma e encontre a Deus.</p>
+        </div>
+
+        <div class="timer-card reveal-up">
+          <div class="timer-presets">
+            <button class="preset-btn active" data-min="5">5 min</button>
+            <button class="preset-btn" data-min="10">10 min</button>
+            <button class="preset-btn" data-min="15">15 min</button>
+            <button class="preset-btn" data-min="30">30 min</button>
+            <button class="preset-btn" data-min="60">1 hora</button>
+          </div>
+
+          <div class="timer-display">
+            <div class="timer-ring">
+              <svg class="timer-svg" viewBox="0 0 220 220">
+                <circle class="timer-track" cx="110" cy="110" r="100" stroke-width="6"/>
+                <circle class="timer-progress" id="timer-circle" cx="110" cy="110" r="100" stroke-width="6" stroke-dasharray="628.3" stroke-dashoffset="0"/>
+              </svg>
+              <div class="timer-time" id="timer-display">05:00</div>
+            </div>
+          </div>
+
+          <div class="timer-controls">
+            <button class="timer-btn" id="timer-reset" onclick="resetTimer()" title="Reiniciar">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+            <button class="timer-btn timer-btn-play" id="timer-toggle" onclick="toggleTimer()">
+              <svg id="icon-play" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg id="icon-pause" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+            <button class="timer-btn" id="timer-sound" onclick="toggleSound()" title="Som ambiente">
+              <svg id="icon-sound-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <svg id="icon-sound-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            </button>
+          </div>
+
+          <div class="timer-verse-wrap">
+            <p class="timer-verse-text" id="timer-verse">"Sede quietos e sabei que eu sou Deus." — Salmo 46:10</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         DIÁRIO ESPIRITUAL
+         ========================================== -->
+    <section class="section section-diario" id="diario">
+      <div class="container">
+        <div class="section-header text-center reveal-up">
+          <span class="badge-pill">📝 DIÁRIO DA ALMA</span>
+          <h2 class="section-title">Diário Espiritual</h2>
+          <p class="section-subtitle">Registre o que Deus tem falado ao seu coração. Seus testemunhos, orações e gratidão.</p>
+        </div>
+
+        <div class="diario-grid">
+          <!-- Formulário -->
+          <div class="diario-form-card reveal-up">
+            <h3>Nova Entrada</h3>
+            <div class="form-group">
+              <label for="diario-date">Data</label>
+              <input type="date" id="diario-date" class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="diario-title">Título</label>
+              <input type="text" id="diario-title" class="form-input" placeholder="Ex: Deus me falou hoje...">
+            </div>
+            <div class="form-group">
+              <label for="diario-verse">Versículo do momento</label>
+              <input type="text" id="diario-verse" class="form-input" placeholder="Ex: Salmo 23:1">
+            </div>
+            <div class="form-group">
+              <label for="diario-text">Reflexão / Testemunho</label>
+              <textarea id="diario-text" class="form-textarea" rows="5" placeholder="Escreva o que está em seu coração..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="saveDiarioEntry()">
+              ✦ Salvar no Diário
+            </button>
+          </div>
+
+          <!-- Entradas salvas -->
+          <div class="diario-entries-card reveal-up">
+            <h3>Minhas Entradas <span class="entries-count" id="entries-count">0</span></h3>
+            <div id="diario-entries" class="diario-entries-list">
+              <div class="empty-state">
+                <span>📖</span>
+                <p>Seu diário está vazio. Comece registrando o que Deus tem falado ao seu coração.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PEDIDOS DE INTERCESSÃO
+         ========================================== -->
+    <section class="section section-pedidos" id="pedidos">
+      <div class="container">
+        <div class="section-header text-center reveal-up">
+          <span class="badge-pill">🙏 INTERCESSÃO</span>
+          <h2 class="section-title">Pedidos de Oração</h2>
+          <p class="section-subtitle">Compartilhe seus pedidos. A comunidade orará por você.</p>
+        </div>
+
+        <div class="pedidos-grid">
+          <div class="pedido-form-card reveal-up">
+            <h3>Enviar Pedido</h3>
+            <div class="form-group">
+              <label for="pedido-nome">Seu nome (opcional)</label>
+              <input type="text" id="pedido-nome" class="form-input" placeholder="Anônimo">
+            </div>
+            <div class="form-group">
+              <label for="pedido-text">Pedido de oração</label>
+              <textarea id="pedido-text" class="form-textarea" rows="4" placeholder="Compartilhe o que está em seu coração..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="savePedido()">
+              🙏 Enviar Pedido
+            </button>
+          </div>
+
+          <div class="pedidos-mural reveal-up">
+            <h3>Mural de Intercessão</h3>
+            <div id="pedidos-list" class="pedidos-list">
+              <div class="empty-state">
+                <span>🕊️</span>
+                <p>Seja o primeiro a enviar um pedido de oração.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         LOJA
+         ========================================== -->
+    <section class="section section-loja" id="loja">
+      <div class="container">
+        <div class="section-header text-center reveal-up">
+          <span class="badge-pill">✨ LOJA CRISTÃ</span>
+          <h2 class="section-title">Produtos para sua Jornada</h2>
+          <p class="section-subtitle">Produtos digitais e físicos para fortalecer sua vida espiritual. Em breve!</p>
+        </div>
+
+        <div class="loja-grid">
+
+          <div class="loja-card reveal-up">
+            <div class="loja-card-badge">Em Breve</div>
+            <div class="loja-card-icon">📖</div>
+            <h3>Plano de Leitura Bíblica</h3>
+            <p>30 dias de leitura estruturada com reflexões diárias. PDF para baixar e imprimir.</p>
+            <div class="loja-price">Gratuito</div>
+            <button class="btn btn-outline btn-block" disabled>Notificar quando disponível</button>
+          </div>
+
+          <div class="loja-card reveal-up">
+            <div class="loja-card-badge loja-card-badge-destaque">Destaque</div>
+            <div class="loja-card-icon">🙏</div>
+            <h3>Diário de Oração Imprimível</h3>
+            <p>Um diário completo para registrar orações, versículos e testemunhos. Elegante e sagrado.</p>
+            <div class="loja-price">Em breve</div>
+            <button class="btn btn-outline btn-block" disabled>Notificar quando disponível</button>
+          </div>
+
+          <div class="loja-card reveal-up">
+            <div class="loja-card-badge">Em Breve</div>
+            <div class="loja-card-icon">🖼️</div>
+            <h3>Wallpapers Sagrados</h3>
+            <p>Coleção de wallpapers com versículos para celular e computador. Alta resolução.</p>
+            <div class="loja-price">Em breve</div>
+            <button class="btn btn-outline btn-block" disabled>Notificar quando disponível</button>
+          </div>
+
+        </div>
+
+        <div class="loja-newsletter reveal-up">
+          <h3>Seja o primeiro a saber!</h3>
+          <p>Cadastre seu e-mail e avisamos assim que os produtos estiverem disponíveis.</p>
+          <div class="newsletter-form">
+            <input type="email" id="newsletter-email" class="form-input" placeholder="seu@email.com">
+            <button class="btn btn-primary" onclick="subscribeNewsletter()">Quero ser avisado</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-logo">
+        <span class="logo-text">Aposento <span>Alto</span></span>
+        <p>Um lugar de encontro com Deus.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#versiculo">Versículo</a>
+        <a href="#oracao">Oração</a>
+        <a href="#diario">Diário</a>
+        <a href="#pedidos">Intercessão</a>
+        <a href="#loja">Loja</a>
+      </div>
+      <div class="footer-verse">
+        <p>"Onde dois ou três estiverem reunidos em meu nome, ali estou no meio deles."</p>
+        <span>— Mateus 18:20</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Feito com fé e propósito &nbsp;✦&nbsp; Aposento Alto © 2024</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
