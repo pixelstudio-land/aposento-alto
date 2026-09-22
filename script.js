@@ -113,110 +113,110 @@ document.querySelectorAll('.reveal-up').forEach(el => el.classList.add('visible'
 /* ── 5. VERSÍCULOS ───────────────────────── */
 const VERSICULOS = [
   // SALMOS
-  { text: "O Senhor é meu pastor e nada me faltará.", ref: "Salmo 23:1" },
-  { text: "Deus é o nosso refúgio e força, socorro bem presente na angústia.", ref: "Salmo 46:1" },
-  { text: "Sede quietos e sabei que eu sou Deus.", ref: "Salmo 46:10" },
-  { text: "O Senhor é a minha luz e a minha salvação; a quem temerei?", ref: "Salmo 27:1" },
-  { text: "Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho.", ref: "Salmo 119:105" },
-  { text: "Aquele que habita no esconderijo do Altíssimo, à sombra do Onipotente descansará.", ref: "Salmo 91:1" },
-  { text: "Porque o Senhor Deus é um sol e um escudo; o Senhor dará graça e glória.", ref: "Salmo 84:11" },
-  { text: "Alegra-te no Senhor, e ele satisfará os desejos do teu coração.", ref: "Salmo 37:4" },
-  { text: "O Senhor é bom, um forte refúgio no dia da angústia.", ref: "Naum 1:7" },
-  { text: "Louvai ao Senhor, porque ele é bom; porque a sua benignidade dura para sempre.", ref: "Salmo 136:1" },
-  { text: "O Senhor guardará a tua saída e a tua entrada, desde agora e para sempre.", ref: "Salmo 121:8" },
-  { text: "Espera no Senhor; tem bom ânimo, e ele fortalecerá o teu coração.", ref: "Salmo 27:14" },
-  { text: "Os que semeiam em lágrimas, em alegria ceifarão.", ref: "Salmo 126:5" },
-  { text: "Bendito seja o Senhor, que dia a dia leva o nosso fardo.", ref: "Salmo 68:19" },
-  { text: "Canta ao Senhor um cântico novo; toda a terra cante ao Senhor.", ref: "Salmo 96:1" },
-  { text: "Da boca dos pequeninos e dos que mamam fundaste a tua força.", ref: "Salmo 8:2" },
-  { text: "O Senhor é o meu pastor, nada me faltará. Em pastos suaves me fará repousar.", ref: "Salmo 23:1-2" },
-  { text: "Ainda que eu andasse pelo vale da sombra da morte, não temeria mal algum, porque tu estás comigo.", ref: "Salmo 23:4" },
-  { text: "A bondade e a misericórdia me seguirão todos os dias da minha vida.", ref: "Salmo 23:6" },
-  { text: "O Senhor te guardará de todo o mal; ele guardará a tua alma.", ref: "Salmo 121:7" },
-  { text: "O Senhor está perto de todos os que o invocam, de todos os que o invocam em verdade.", ref: "Salmo 145:18" },
-  { text: "Forte é o teu amor, mais do que os que andam pelas alturas.", ref: "Salmo 103:11" },
-  { text: "Como um pai se compadece dos filhos, assim o Senhor se compadece dos que o temem.", ref: "Salmo 103:13" },
-  { text: "Benze, ó minha alma, ao Senhor, e não te esqueças de nenhum dos seus benefícios.", ref: "Salmo 103:2" },
+  { text: "O Senhor é meu pastor e nada me faltará.", ref: "Salmo 23:1", cat: "paz" },
+  { text: "Deus é o nosso refúgio e força, socorro bem presente na angústia.", ref: "Salmo 46:1", cat: "forca" },
+  { text: "Sede quietos e sabei que eu sou Deus.", ref: "Salmo 46:10", cat: "paz" },
+  { text: "O Senhor é a minha luz e a minha salvação; a quem temerei?", ref: "Salmo 27:1", cat: "ansiedade" },
+  { text: "Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho.", ref: "Salmo 119:105", cat: "paz" },
+  { text: "Aquele que habita no esconderijo do Altíssimo, à sombra do Onipotente descansará.", ref: "Salmo 91:1", cat: "paz" },
+  { text: "Porque o Senhor Deus é um sol e um escudo; o Senhor dará graça e glória.", ref: "Salmo 84:11", cat: "forca" },
+  { text: "Alegra-te no Senhor, e ele satisfará os desejos do teu coração.", ref: "Salmo 37:4", cat: "gratidao" },
+  { text: "O Senhor é bom, um forte refúgio no dia da angústia.", ref: "Naum 1:7", cat: "ansiedade" },
+  { text: "Louvai ao Senhor, porque ele é bom; porque a sua benignidade dura para sempre.", ref: "Salmo 136:1", cat: "gratidao" },
+  { text: "O Senhor guardará a tua saída e a tua entrada, desde agora e para sempre.", ref: "Salmo 121:8", cat: "paz" },
+  { text: "Espera no Senhor; tem bom ânimo, e ele fortalecerá o teu coração.", ref: "Salmo 27:14", cat: "forca" },
+  { text: "Os que semeiam em lágrimas, em alegria ceifarão.", ref: "Salmo 126:5", cat: "cura" },
+  { text: "Bendito seja o Senhor, que dia a dia leva o nosso fardo.", ref: "Salmo 68:19", cat: "paz" },
+  { text: "Canta ao Senhor um cântico novo; toda a terra cante ao Senhor.", ref: "Salmo 96:1", cat: "gratidao" },
+  { text: "Da boca dos pequeninos e dos que mamam fundaste a tua força.", ref: "Salmo 8:2", cat: "forca" },
+  { text: "O Senhor é o meu pastor, nada me faltará. Em pastos suaves me fará repousar.", ref: "Salmo 23:1-2", cat: "paz" },
+  { text: "Ainda que eu andasse pelo vale da sombra da morte, não temeria mal algum, porque tu estás comigo.", ref: "Salmo 23:4", cat: "ansiedade" },
+  { text: "A bondade e a misericórdia me seguirão todos os dias da minha vida.", ref: "Salmo 23:6", cat: "gratidao" },
+  { text: "O Senhor te guardará de todo o mal; ele guardará a tua alma.", ref: "Salmo 121:7", cat: "paz" },
+  { text: "O Senhor está perto de todos os que o invocam, de todos os que o invocam em verdade.", ref: "Salmo 145:18", cat: "cura" },
+  { text: "Forte é o teu amor, mais do que os que andam pelas alturas.", ref: "Salmo 103:11", cat: "gratidao" },
+  { text: "Como um pai se compadece dos filhos, assim o Senhor se compadece dos que o temem.", ref: "Salmo 103:13", cat: "paz" },
+  { text: "Benze, ó minha alma, ao Senhor, e não te esqueças de nenhum dos seus benefícios.", ref: "Salmo 103:2", cat: "gratidao" },
   // JOÃO
-  { text: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito.", ref: "João 3:16" },
-  { text: "Eu sou o caminho, e a verdade, e a vida.", ref: "João 14:6" },
-  { text: "Não se turbe o vosso coração; credes em Deus, crede também em mim.", ref: "João 14:1" },
-  { text: "Eu vim para que tenham vida, e a tenham em abundância.", ref: "João 10:10" },
-  { text: "Nisto todos conhecerão que sois meus discípulos, se vos amardes uns aos outros.", ref: "João 13:35" },
-  { text: "Eu sou a ressurreição e a vida; quem crê em mim, ainda que esteja morto, viverá.", ref: "João 11:25" },
-  { text: "A verdade vos libertará.", ref: "João 8:32" },
+  { text: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito.", ref: "João 3:16", cat: "gratidao" },
+  { text: "Eu sou o caminho, e a verdade, e a vida.", ref: "João 14:6", cat: "forca" },
+  { text: "Não se turbe o vosso coração; credes em Deus, crede também em mim.", ref: "João 14:1", cat: "ansiedade" },
+  { text: "Eu vim para que tenham vida, e a tenham em abundância.", ref: "João 10:10", cat: "cura" },
+  { text: "Nisto todos conhecerão que sois meus discípulos, se vos amardes uns aos outros.", ref: "João 13:35", cat: "paz" },
+  { text: "Eu sou a ressurreição e a vida; quem crê em mim, ainda que esteja morto, viverá.", ref: "João 11:25", cat: "cura" },
+  { text: "A verdade vos libertará.", ref: "João 8:32", cat: "forca" },
   // FILIPENSES E PAULO
-  { text: "Tudo posso naquele que me fortalece.", ref: "Filipenses 4:13" },
-  { text: "Alegrai-vos sempre no Senhor; outra vez digo: alegrai-vos!", ref: "Filipenses 4:4" },
-  { text: "Por nada sejais ansiosos; antes em tudo sejam os vossos pedidos conhecidos diante de Deus.", ref: "Filipenses 4:6" },
-  { text: "E a paz de Deus, que excede todo o entendimento, guardará os vossos corações e os vossos pensamentos.", ref: "Filipenses 4:7" },
-  { text: "O amor é paciente, é benigno; o amor não arde em ciúmes.", ref: "1 Coríntios 13:4" },
-  { text: "O amor nunca falha.", ref: "1 Coríntios 13:8" },
-  { text: "Agora, pois, permanecem a fé, a esperança e o amor, estes três; mas o maior deles é o amor.", ref: "1 Coríntios 13:13" },
-  { text: "O fruto do Espírito é: amor, alegria, paz, longanimidade, benignidade, bondade, fidelidade.", ref: "Gálatas 5:22" },
-  { text: "Não vos conformeis com este século, mas transformai-vos pela renovação do vosso entendimento.", ref: "Romanos 12:2" },
-  { text: "Porque sou convicto de que nem a morte, nem a vida nos poderá separar do amor de Deus.", ref: "Romanos 8:38-39" },
-  { text: "Sabemos que todas as coisas cooperam para o bem daqueles que amam a Deus.", ref: "Romanos 8:28" },
-  { text: "Se Deus é por nós, quem será contra nós?", ref: "Romanos 8:31" },
-  { text: "Portanto, se alguém está em Cristo, é nova criatura; as coisas velhas já passaram.", ref: "2 Coríntios 5:17" },
-  { text: "Orai sem cessar.", ref: "1 Tessalonicenses 5:17" },
-  { text: "Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus.", ref: "1 Tessalonicenses 5:18" },
-  { text: "Sede uns para com os outros benignos, misericordiosos, perdoando-vos mutuamente.", ref: "Efésios 4:32" },
-  { text: "Não nos cansemos de fazer o bem, porque a seu tempo ceifaremos, se não desanimarmos.", ref: "Gálatas 6:9" },
+  { text: "Tudo posso naquele que me fortalece.", ref: "Filipenses 4:13", cat: "forca" },
+  { text: "Alegrai-vos sempre no Senhor; outra vez digo: alegrai-vos!", ref: "Filipenses 4:4", cat: "gratidao" },
+  { text: "Por nada sejais ansiosos; antes em tudo sejam os vossos pedidos conhecidos diante de Deus.", ref: "Filipenses 4:6", cat: "ansiedade" },
+  { text: "E a paz de Deus, que excede todo o entendimento, guardará os vossos corações e os vossos pensamentos.", ref: "Filipenses 4:7", cat: "paz" },
+  { text: "O amor é paciente, é benigno; o amor não arde em ciúmes.", ref: "1 Coríntios 13:4", cat: "paz" },
+  { text: "O amor nunca falha.", ref: "1 Coríntios 13:8", cat: "forca" },
+  { text: "Agora, pois, permanecem a fé, a esperança e o amor, estes três; mas o maior deles é o amor.", ref: "1 Coríntios 13:13", cat: "gratidao" },
+  { text: "O fruto do Espírito é: amor, alegria, paz, longanimidade, benignidade, bondade, fidelidade.", ref: "Gálatas 5:22", cat: "paz" },
+  { text: "Não vos conformeis com este século, mas transformai-vos pela renovação do vosso entendimento.", ref: "Romanos 12:2", cat: "forca" },
+  { text: "Porque sou convicto de que nem a morte, nem a vida nos poderá separar do amor de Deus.", ref: "Romanos 8:38-39", cat: "ansiedade" },
+  { text: "Sabemos que todas as coisas cooperam para o bem daqueles que amam a Deus.", ref: "Romanos 8:28", cat: "paz" },
+  { text: "Se Deus é por nós, quem será contra nós?", ref: "Romanos 8:31", cat: "forca" },
+  { text: "Portanto, se alguém está em Cristo, é nova criatura; as coisas velhas já passaram.", ref: "2 Coríntios 5:17", cat: "cura" },
+  { text: "Orai sem cessar.", ref: "1 Tessalonicenses 5:17", cat: "paz" },
+  { text: "Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus.", ref: "1 Tessalonicenses 5:18", cat: "gratidao" },
+  { text: "Sede uns para com os outros benignos, misericordiosos, perdoando-vos mutuamente.", ref: "Efésios 4:32", cat: "cura" },
+  { text: "Não nos cansemos de fazer o bem, porque a seu tempo ceifaremos, se não desanimarmos.", ref: "Gálatas 6:9", cat: "forca" },
   // MATEUS E LUCAS
-  { text: "Buscai primeiro o Reino de Deus e a sua justiça, e todas essas coisas vos serão acrescentadas.", ref: "Mateus 6:33" },
-  { text: "Vinde a mim todos os que estais cansados e sobrecarregados, e eu vos aliviarei.", ref: "Mateus 11:28" },
-  { text: "Onde dois ou três estiverem reunidos em meu nome, ali estou no meio deles.", ref: "Mateus 18:20" },
-  { text: "Pedi e dar-se-vos-á; buscai e achareis; batei e abrir-se-vos-á.", ref: "Mateus 7:7" },
-  { text: "Nada será impossível para Deus.", ref: "Lucas 1:37" },
-  { text: "Bem-aventurados os puros de coração, porque eles verão a Deus.", ref: "Mateus 5:8" },
-  { text: "Bem-aventurados os que fazem as pazes, porque eles serão chamados filhos de Deus.", ref: "Mateus 5:9" },
-  { text: "O céu e a terra passarão, mas as minhas palavras não passarão.", ref: "Mateus 24:35" },
+  { text: "Buscai primeiro o Reino de Deus e a sua justiça, e todas essas coisas vos serão acrescentadas.", ref: "Mateus 6:33", cat: "paz" },
+  { text: "Vinde a mim todos os que estais cansados e sobrecarregados, e eu vos aliviarei.", ref: "Mateus 11:28", cat: "ansiedade" },
+  { text: "Onde dois ou três estiverem reunidos em meu nome, ali estou no meio deles.", ref: "Mateus 18:20", cat: "paz" },
+  { text: "Pedi e dar-se-vos-á; buscai e achareis; batei e abrir-se-vos-á.", ref: "Mateus 7:7", cat: "forca" },
+  { text: "Nada será impossível para Deus.", ref: "Lucas 1:37", cat: "forca" },
+  { text: "Bem-aventurados os puros de coração, porque eles verão a Deus.", ref: "Mateus 5:8", cat: "paz" },
+  { text: "Bem-aventurados os que fazem as pazes, porque eles serão chamados filhos de Deus.", ref: "Mateus 5:9", cat: "paz" },
+  { text: "O céu e a terra passarão, mas as minhas palavras não passarão.", ref: "Mateus 24:35", cat: "forca" },
   // ISAÍAS E PROFETAS
-  { text: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus.", ref: "Isaías 41:10" },
-  { text: "Porque eu sei os planos que tenho para vocês, diz o Senhor, planos de dar-lhes esperança e um futuro.", ref: "Jeremias 29:11" },
-  { text: "Os que esperam no Senhor renovarão as suas forças; subirão com asas como águias.", ref: "Isaías 40:31" },
-  { text: "O Senhor mesmo vai diante de ti; ele estará contigo, não te deixará, nem te abandonará.", ref: "Deuteronômio 31:8" },
-  { text: "Com amor eterno eu te amei; por isso te atraí com benignidade.", ref: "Jeremias 31:3" },
-  { text: "Porque os montes se retirarão e os outeiros serão removidos, mas a minha benignidade não se retirará de ti.", ref: "Isaías 54:10" },
-  { text: "Como um pastor apascenta o seu rebanho, reúne os cordeiros nos seus braços.", ref: "Isaías 40:11" },
-  { text: "Clama a mim e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas.", ref: "Jeremias 33:3" },
-  { text: "Sede fortes e corajosos. Não temais; não vos assusteis.", ref: "Josué 1:9" },
+  { text: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus.", ref: "Isaías 41:10", cat: "ansiedade" },
+  { text: "Porque eu sei os planos que tenho para vocês, diz o Senhor, planos de dar-lhes esperança e um futuro.", ref: "Jeremias 29:11", cat: "paz" },
+  { text: "Os que esperam no Senhor renovarão as suas forças; subirão com asas como águias.", ref: "Isaías 40:31", cat: "forca" },
+  { text: "O Senhor mesmo vai diante de ti; ele estará contigo, não te deixará, nem te abandonará.", ref: "Deuteronômio 31:8", cat: "ansiedade" },
+  { text: "Com amor eterno eu te amei; por isso te atraí com benignidade.", ref: "Jeremias 31:3", cat: "cura" },
+  { text: "Porque os montes se retirarão e os outeiros serão removidos, mas a minha benignidade não se retirará de ti.", ref: "Isaías 54:10", cat: "paz" },
+  { text: "Como um pastor apascenta o seu rebanho, reúne os cordeiros nos seus braços.", ref: "Isaías 40:11", cat: "cura" },
+  { text: "Clama a mim e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas.", ref: "Jeremias 33:3", cat: "forca" },
+  { text: "Sede fortes e corajosos. Não temais; não vos assusteis.", ref: "Josué 1:9", cat: "forca" },
   // HEBREUS E CARTAS
-  { text: "A palavra de Deus é viva e eficaz, mais afiada do que qualquer espada de dois gumes.", ref: "Hebreus 4:12" },
-  { text: "Ora, a fé é a certeza daquilo que esperamos e a prova das coisas que não vemos.", ref: "Hebreus 11:1" },
-  { text: "Jesus Cristo é o mesmo, ontem, hoje e para sempre.", ref: "Hebreus 13:8" },
-  { text: "Portanto, aproximemo-nos com confiança do trono da graça.", ref: "Hebreus 4:16" },
-  { text: "Confessai, pois, os vossos pecados uns aos outros e orai uns pelos outros.", ref: "Tiago 5:16" },
+  { text: "A palavra de Deus é viva e eficaz, mais afiada do que qualquer espada de dois gumes.", ref: "Hebreus 4:12", cat: "forca" },
+  { text: "Ora, a fé é a certeza daquilo que esperamos e a prova das coisas que não vemos.", ref: "Hebreus 11:1", cat: "forca" },
+  { text: "Jesus Cristo é o mesmo, ontem, hoje e para sempre.", ref: "Hebreus 13:8", cat: "paz" },
+  { text: "Portanto, aproximemo-nos com confiança do trono da graça.", ref: "Hebreus 4:16", cat: "cura" },
+  { text: "Confessai, pois, os vossos pecados uns aos outros e orai uns pelos outros.", ref: "Tiago 5:16", cat: "cura" },
   // PROVÉRBIOS E SABEDORIA
-  { text: "Confia no Senhor de todo o seu coração e não se apoie em seu próprio entendimento.", ref: "Provérbios 3:5" },
-  { text: "Reconhece-o em todos os teus caminhos, e ele endireitará as tuas veredas.", ref: "Provérbios 3:6" },
-  { text: "O coração alegre é um bom remédio, mas o espírito abatido seca os ossos.", ref: "Provérbios 17:22" },
-  { text: "A esperança que se dilata adoece o coração, mas o desejo cumprido é árvore de vida.", ref: "Provérbios 13:12" },
-  { text: "O temor do Senhor é o princípio da sabedoria.", ref: "Provérbios 9:10" },
+  { text: "Confia no Senhor de todo o seu coração e não se apoie em seu próprio entendimento.", ref: "Provérbios 3:5", cat: "paz" },
+  { text: "Reconhece-o em todos os teus caminhos, e ele endireitará as tuas veredas.", ref: "Provérbios 3:6", cat: "forca" },
+  { text: "O coração alegre é um bom remédio, mas o espírito abatido seca os ossos.", ref: "Provérbios 17:22", cat: "cura" },
+  { text: "A esperança que se dilata adoece o coração, mas o desejo cumprido é árvore de vida.", ref: "Provérbios 13:12", cat: "cura" },
+  { text: "O temor do Senhor é o princípio da sabedoria.", ref: "Provérbios 9:10", cat: "forca" },
   // APOCALIPSE
-  { text: "Eis que estou à porta e bato; se alguém ouvir a minha voz e abrir a porta, entrarei.", ref: "Apocalipse 3:20" },
-  { text: "Eu sou o Alfa e o Ômega, o primeiro e o último, o princípio e o fim.", ref: "Apocalipse 22:13" },
-  { text: "E enxugará Deus toda lágrima dos seus olhos, e não haverá mais morte.", ref: "Apocalipse 21:4" },
+  { text: "Eis que estou à porta e bato; se alguém ouvir a minha voz e abrir a porta, entrarei.", ref: "Apocalipse 3:20", cat: "paz" },
+  { text: "Eu sou o Alfa e o Ômega, o primeiro e o último, o princípio e o fim.", ref: "Apocalipse 22:13", cat: "forca" },
+  { text: "E enxugará Deus toda lágrima dos seus olhos, e não haverá mais morte.", ref: "Apocalipse 21:4", cat: "cura" },
   // MARCOS E ATOS
-  { text: "Tudo é possível ao que crê.", ref: "Marcos 9:23" },
-  { text: "Ide por todo o mundo e pregai o evangelho a toda criatura.", ref: "Marcos 16:15" },
-  { text: "Recebereis poder quando o Espírito Santo vier sobre vós.", ref: "Atos 1:8" },
+  { text: "Tudo é possível ao que crê.", ref: "Marcos 9:23", cat: "forca" },
+  { text: "Ide por todo o mundo e pregai o evangelho a toda criatura.", ref: "Marcos 16:15", cat: "forca" },
+  { text: "Recebereis poder quando o Espírito Santo vier sobre vós.", ref: "Atos 1:8", cat: "forca" },
   // 1 JOÃO
-  { text: "Deus é amor, e quem permanece no amor permanece em Deus, e Deus nele.", ref: "1 João 4:16" },
-  { text: "Se confessarmos os nossos pecados, ele é fiel e justo para nos perdoar.", ref: "1 João 1:9" },
-  { text: "Maior é aquele que está em vós do que o que está no mundo.", ref: "1 João 4:4" },
+  { text: "Deus é amor, e quem permanece no amor permanece em Deus, e Deus nele.", ref: "1 João 4:16", cat: "paz" },
+  { text: "Se confessarmos os nossos pecados, ele é fiel e justo para nos perdoar.", ref: "1 João 1:9", cat: "cura" },
+  { text: "Maior é aquele que está em vós do que o que está no mundo.", ref: "1 João 4:4", cat: "forca" },
   // TIAGO E PEDRO
-  { text: "Se algum de vós tem falta de sabedoria, peça-a a Deus, que a todos dá liberalmente.", ref: "Tiago 1:5" },
-  { text: "Humilhai-vos perante o Senhor, e ele vos exaltará.", ref: "Tiago 4:10" },
-  { text: "Bem-aventurado o homem que suporta a provação; porque, depois de aprovado, receberá a coroa da vida.", ref: "Tiago 1:12" },
-  { text: "Lançai sobre ele toda a vossa ansiedade, porque ele tem cuidado de vós.", ref: "1 Pedro 5:7" },
-  { text: "Pois não nos deu Deus espírito de covardia, mas de poder, de amor e de moderação.", ref: "2 Timóteo 1:7" },
-  { text: "Combati o bom combate, acabei a carreira, guardei a fé.", ref: "2 Timóteo 4:7" },
+  { text: "Se algum de vós tem falta de sabedoria, peça-a a Deus, que a todos dá liberalmente.", ref: "Tiago 1:5", cat: "paz" },
+  { text: "Humilhai-vos perante o Senhor, e ele vos exaltará.", ref: "Tiago 4:10", cat: "paz" },
+  { text: "Bem-aventurado o homem que suporta a provação; porque, depois de aprovado, receberá a coroa da vida.", ref: "Tiago 1:12", cat: "forca" },
+  { text: "Lançai sobre ele toda a vossa ansiedade, porque ele tem cuidado de vós.", ref: "1 Pedro 5:7", cat: "ansiedade" },
+  { text: "Pois não nos deu Deus espírito de covardia, mas de poder, de amor e de moderação.", ref: "2 Timóteo 1:7", cat: "ansiedade" },
+  { text: "Combati o bom combate, acabei a carreira, guardei a fé.", ref: "2 Timóteo 4:7", cat: "forca" },
   // OUTROS
-  { text: "No princípio, criou Deus os céus e a terra.", ref: "Gênesis 1:1" },
-  { text: "O Senhor te abençoe e te guarde; o Senhor faça resplandecer o seu rosto sobre ti.", ref: "Números 6:24-25" },
-  { text: "Ao rei dos séculos, imortal, invisível, ao único Deus, honra e glória pelos séculos dos séculos.", ref: "1 Timóteo 1:17" },
+  { text: "No princípio, criou Deus os céus e a terra.", ref: "Gênesis 1:1", cat: "gratidao" },
+  { text: "O Senhor te abençoe e te guarde; o Senhor faça resplandecer o seu rosto sobre ti.", ref: "Números 6:24-25", cat: "paz" },
+  { text: "Ao rei dos séculos, imortal, invisível, ao único Deus, honra e glória pelos séculos dos séculos.", ref: "1 Timóteo 1:17", cat: "gratidao" }
 ];
 
 const TIMER_VERSES = [
@@ -231,6 +231,7 @@ const TIMER_VERSES = [
 ];
 
 let currentVerseIndex = -1;
+let currentCategory = 'todos';
 
 function getDailyVerseIndex() {
   const day = new Date().getDate() + new Date().getMonth() * 31;
@@ -250,9 +251,39 @@ function displayVerse(v) {
   textEl.style.transition = 'opacity 0.3s ease';
 }
 
+function filterVerses(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('.verse-cat-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const filtered = (cat === 'todos')
+    ? VERSICULOS
+    : VERSICULOS.filter(v => v.cat === cat);
+
+  if (filtered.length > 0) {
+    const randomIdx = Math.floor(Math.random() * filtered.length);
+    const chosenVerse = filtered[randomIdx];
+    currentVerseIndex = VERSICULOS.indexOf(chosenVerse);
+    displayVerse(chosenVerse);
+  }
+}
+
 function newVerse() {
-  currentVerseIndex = (currentVerseIndex + 1) % VERSICULOS.length;
-  displayVerse(VERSICULOS[currentVerseIndex]);
+  const filtered = (currentCategory === 'todos')
+    ? VERSICULOS
+    : VERSICULOS.filter(v => v.cat === currentCategory);
+
+  if (filtered.length === 0) return;
+
+  let nextVerse;
+  if (filtered.length === 1) {
+    nextVerse = filtered[0];
+  } else {
+    const pool = filtered.filter(v => VERSICULOS.indexOf(v) !== currentVerseIndex);
+    nextVerse = pool[Math.floor(Math.random() * pool.length)];
+  }
+  currentVerseIndex = VERSICULOS.indexOf(nextVerse);
+  displayVerse(nextVerse);
 }
 
 function shareVerse() {
@@ -266,17 +297,321 @@ function shareVerse() {
   }
 }
 
+function generateVerseCard() {
+  const v = VERSICULOS[currentVerseIndex] || { text: "O Senhor é meu pastor e nada me faltará.", ref: "Salmo 23:1" };
+  const btn = document.getElementById('btn-card-verse');
+  const originalHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg>
+      Gerando Imagem...
+    `;
+  }
+
+  setTimeout(() => {
+    try {
+      const W = 1080;
+      const H = 1920;
+      const canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Fundo celestial
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+      bgGrad.addColorStop(0, '#050814');
+      bgGrad.addColorStop(0.3, '#0b1126');
+      bgGrad.addColorStop(0.65, '#15102d');
+      bgGrad.addColorStop(1, '#070a16');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, W, H);
+
+      // 2. Aura dourada celestial central
+      const aura = ctx.createRadialGradient(W / 2, H / 2, 40, W / 2, H / 2, 620);
+      aura.addColorStop(0, 'rgba(212, 175, 55, 0.16)');
+      aura.addColorStop(0.4, 'rgba(80, 50, 160, 0.09)');
+      aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = aura;
+      ctx.fillRect(0, 0, W, H);
+
+      // 3. Estrelas celestiais
+      let seed = 0;
+      for (let i = 0; i < v.text.length; i++) seed += v.text.charCodeAt(i);
+      function pseudoRandom() {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      }
+
+      ctx.save();
+      for (let i = 0; i < 160; i++) {
+        const sx = pseudoRandom() * W;
+        const sy = pseudoRandom() * H;
+        const sr = pseudoRandom() * 1.8 + 0.5;
+        const sa = pseudoRandom() * 0.7 + 0.25;
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fillStyle = (i % 5 === 0) ? `rgba(255, 230, 150, ${sa})` : `rgba(240, 240, 255, ${sa})`;
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // 4. Moldura dupla dourada
+      const padOuter = 70;
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(padOuter, padOuter, W - padOuter * 2, H - padOuter * 2);
+
+      const padInner = 86;
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.85)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(padInner, padInner, W - padInner * 2, H - padInner * 2);
+
+      // Estrelas nos cantos
+      ctx.font = '22px sans-serif';
+      ctx.fillStyle = '#D4AF37';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('✦', padInner, padInner);
+      ctx.fillText('✦', W - padInner, padInner);
+      ctx.fillText('✦', padInner, H - padInner);
+      ctx.fillText('✦', W - padInner, H - padInner);
+
+      // 5. Cabeçalho
+      ctx.font = '600 24px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#D4AF37';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText('✦   A P O S E N T O   A L T O   ✦', W / 2, 220);
+
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 140, 245);
+      ctx.lineTo(W / 2 + 140, 245);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.font = '500 18px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.8)';
+      ctx.fillText('PALAVRA VIVA & DEVOCIONAL', W / 2, 280);
+
+      // Chama e Vela
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(W / 2, 400, 18, 0, Math.PI * 2);
+      const flameGrad = ctx.createRadialGradient(W / 2, 400, 2, W / 2, 400, 18);
+      flameGrad.addColorStop(0, '#FFFFFF');
+      flameGrad.addColorStop(0.3, '#FFD54F');
+      flameGrad.addColorStop(0.7, '#FF8F00');
+      flameGrad.addColorStop(1, 'rgba(255, 111, 0, 0)');
+      ctx.fillStyle = flameGrad;
+      ctx.fill();
+
+      ctx.strokeStyle = '#D4AF37';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(W / 2, 402);
+      ctx.lineTo(W / 2, 414);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.7)';
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(W / 2 - 8, 414, 16, 40, [2, 2, 0, 0]);
+      } else {
+        ctx.rect(W / 2 - 8, 414, 16, 40);
+      }
+      ctx.fill();
+      ctx.restore();
+
+      // 6. Texto do versículo (Tipografia serifada e quebra inteligente)
+      const maxTextWidth = 760;
+      let fontSize = 54;
+      if (v.text.length > 180) fontSize = 44;
+      else if (v.text.length > 110) fontSize = 48;
+      else if (v.text.length < 50) fontSize = 58;
+
+      ctx.font = `italic ${fontSize}px "Cormorant Garamond", Georgia, serif`;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'center';
+
+      const words = v.text.split(' ');
+      const lines = [];
+      let currentLine = '';
+
+      for (let i = 0; i < words.length; i++) {
+        const testLine = currentLine ? `${currentLine} ${words[i]}` : words[i];
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxTextWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = words[i];
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+
+      const lineHeight = fontSize * 1.55;
+      const totalTextHeight = lines.length * lineHeight;
+      const startY = (H / 2) - (totalTextHeight / 2) + 20;
+
+      ctx.font = 'italic 72px "Cormorant Garamond", Georgia, serif';
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
+      ctx.fillText('“', W / 2, startY - 30);
+
+      ctx.font = `italic ${fontSize}px "Cormorant Garamond", Georgia, serif`;
+      ctx.fillStyle = '#F8F7F4';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetY = 4;
+
+      lines.forEach((line, index) => {
+        ctx.fillText(line, W / 2, startY + index * lineHeight);
+      });
+
+      ctx.shadowColor = 'transparent';
+
+      // 7. Referência bíblica
+      const refY = startY + (lines.length - 1) * lineHeight + 85;
+      ctx.font = '700 28px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#D4AF37';
+      ctx.fillText(v.ref.toUpperCase(), W / 2, refY);
+
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 60, refY + 28);
+      ctx.lineTo(W / 2 + 60, refY + 28);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.font = '14px sans-serif';
+      ctx.fillStyle = '#D4AF37';
+      ctx.fillText('✦', W / 2, refY + 30);
+
+      // 8. Rodapé
+      ctx.font = '400 20px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = 'rgba(240, 238, 232, 0.7)';
+      ctx.fillText('Um lugar de encontro com Deus  ✦  Aposento Alto', W / 2, H - 200);
+
+      ctx.font = '400 16px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
+      ctx.fillText('pixelstudio-land.github.io/aposento-alto', W / 2, H - 165);
+
+      // Baixar arquivo PNG
+      const safeName = (v.ref || 'versiculo').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `aposento-alto-${safeName}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Card Baixado! ✦
+        `;
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+        }, 3000);
+      }
+    } catch (err) {
+      console.error('Erro ao gerar imagem:', err);
+      alert('Não foi possível gerar a imagem no momento.');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+  }, 50);
+}
+
 currentVerseIndex = getDailyVerseIndex();
 displayVerse(VERSICULOS[currentVerseIndex]);
 
 
-/* ── 6. TIMER DE ORAÇÃO ──────────────────── */
+/* ── 6. TIMER DE ORAÇÃO & PAD CELESTIAL (432Hz) ──── */
 let timerDuration  = 5 * 60;
 let timerRemaining = timerDuration;
 let timerInterval  = null;
 let timerRunning   = false;
 let soundEnabled   = true;
 let audioCtx       = null;
+
+let ambientAudioCtx = null;
+let ambientGainNode = null;
+let ambientOscs = [];
+let isAmbientPlaying = false;
+
+function startAmbientPad() {
+  if (!soundEnabled || isAmbientPlaying) return;
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    if (!ambientAudioCtx) {
+      ambientAudioCtx = new AudioContextClass();
+    }
+    if (ambientAudioCtx.state === 'suspended') {
+      ambientAudioCtx.resume();
+    }
+
+    ambientGainNode = ambientAudioCtx.createGain();
+    const filter = ambientAudioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(360, ambientAudioCtx.currentTime);
+    filter.Q.setValueAtTime(1.2, ambientAudioCtx.currentTime);
+
+    ambientGainNode.connect(filter);
+    filter.connect(ambientAudioCtx.destination);
+
+    ambientGainNode.gain.setValueAtTime(0.0001, ambientAudioCtx.currentTime);
+    ambientGainNode.gain.exponentialRampToValueAtTime(0.035, ambientAudioCtx.currentTime + 2.5);
+
+    // Frequências harmônicas alinhadas em 432Hz (A2=108, E3=162, A3=216, C#4=270, E4=324, A4=432)
+    const chords = [
+      { freq: 108.0, type: 'sine', detune: 0 },
+      { freq: 162.0, type: 'triangle', detune: -3 },
+      { freq: 216.0, type: 'sine', detune: 2 },
+      { freq: 270.0, type: 'sine', detune: -2 },
+      { freq: 324.0, type: 'triangle', detune: 3 },
+      { freq: 432.0, type: 'sine', detune: 0 },
+    ];
+
+    ambientOscs = chords.map(item => {
+      const osc = ambientAudioCtx.createOscillator();
+      osc.type = item.type;
+      osc.frequency.setValueAtTime(item.freq, ambientAudioCtx.currentTime);
+      osc.detune.setValueAtTime(item.detune, ambientAudioCtx.currentTime);
+      osc.connect(ambientGainNode);
+      osc.start();
+      return osc;
+    });
+
+    isAmbientPlaying = true;
+  } catch (err) {
+    console.warn('Ambient pad error:', err);
+  }
+}
+
+function stopAmbientPad() {
+  if (!isAmbientPlaying || !ambientGainNode || !ambientAudioCtx) return;
+  try {
+    const now = ambientAudioCtx.currentTime;
+    ambientGainNode.gain.setValueAtTime(ambientGainNode.gain.value, now);
+    ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 1.0);
+    setTimeout(() => {
+      ambientOscs.forEach(osc => {
+        try { osc.stop(); osc.disconnect(); } catch (e) {}
+      });
+      ambientOscs = [];
+      isAmbientPlaying = false;
+    }, 1100);
+  } catch (err) {
+    isAmbientPlaying = false;
+  }
+}
 
 function updateTimerDisplay() {
   const m  = Math.floor(timerRemaining / 60);
@@ -293,14 +628,17 @@ function toggleTimer() {
   if (timerRunning) {
     clearInterval(timerInterval);
     timerRunning = false;
+    stopAmbientPad();
   } else {
     if (timerRemaining <= 0) timerRemaining = timerDuration;
+    startAmbientPad();
     timerInterval = setInterval(() => {
       timerRemaining--;
       updateTimerDisplay();
       if (timerRemaining <= 0) {
         clearInterval(timerInterval);
         timerRunning = false;
+        stopAmbientPad();
         playEndSound();
         updatePlayPauseIcon();
         recordPrayerCompletion(Math.max(1, Math.round(timerDuration / 60)));
@@ -322,6 +660,7 @@ function resetTimer() {
   clearInterval(timerInterval);
   timerRunning   = false;
   timerRemaining = timerDuration;
+  stopAmbientPad();
   updateTimerDisplay();
   updatePlayPauseIcon();
 }
@@ -329,6 +668,7 @@ function resetTimer() {
 function setPreset(minutes) {
   clearInterval(timerInterval);
   timerRunning   = false;
+  stopAmbientPad();
   timerDuration  = minutes * 60;
   timerRemaining = timerDuration;
   updateTimerDisplay();
@@ -342,6 +682,11 @@ function toggleSound() {
   soundEnabled = !soundEnabled;
   document.getElementById('icon-sound-on').style.display  = soundEnabled ? 'block' : 'none';
   document.getElementById('icon-sound-off').style.display = soundEnabled ? 'none'  : 'block';
+  if (!soundEnabled) {
+    stopAmbientPad();
+  } else if (timerRunning) {
+    startAmbientPad();
+  }
 }
 
 function playEndSound() {
@@ -421,6 +766,14 @@ function saveDiarioEntry() {
 
 const dateInput = document.getElementById('diario-date');
 if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+function exportDiario() {
+  if (!diarioEntries || diarioEntries.length === 0) {
+    alert('Ainda não há entradas no seu diário para exportar. Registre sua primeira reflexão antes de exportar.');
+    return;
+  }
+  window.print();
+}
 
 renderDiario();
 
@@ -763,3 +1116,9 @@ loadGlobalPrayers();
 loadPedidos();
 loadTestemunhos();
 setupRealtime();
+
+// Atualizar ano do rodapé dinamicamente
+const yearEl = document.getElementById('current-year');
+if (yearEl) {
+  yearEl.textContent = new Date().getFullYear();
+}

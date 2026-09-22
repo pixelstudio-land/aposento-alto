@@ -120,15 +120,36 @@
           <span class="badge-pill">✦ PALAVRA VIVA</span>
           <h2 class="section-title">Versículo do Dia</h2>
           <p class="section-subtitle">Deixe a Palavra de Deus guiar cada momento do seu dia.</p>
+
+          <!-- Filtro por Estado do Coração -->
+          <div class="verse-categories">
+            <button class="verse-cat-btn active" data-cat="todos" onclick="filterVerses('todos', this)">✦ Todos</button>
+            <button class="verse-cat-btn" data-cat="paz" onclick="filterVerses('paz', this)">Paz e Descanso</button>
+            <button class="verse-cat-btn" data-cat="ansiedade" onclick="filterVerses('ansiedade', this)">Ansiedade e Medo</button>
+            <button class="verse-cat-btn" data-cat="cura" onclick="filterVerses('cura', this)">Cura e Saúde</button>
+            <button class="verse-cat-btn" data-cat="gratidao" onclick="filterVerses('gratidao', this)">Gratidão e Louvor</button>
+            <button class="verse-cat-btn" data-cat="forca" onclick="filterVerses('forca', this)">Força e Vitória</button>
+          </div>
         </div>
 
         <div class="versiculo-card reveal-up">
           <div class="versiculo-candle">
+            <div class="candle-aura"></div>
             <svg viewBox="0 0 40 80" fill="none" class="candle-svg">
-              <rect x="15" y="30" width="10" height="50" rx="3" fill="#D4AF37" opacity="0.6"/>
-              <ellipse cx="20" cy="28" rx="5" ry="3" fill="#D4AF37" opacity="0.4"/>
-              <path d="M20 5 C18 10 15 16 18 22 C19 24 21 24 22 22 C25 16 22 10 20 5Z" fill="#FFD700"/>
-              <path d="M20 10 C19 13 18 17 19.5 20 C20.5 18 21 14 20 10Z" fill="#FFF" opacity="0.6"/>
+              <rect x="15" y="32" width="10" height="48" rx="3" fill="#D4AF37" opacity="0.6"/>
+              <ellipse cx="20" cy="30" rx="5" ry="2.5" fill="#D4AF37" opacity="0.5"/>
+              <line x1="20" y1="30" x2="20" y2="21" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+              <g class="candle-flame-group">
+                <ellipse class="flame-outer" cx="20" cy="14" rx="5.5" ry="11" fill="url(#flameGradOuter)"/>
+                <ellipse class="flame-inner" cx="20" cy="16" rx="2.5" ry="6" fill="#FFF"/>
+              </g>
+              <defs>
+                <linearGradient id="flameGradOuter" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#E65100"/>
+                  <stop offset="45%" stop-color="#FFB300"/>
+                  <stop offset="100%" stop-color="#FFF9C4"/>
+                </linearGradient>
+              </defs>
             </svg>
           </div>
           <div class="versiculo-content">
@@ -139,6 +160,10 @@
             <button class="btn btn-glass btn-sm" id="btn-share-verse" onclick="shareVerse()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
               Compartilhar
+            </button>
+            <button class="btn btn-primary btn-sm" id="btn-card-verse" onclick="generateVerseCard()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Gerar Imagem (Card/Story)
             </button>
             <button class="btn btn-glass btn-sm" onclick="newVerse()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
@@ -243,7 +268,13 @@
 
           <!-- Entradas salvas -->
           <div class="diario-entries-card reveal-up">
-            <h3>Minhas Entradas <span class="entries-count" id="entries-count">0</span></h3>
+            <div class="diario-entries-header">
+              <h3>Minhas Entradas <span class="entries-count" id="entries-count">0</span></h3>
+              <button class="btn btn-glass btn-xs" id="btn-export-diario" onclick="exportDiario()" title="Exportar ou Imprimir Diário em PDF">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Exportar (PDF)
+              </button>
+            </div>
             <div id="diario-entries" class="diario-entries-list">
               <div class="empty-state">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -432,7 +463,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>Feito com fé e propósito &nbsp;✦&nbsp; Aposento Alto © 2024</p>
+      <p>Feito com fé e propósito &nbsp;✦&nbsp; Aposento Alto © <span id="current-year">2026</span></p>
     </div>
   </footer>
 
