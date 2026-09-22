@@ -5,7 +5,9 @@
 /* ── 0. SUPABASE CLIENT & UTILS ──────────── */
 const SUPABASE_URL = 'https://usecyyevfegavaxughbk.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZWN5eWV2ZmVnYXZheHVnaGJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMzQwOTQsImV4cCI6MjEwNTYxMDA5NH0.VHX13wfyS9pKriMZYFBeqvRSDNTZScn-5oEjx32M-Y0';
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const supabaseClient = (window.supabase && typeof window.supabase.createClient === 'function')
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -105,6 +107,7 @@ drawer?.querySelectorAll('.mobile-nav-link').forEach(link => {
 
 
 /* ── 4. REVEAL ON SCROLL ─────────────────── */
+document.documentElement.classList.add('js-ready');
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach((e, i) => {
     if (e.isIntersecting) {
@@ -436,12 +439,12 @@ renderDiario();
 async function loadGlobalPrayers() {
   const statEl = document.getElementById('global-prayers-stat');
   if (!statEl) return;
-  if (!supabase) {
+  if (!supabaseClient) {
     statEl.textContent = 'Tempo sagrado em oração com Deus';
     return;
   }
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('oracoes_globais')
       .select('total_oracoes, minutos_orados')
       .eq('id', 1)
@@ -460,9 +463,9 @@ async function loadGlobalPrayers() {
 }
 
 async function recordPrayerCompletion(durationMinutes) {
-  if (!supabase) return;
+  if (!supabaseClient) return;
   try {
-    await supabase.rpc('registrar_oracao_concluida', { minutos: durationMinutes });
+    await supabaseClient.rpc('registrar_oracao_concluida', { minutos: durationMinutes });
     loadGlobalPrayers();
   } catch(e) {
     console.warn('Erro ao registrar oração:', e);
@@ -477,13 +480,13 @@ async function loadPedidos() {
   const container = document.getElementById('pedidos-list');
   if (!container) return;
 
-  if (!supabase) {
+  if (!supabaseClient) {
     renderLocalPedidos();
     return;
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('pedidos_oracao')
       .select('*')
       .eq('ativo', true)
@@ -567,8 +570,8 @@ async function savePedido() {
   }
 
   try {
-    if (supabase) {
-      const { error } = await supabase.from('pedidos_oracao').insert([{
+    if (supabaseClient) {
+      const { error } = await supabaseClient.from('pedidos_oracao').insert([{
         nome,
         cidade,
         pedido
@@ -612,9 +615,9 @@ async function interceder(id) {
     }
   }
 
-  if (supabase) {
+  if (supabaseClient) {
     try {
-      await supabase.rpc('interceder_pedido', { pedido_id: id });
+      await supabaseClient.rpc('interceder_pedido', { pedido_id: id });
     } catch(e) {
       console.warn('Erro ao registrar intercessão:', e);
     }
@@ -628,10 +631,10 @@ async function loadTestemunhos() {
   const countEl = document.getElementById('testemunhos-count');
   if (!container) return;
 
-  if (!supabase) return;
+  if (!supabaseClient) return;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('testemunhos')
       .select('*')
       .eq('aprovado', true)
@@ -681,8 +684,8 @@ async function saveTestemunho() {
   }
 
   try {
-    if (supabase) {
-      const { error } = await supabase.from('testemunhos').insert([{
+    if (supabaseClient) {
+      const { error } = await supabaseClient.from('testemunhos').insert([{
         nome,
         testemunho
       }]);
@@ -723,8 +726,8 @@ async function subscribeNewsletter() {
   }
 
   try {
-    if (supabase) {
-      const { error } = await supabase.from('newsletter_leads').insert([{
+    if (supabaseClient) {
+      const { error } = await supabaseClient.from('newsletter_leads').insert([{
         email,
         interesse: 'loja_devocionais'
       }]);
@@ -746,9 +749,9 @@ async function subscribeNewsletter() {
 
 /* ── 12. REALTIME & INICIALIZAÇÃO ────────── */
 function setupRealtime() {
-  if (!supabase) return;
+  if (!supabaseClient) return;
   try {
-    supabase
+    supabaseClient
       .channel('aposento-realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos_oracao' }, () => {
         loadPedidos();
