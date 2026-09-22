@@ -1,6 +1,43 @@
 /* ==========================================
-   APOSENTO ALTO — JavaScript
+   APOSENTO ALTO - JavaScript & Supabase Realtime
    ========================================== */
+
+/* ── 0. SUPABASE CLIENT & UTILS ──────────── */
+const SUPABASE_URL = 'https://usecyyevfegavaxughbk.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZWN5eWV2ZmVnYXZheHVnaGJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMzQwOTQsImV4cCI6MjEwNTYxMDA5NH0.VHX13wfyS9pKriMZYFBeqvRSDNTZScn-5oEjx32M-Y0';
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function timeAgo(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffSec = Math.floor((now - date) / 1000);
+  if (diffSec < 60) return 'Agora mesmo';
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `há ${diffMin} min`;
+  const diffH = Math.floor(diffMin / 60);
+  if (diffH < 24) return `há ${diffH}h`;
+  const diffD = Math.floor(diffH / 24);
+  if (diffD < 7) return `há ${diffD}d`;
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+}
+
+function showFeedback(el, msg, type) {
+  if (!el) return;
+  el.textContent = msg;
+  el.className = `form-feedback ${type}`;
+  el.style.display = 'block';
+  setTimeout(() => {
+    el.style.display = 'none';
+  }, 6000);
+}
 
 /* ── 1. ESTRELAS ─────────────────────────── */
 (function initStars() {
@@ -273,6 +310,7 @@ function toggleTimer() {
         timerRunning = false;
         playEndSound();
         updatePlayPauseIcon();
+        recordPrayerCompletion(Math.max(1, Math.round(timerDuration / 60)));
       }
     }, 1000);
     timerRunning = true;
@@ -394,62 +432,341 @@ if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
 renderDiario();
 
 
-/* ── 8. PEDIDOS DE ORAÇÃO ────────────────── */
-let pedidos = JSON.parse(localStorage.getItem('aposento_pedidos') || '[]');
+/* ── 8. CONTADOR GLOBAL DE ORAÇÕES ───────── */
+async function loadGlobalPrayers() {
+  const statEl = document.getElementById('global-prayers-stat');
+  if (!statEl) return;
+  if (!supabase) {
+    statEl.textContent = 'Tempo sagrado em oração com Deus';
+    return;
+  }
+  try {
+    const { data, error } = await supabase
+      .from('oracoes_globais')
+      .select('total_oracoes, minutos_orados')
+      .eq('id', 1)
+      .single();
 
-function renderPedidos() {
+    if (data && data.total_oracoes !== undefined) {
+      const total = Number(data.total_oracoes);
+      const minutos = Number(data.minutos_orados || 0);
+      statEl.innerHTML = `<strong>${total.toLocaleString('pt-BR')}</strong> orações realizadas neste Aposento Alto (<strong>${minutos.toLocaleString('pt-BR')} min</strong> dedicados)`;
+    } else {
+      statEl.textContent = 'Tempo sagrado em oração com Deus';
+    }
+  } catch(e) {
+    statEl.textContent = 'Tempo sagrado em oração com Deus';
+  }
+}
+
+async function recordPrayerCompletion(durationMinutes) {
+  if (!supabase) return;
+  try {
+    await supabase.rpc('registrar_oracao_concluida', { minutos: durationMinutes });
+    loadGlobalPrayers();
+  } catch(e) {
+    console.warn('Erro ao registrar oração:', e);
+  }
+}
+
+
+/* ── 9. PEDIDOS DE ORAÇÃO (SUPABASE) ─────── */
+let intercedidosLocais = JSON.parse(localStorage.getItem('aposento_intercedidos') || '[]');
+
+async function loadPedidos() {
   const container = document.getElementById('pedidos-list');
   if (!container) return;
 
-  if (pedidos.length === 0) {
-    container.innerHTML = `<div class="empty-state"><span>Nenhum pedido ainda.</span><p>Seja o primeiro a enviar um pedido de oração.</p></div>`;
+  if (!supabase) {
+    renderLocalPedidos();
     return;
   }
 
-  container.innerHTML = [...pedidos].reverse().map((p, i) => `
+  try {
+    const { data, error } = await supabase
+      .from('pedidos_oracao')
+      .select('*')
+      .eq('ativo', true)
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>
+          <p>Nenhum pedido ainda. Seja o primeiro a compartilhar sua causa de oração.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = data.map(p => {
+      const prayed = intercedidosLocais.includes(p.id);
+      return `
+        <div class="pedido-item" id="pedido-${p.id}">
+          <div class="pedido-item-header">
+            <span class="pedido-item-nome">
+              ${escapeHtml(p.nome || 'Anônimo')}
+              ${p.cidade ? `<span class="pedido-item-cidade"> · ${escapeHtml(p.cidade)}</span>` : ''}
+            </span>
+            <span class="pedido-item-hora">${timeAgo(p.created_at)}</span>
+          </div>
+          <div class="pedido-item-text">${escapeHtml(p.pedido)}</div>
+          <div class="pedido-item-footer">
+            <button class="pedido-item-pray ${prayed ? 'prayed' : ''}" onclick="interceder('${p.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 8h14"/></svg>
+              <span>${prayed ? 'Intercedido!' : 'Interceder'}</span>
+              <span class="pray-count">(${p.intercessoes || 0})</span>
+            </button>
+            ${(p.intercessoes || 0) > 0 ? `<span class="intercessoes-text">${p.intercessoes} ${p.intercessoes === 1 ? 'irmão orou' : 'irmãos oraram'}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    console.error('Erro ao carregar pedidos do Supabase:', e);
+    renderLocalPedidos();
+  }
+}
+
+function renderLocalPedidos() {
+  const container = document.getElementById('pedidos-list');
+  if (!container) return;
+  const pedidos = JSON.parse(localStorage.getItem('aposento_pedidos') || '[]');
+  if (pedidos.length === 0) {
+    container.innerHTML = `<div class="empty-state"><p>Nenhum pedido ainda.</p></div>`;
+    return;
+  }
+  container.innerHTML = [...pedidos].reverse().map(p => `
     <div class="pedido-item">
       <div class="pedido-item-header">
-        <span class="pedido-item-nome">${p.nome || 'Anonimo'}</span>
+        <span class="pedido-item-nome">${escapeHtml(p.nome || 'Anônimo')}</span>
         <span class="pedido-item-hora">${p.hora || ''}</span>
       </div>
-      <div class="pedido-item-text">${p.text}</div>
-      <button class="pedido-item-pray" onclick="prayFor(this)">Interceder por este pedido</button>
+      <div class="pedido-item-text">${escapeHtml(p.pedido || p.text)}</div>
     </div>
   `).join('');
 }
 
-function savePedido() {
-  const nome = document.getElementById('pedido-nome')?.value.trim();
-  const text = document.getElementById('pedido-text')?.value.trim();
-  if (!text) { alert('Escreva seu pedido de oração.'); return; }
+async function savePedido() {
+  const nome = document.getElementById('pedido-nome')?.value.trim() || 'Anônimo';
+  const cidade = document.getElementById('pedido-cidade')?.value.trim() || null;
+  const pedido = document.getElementById('pedido-text')?.value.trim();
+  const feedback = document.getElementById('pedido-feedback');
+  const btn = document.getElementById('btn-save-pedido');
 
-  const now  = new Date();
-  const hora = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  if (!pedido || pedido.length < 5) {
+    showFeedback(feedback, 'Por favor, escreva um pedido com mais de 5 caracteres.', 'error');
+    return;
+  }
 
-  pedidos.push({ nome, text, hora, ts: Date.now() });
-  localStorage.setItem('aposento_pedidos', JSON.stringify(pedidos));
-  renderPedidos();
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+  }
 
-  const nomeEl = document.getElementById('pedido-nome');
-  const textEl = document.getElementById('pedido-text');
-  if (nomeEl) nomeEl.value = '';
-  if (textEl) textEl.value = '';
+  try {
+    if (supabase) {
+      const { error } = await supabase.from('pedidos_oracao').insert([{
+        nome,
+        cidade,
+        pedido
+      }]);
+      if (error) throw error;
+      showFeedback(feedback, 'Pedido publicado com sucesso! A comunidade estará orando por você.', 'success');
+      loadPedidos();
+    } else {
+      const pedidos = JSON.parse(localStorage.getItem('aposento_pedidos') || '[]');
+      pedidos.push({ nome, cidade, pedido, created_at: new Date().toISOString() });
+      localStorage.setItem('aposento_pedidos', JSON.stringify(pedidos));
+      showFeedback(feedback, 'Pedido salvo localmente!', 'success');
+      renderLocalPedidos();
+    }
+
+    if (document.getElementById('pedido-nome')) document.getElementById('pedido-nome').value = '';
+    if (document.getElementById('pedido-cidade')) document.getElementById('pedido-cidade').value = '';
+    if (document.getElementById('pedido-text')) document.getElementById('pedido-text').value = '';
+  } catch(e) {
+    console.error('Erro ao enviar pedido:', e);
+    showFeedback(feedback, 'Ocorreu um erro ao enviar seu pedido. Tente novamente.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '✦ Enviar Pedido para o Mural';
+    }
+  }
 }
 
-function prayFor(btn) {
-  btn.textContent = 'Intercedendo...';
-  setTimeout(() => { btn.textContent = 'Intercedido!'; }, 1500);
+async function interceder(id) {
+  if (intercedidosLocais.includes(id)) return;
+  intercedidosLocais.push(id);
+  localStorage.setItem('aposento_intercedidos', JSON.stringify(intercedidosLocais));
+
+  const item = document.getElementById(`pedido-${id}`);
+  if (item) {
+    const btn = item.querySelector('.pedido-item-pray');
+    if (btn) {
+      btn.classList.add('prayed');
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 8h14"/></svg> <span>Intercedido!</span>`;
+    }
+  }
+
+  if (supabase) {
+    try {
+      await supabase.rpc('interceder_pedido', { pedido_id: id });
+    } catch(e) {
+      console.warn('Erro ao registrar intercessão:', e);
+    }
+  }
 }
 
-renderPedidos();
 
+/* ── 10. TESTEMUNHOS (SUPABASE) ──────────── */
+async function loadTestemunhos() {
+  const container = document.getElementById('testemunhos-list');
+  const countEl = document.getElementById('testemunhos-count');
+  if (!container) return;
 
-/* ── 9. NEWSLETTER ───────────────────────── */
-function subscribeNewsletter() {
-  const email = document.getElementById('newsletter-email')?.value.trim();
-  if (!email || !email.includes('@')) { alert('Por favor, insira um e-mail válido.'); return; }
-  const btn = event.target;
-  btn.textContent = 'Cadastrado!';
-  btn.disabled    = true;
-  btn.style.opacity = '0.7';
+  if (!supabase) return;
+
+  try {
+    const { data, error } = await supabase
+      .from('testemunhos')
+      .select('*')
+      .eq('aprovado', true)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (error) throw error;
+    if (countEl) countEl.textContent = data ? data.length : 0;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <p>Nenhum testemunho registrado ainda. Seja o primeiro a glorificar o nome de Deus!</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = data.map(t => `
+      <div class="testemunho-item">
+        <div class="testemunho-item-header">
+          <span class="testemunho-item-nome">${escapeHtml(t.nome || 'Anônimo')}</span>
+          <span class="testemunho-item-hora">${timeAgo(t.created_at)}</span>
+        </div>
+        <div class="testemunho-item-text">"${escapeHtml(t.testemunho)}"</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    console.error('Erro ao carregar testemunhos:', e);
+  }
 }
+
+async function saveTestemunho() {
+  const nome = document.getElementById('testemunho-nome')?.value.trim() || 'Anônimo';
+  const testemunho = document.getElementById('testemunho-text')?.value.trim();
+  const feedback = document.getElementById('testemunho-feedback');
+  const btn = document.getElementById('btn-save-testemunho');
+
+  if (!testemunho || testemunho.length < 5) {
+    showFeedback(feedback, 'Por favor, escreva um testemunho com mais de 5 caracteres.', 'error');
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Publicando...';
+  }
+
+  try {
+    if (supabase) {
+      const { error } = await supabase.from('testemunhos').insert([{
+        nome,
+        testemunho
+      }]);
+      if (error) throw error;
+      showFeedback(feedback, 'Glória a Deus! Seu testemunho foi publicado com sucesso.', 'success');
+      loadTestemunhos();
+    }
+
+    if (document.getElementById('testemunho-nome')) document.getElementById('testemunho-nome').value = '';
+    if (document.getElementById('testemunho-text')) document.getElementById('testemunho-text').value = '';
+  } catch(e) {
+    console.error('Erro ao enviar testemunho:', e);
+    showFeedback(feedback, 'Ocorreu um erro ao publicar o testemunho. Tente novamente.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '✦ Publicar Testemunho';
+    }
+  }
+}
+
+
+/* ── 11. NEWSLETTER (SUPABASE) ───────────── */
+async function subscribeNewsletter() {
+  const emailInput = document.getElementById('newsletter-email');
+  const email = emailInput?.value.trim();
+  const feedback = document.getElementById('newsletter-feedback');
+  const btn = document.getElementById('btn-newsletter');
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    showFeedback(feedback, 'Por favor, insira um e-mail válido.', 'error');
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Cadastrando...';
+  }
+
+  try {
+    if (supabase) {
+      const { error } = await supabase.from('newsletter_leads').insert([{
+        email,
+        interesse: 'loja_devocionais'
+      }]);
+      if (error && error.code !== '23505') throw error;
+    }
+    showFeedback(feedback, 'E-mail cadastrado com sucesso! Avisaremos assim que os materiais estiverem disponíveis.', 'success');
+    if (emailInput) emailInput.value = '';
+    if (btn) btn.textContent = 'Cadastrado!';
+  } catch(e) {
+    console.error('Erro ao cadastrar e-mail:', e);
+    showFeedback(feedback, 'Não foi possível cadastrar seu e-mail. Tente novamente.', 'error');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Quero ser avisado';
+    }
+  }
+}
+
+
+/* ── 12. REALTIME & INICIALIZAÇÃO ────────── */
+function setupRealtime() {
+  if (!supabase) return;
+  try {
+    supabase
+      .channel('aposento-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos_oracao' }, () => {
+        loadPedidos();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'oracoes_globais' }, () => {
+        loadGlobalPrayers();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'testemunhos' }, () => {
+        loadTestemunhos();
+      })
+      .subscribe();
+  } catch(e) {
+    console.warn('Realtime subscription not available:', e);
+  }
+}
+
+// Inicializar dados do Supabase
+loadGlobalPrayers();
+loadPedidos();
+loadTestemunhos();
+setupRealtime();

@@ -568,6 +568,32 @@ body {
   border-radius: var(--radius);
   background: rgba(212, 175, 55, 0.04);
 }
+
+.timer-stats-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  color: var(--gold-light);
+  margin-top: 14px;
+}
+.timer-stats-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
 .timer-verse-text {
   font-family: var(--font-heading);
   font-size: 0.95rem;
@@ -703,28 +729,186 @@ body {
 .pedidos-list::-webkit-scrollbar { width: 4px; }
 .pedidos-list::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
 
+.pedidos-mural-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.35);
+  color: #2ecc71;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2ecc71;
+  box-shadow: 0 0 6px #2ecc71;
+  animation: pulseDot 1.5s infinite ease-in-out;
+}
+
 .pedido-item {
   background: rgba(212, 175, 55, 0.04);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px 18px;
+  padding: 18px 20px;
+  transition: all var(--transition);
 }
-.pedido-item-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
-.pedido-item-nome { font-weight: 600; font-size: 0.88rem; color: var(--gold-light); }
-.pedido-item-hora { font-size: 0.75rem; color: var(--text-muted); }
-.pedido-item-text { font-size: 0.88rem; color: var(--text-sub); line-height: 1.6; }
-.pedido-item-pray {
-  margin-top: 10px;
-  font-size: 0.78rem;
-  background: none;
-  border: 1px solid var(--border);
+.pedido-item:hover {
+  border-color: var(--border-hover);
+  background: rgba(212, 175, 55, 0.07);
+}
+.pedido-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.pedido-item-nome {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gold-light);
+}
+.pedido-item-cidade {
   color: var(--text-muted);
-  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+.pedido-item-hora {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.pedido-item-text {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+.pedido-item-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.pedido-item-pray {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  background: rgba(212, 175, 55, 0.06);
+  border: 1px solid var(--border);
+  color: var(--gold-light);
+  padding: 6px 14px;
   border-radius: 8px;
   cursor: pointer;
   transition: all var(--transition);
 }
-.pedido-item-pray:hover { border-color: var(--gold); color: var(--gold); }
+.pedido-item-pray:hover {
+  background: rgba(212, 175, 55, 0.16);
+  border-color: var(--gold);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.pedido-item-pray.prayed {
+  background: rgba(46, 204, 113, 0.15);
+  border-color: rgba(46, 204, 113, 0.4);
+  color: #2ecc71;
+  pointer-events: none;
+}
+.intercessoes-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.form-feedback {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+.form-feedback.success {
+  background: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  color: #2ecc71;
+}
+.form-feedback.error {
+  background: rgba(231, 76, 60, 0.12);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #e74c3c;
+}
+
+/* ── 15. TESTEMUNHOS ─────────────────────── */
+.section-testemunhos {
+  background: radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.05) 0%, transparent 65%);
+}
+.testemunhos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.testemunho-form-card, .testemunhos-mural {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  backdrop-filter: blur(12px);
+}
+.testemunhos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.testemunhos-list::-webkit-scrollbar { width: 4px; }
+.testemunhos-list::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+.testemunho-item {
+  background: rgba(212, 175, 55, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  transition: all var(--transition);
+}
+.testemunho-item:hover {
+  border-color: var(--border-hover);
+  background: rgba(212, 175, 55, 0.07);
+}
+.testemunho-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.testemunho-item-nome {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gold-light);
+}
+.testemunho-item-hora {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.testemunho-item-text {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+  font-style: italic;
+}
 
 /* ── 15. LOJA ────────────────────────────── */
 .section-loja {

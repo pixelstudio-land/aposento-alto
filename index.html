@@ -45,6 +45,7 @@
           <li><a href="#oracao" class="nav-link">Oração</a></li>
           <li><a href="#diario" class="nav-link">Diário</a></li>
           <li><a href="#pedidos" class="nav-link">Intercessão</a></li>
+          <li><a href="#testemunhos" class="nav-link">Testemunhos</a></li>
           <li><a href="#loja" class="nav-link">Loja</a></li>
         </ul>
       </nav>
@@ -71,6 +72,7 @@
       <li><a href="#oracao" class="mobile-nav-link">Timer de Oração</a></li>
       <li><a href="#diario" class="mobile-nav-link">Diário Espiritual</a></li>
       <li><a href="#pedidos" class="mobile-nav-link">Pedidos de Intercessão</a></li>
+      <li><a href="#testemunhos" class="mobile-nav-link">Testemunhos</a></li>
       <li><a href="#loja" class="mobile-nav-link">Loja Cristã</a></li>
     </ul>
   </div>
@@ -194,6 +196,11 @@
           <div class="timer-verse-wrap">
             <p class="timer-verse-text" id="timer-verse">"Sede quietos e sabei que eu sou Deus." (Salmo 46:10)</p>
           </div>
+
+          <div class="timer-stats-badge" id="timer-stats-wrap">
+            <span class="timer-stats-dot"></span>
+            <span id="global-prayers-stat">Carregando orações da comunidade...</span>
+          </div>
         </div>
       </div>
     </section>
@@ -254,33 +261,85 @@
     <section class="section section-pedidos" id="pedidos">
       <div class="container">
         <div class="section-header text-center reveal-up">
-          <span class="badge-pill">✦ INTERCESSÃO</span>
+          <span class="badge-pill">✦ INTERCESSÃO EM COMUNHÃO</span>
           <h2 class="section-title">Pedidos de Oração</h2>
-          <p class="section-subtitle">Compartilhe seus pedidos. A comunidade orará por você.</p>
+          <p class="section-subtitle">Compartilhe sua causa. Irmãos e irmãs em todo o país orarão com você.</p>
         </div>
 
         <div class="pedidos-grid">
           <div class="pedido-form-card reveal-up">
-            <h3>Enviar Pedido</h3>
+            <h3>Enviar Pedido de Oração</h3>
             <div class="form-group">
               <label for="pedido-nome">Seu nome (opcional)</label>
-              <input type="text" id="pedido-nome" class="form-input" placeholder="Anônimo">
+              <input type="text" id="pedido-nome" class="form-input" placeholder="Ex: Maria">
             </div>
             <div class="form-group">
-              <label for="pedido-text">Pedido de oração</label>
-              <textarea id="pedido-text" class="form-textarea" rows="4" placeholder="Compartilhe o que está em seu coração..."></textarea>
+              <label for="pedido-cidade">Cidade / Estado (opcional)</label>
+              <input type="text" id="pedido-cidade" class="form-input" placeholder="Ex: Belo Horizonte/MG">
             </div>
-            <button class="btn btn-primary btn-block" onclick="savePedido()">
-              ✦ Enviar Pedido
+            <div class="form-group">
+              <label for="pedido-text">Seu pedido ou clamor</label>
+              <textarea id="pedido-text" class="form-textarea" rows="4" placeholder="Escreva aqui seu pedido de oração..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" id="btn-save-pedido" onclick="savePedido()">
+              ✦ Enviar Pedido para o Mural
             </button>
+            <p id="pedido-feedback" class="form-feedback" style="display:none;"></p>
           </div>
 
           <div class="pedidos-mural reveal-up">
-            <h3>Mural de Intercessão</h3>
+            <div class="pedidos-mural-header">
+              <h3>Mural de Intercessão</h3>
+              <span class="live-pill"><span class="live-dot"></span> Ao Vivo</span>
+            </div>
             <div id="pedidos-list" class="pedidos-list">
               <div class="empty-state">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>
-                <p>Seja o primeiro a enviar um pedido de oração.</p>
+                <p>Carregando pedidos de oração...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TESTEMUNHOS & GRAÇAS ALCANÇADAS
+         ========================================== -->
+    <section class="section section-testemunhos" id="testemunhos">
+      <div class="container">
+        <div class="section-header text-center reveal-up">
+          <span class="badge-pill">✦ GRAÇAS ALCANÇADAS</span>
+          <h2 class="section-title">Mural de Testemunhos</h2>
+          <p class="section-subtitle">"Contai entre as nações a sua glória, entre todos os povos as suas maravilhas." (Salmo 96:3)</p>
+        </div>
+
+        <div class="testemunhos-grid">
+          <div class="testemunho-form-card reveal-up">
+            <h3>Compartilhar Bênção</h3>
+            <div class="form-group">
+              <label for="testemunho-nome">Seu nome (opcional)</label>
+              <input type="text" id="testemunho-nome" class="form-input" placeholder="Ex: João Carlos">
+            </div>
+            <div class="form-group">
+              <label for="testemunho-text">Seu testemunho / Oração respondida</label>
+              <textarea id="testemunho-text" class="form-textarea" rows="4" placeholder="Conte o milagre, livramento, cura ou provisão que Deus operou..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" id="btn-save-testemunho" onclick="saveTestemunho()">
+              ✦ Publicar Testemunho
+            </button>
+            <p id="testemunho-feedback" class="form-feedback" style="display:none;"></p>
+          </div>
+
+          <div class="testemunhos-mural reveal-up">
+            <div class="pedidos-mural-header">
+              <h3>Testemunhos da Comunidade</h3>
+              <span class="entries-count" id="testemunhos-count">0</span>
+            </div>
+            <div id="testemunhos-list" class="testemunhos-list">
+              <div class="empty-state">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <p>Nenhum testemunho registrado ainda. Seja o primeiro a glorificar o nome de Deus!</p>
               </div>
             </div>
           </div>
@@ -340,9 +399,10 @@
           <h3>Seja o primeiro a saber!</h3>
           <p>Cadastre seu e-mail e avisamos assim que os produtos estiverem disponíveis.</p>
           <div class="newsletter-form">
-            <input type="email" id="newsletter-email" class="form-input" placeholder="seu@email.com">
-            <button class="btn btn-primary" onclick="subscribeNewsletter()">Quero ser avisado</button>
+            <input type="email" id="newsletter-email" class="form-input" placeholder="seu@email.com" required>
+            <button class="btn btn-primary" id="btn-newsletter" onclick="subscribeNewsletter()">Quero ser avisado</button>
           </div>
+          <p id="newsletter-feedback" class="form-feedback" style="display:none;"></p>
         </div>
       </div>
     </section>
@@ -363,6 +423,7 @@
         <a href="#oracao">Oração</a>
         <a href="#diario">Diário</a>
         <a href="#pedidos">Intercessão</a>
+        <a href="#testemunhos">Testemunhos</a>
         <a href="#loja">Loja</a>
       </div>
       <div class="footer-verse">
@@ -375,6 +436,8 @@
     </div>
   </footer>
 
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
