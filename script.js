@@ -71,10 +71,11 @@ drawer?.querySelectorAll('.mobile-nav-link').forEach(link => {
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach((e, i) => {
     if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+      revealObserver.unobserve(e.target);
     }
   });
-}, { threshold: 0.1 });
+}, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
 
 document.querySelectorAll('.reveal-up').forEach(el => revealObserver.observe(el));
 
