@@ -107,17 +107,7 @@ drawer?.querySelectorAll('.mobile-nav-link').forEach(link => {
 
 
 /* ── 4. REVEAL ON SCROLL ─────────────────── */
-document.documentElement.classList.add('js-ready');
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 60);
-      revealObserver.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
-
-document.querySelectorAll('.reveal-up').forEach(el => revealObserver.observe(el));
+document.querySelectorAll('.reveal-up').forEach(el => el.classList.add('visible'));
 
 
 /* ── 5. VERSÍCULOS ───────────────────────── */

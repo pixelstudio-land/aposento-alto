@@ -1038,33 +1038,21 @@ body {
 .footer-bottom p { font-size: 0.8rem; color: var(--text-muted); }
 
 /* ── 17. ANIMAÇÕES ───────────────────────── */
-/* Por padrão o site é 100% visível; apenas quando o JS confirma prontidão a animação de scroll é ativada */
+/* Garantia absoluta de visibilidade imediata de 100% do conteúdo */
 .reveal-up {
-  opacity: 1;
-  transform: none;
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.js-ready .reveal-up:not(.visible) {
-  opacity: 0;
-  transform: translateY(25px);
-}
-.reveal-up.visible,
-.js-ready .reveal-up.visible {
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
 }
 
-/* O Hero carrega visível imediatamente para evitar qualquer tela preta ou atraso */
 .hero .reveal-up {
-  opacity: 1;
-  transform: translateY(0);
   animation: heroReveal 0.8s ease backwards;
 }
 .hero-tag.reveal-up { animation-delay: 0.1s; }
 .hero-title.reveal-up { animation-delay: 0.2s; }
-.hero-description.reveal-up { animation-delay: 0.3s; }
-.hero-cta.reveal-up { animation-delay: 0.4s; }
-.hero-badges.reveal-up { animation-delay: 0.5s; }
+.hero-subtitle.reveal-up { animation-delay: 0.3s; }
+.hero-cta-group.reveal-up { animation-delay: 0.4s; }
+.hero-verse.reveal-up { animation-delay: 0.5s; }
 
 @keyframes heroReveal {
   from {
