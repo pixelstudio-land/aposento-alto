@@ -395,33 +395,43 @@ function generateVerseCard() {
       ctx.fillStyle = 'rgba(212, 175, 55, 0.8)';
       ctx.fillText('PALAVRA VIVA & DEVOCIONAL', W / 2, 280);
 
-      // Chama e Vela
+      // Emblema Sagrado e Halo Celestial (Substituindo a antiga vela por selo dourado angelical)
       ctx.save();
+      const emblemCenterY = 400;
+
+      // Aura dourada suave
+      const auraGrad = ctx.createRadialGradient(W / 2, emblemCenterY, 4, W / 2, emblemCenterY, 65);
+      auraGrad.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
+      auraGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.12)');
+      auraGrad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+      ctx.fillStyle = auraGrad;
       ctx.beginPath();
-      ctx.arc(W / 2, 400, 18, 0, Math.PI * 2);
-      const flameGrad = ctx.createRadialGradient(W / 2, 400, 2, W / 2, 400, 18);
-      flameGrad.addColorStop(0, '#FFFFFF');
-      flameGrad.addColorStop(0.3, '#FFD54F');
-      flameGrad.addColorStop(0.7, '#FF8F00');
-      flameGrad.addColorStop(1, 'rgba(255, 111, 0, 0)');
-      ctx.fillStyle = flameGrad;
+      ctx.arc(W / 2, emblemCenterY, 65, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.strokeStyle = '#D4AF37';
-      ctx.lineWidth = 2;
+      // Círculo delicado contínuo
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(W / 2, 402);
-      ctx.lineTo(W / 2, 414);
+      ctx.arc(W / 2, emblemCenterY, 32, 0, Math.PI * 2);
       ctx.stroke();
 
-      ctx.fillStyle = 'rgba(212, 175, 55, 0.7)';
+      // Círculo pontilhado externo
+      ctx.setLineDash([3, 5]);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
       ctx.beginPath();
-      if (ctx.roundRect) {
-        ctx.roundRect(W / 2 - 8, 414, 16, 40, [2, 2, 0, 0]);
-      } else {
-        ctx.rect(W / 2 - 8, 414, 16, 40);
-      }
-      ctx.fill();
+      ctx.arc(W / 2, emblemCenterY, 40, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Estrela sagrada reluzente central
+      ctx.font = '32px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#F5D77F';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(212, 175, 55, 0.85)';
+      ctx.shadowBlur = 18;
+      ctx.fillText('✦', W / 2, emblemCenterY);
       ctx.restore();
 
       // 6. Texto do versículo (Tipografia serifada e quebra inteligente)
@@ -488,14 +498,23 @@ function generateVerseCard() {
       ctx.fillStyle = '#D4AF37';
       ctx.fillText('✦', W / 2, refY + 30);
 
-      // 8. Rodapé
+      // 8. Rodapé elegante e dinâmico
       ctx.font = '400 20px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = 'rgba(240, 238, 232, 0.7)';
       ctx.fillText('Um lugar de encontro com Deus  ✦  Aposento Alto', W / 2, H - 200);
 
-      ctx.font = '400 16px "Plus Jakarta Sans", sans-serif';
-      ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
-      ctx.fillText('pixelstudio-land.github.io/aposento-alto', W / 2, H - 165);
+      // Domínio limpo e dinâmico (usa o domínio atual ou o oficial)
+      let displayDomain = 'aposentoalto.com.br';
+      if (typeof window !== 'undefined' && window.location && window.location.hostname) {
+        const host = window.location.hostname;
+        if (!host.includes('localhost') && !host.includes('127.0.0.1') && !host.includes('github.io')) {
+          displayDomain = host;
+        }
+      }
+
+      ctx.font = '600 18px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.85)';
+      ctx.fillText(displayDomain, W / 2, H - 165);
 
       // Baixar arquivo PNG
       const safeName = (v.ref || 'versiculo').toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -549,12 +568,18 @@ let ambientNoiseSource = null;
 let ambientLfoNode     = null;
 let isAmbientPlaying   = false;
 
-function createProceduralNoiseBuffer(ctx, durationSec = 3) {
+function createProceduralWarmNoiseBuffer(ctx, durationSec = 4) {
   const bufferSize = ctx.sampleRate * durationSec;
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
+  let b0 = 0, b1 = 0, b2 = 0;
   for (let i = 0; i < bufferSize; i++) {
-    data[i] = (Math.random() * 2 - 1) * 0.9;
+    const white = (Math.random() * 2 - 1) * 0.35;
+    // Pink noise para eliminar asperezas metálicas
+    b0 = 0.99886 * b0 + white * 0.0555179;
+    b1 = 0.99332 * b1 + white * 0.0750759;
+    b2 = 0.96900 * b2 + white * 0.1538520;
+    data[i] = (b0 + b1 + b2 + white * 0.5) * 0.22;
   }
   return buffer;
 }
@@ -575,75 +600,90 @@ function startAmbientPad() {
 
     ambientGainNode = ambientAudioCtx.createGain();
     ambientGainNode.gain.setValueAtTime(0.0001, ambientAudioCtx.currentTime);
-    const targetGain = 0.035 * masterSoundVolume;
-    ambientGainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, targetGain), ambientAudioCtx.currentTime + 2.0);
+    const targetGain = 0.04 * masterSoundVolume;
+    ambientGainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, targetGain), ambientAudioCtx.currentTime + 2.5);
 
     if (currentSoundPreset === 'pad') {
-      // 1. PAD CELESTIAL 432Hz
-      const filter = ambientAudioCtx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(360, ambientAudioCtx.currentTime);
-      filter.Q.setValueAtTime(1.2, ambientAudioCtx.currentTime);
+      // 1. HARPA CELESTIAL / PAD ANGELICAL (Harmonia pura Dó Maior 9ª, sem zumbidos)
+      const celestialFilter = ambientAudioCtx.createBiquadFilter();
+      celestialFilter.type = 'lowpass';
+      celestialFilter.frequency.setValueAtTime(1100, ambientAudioCtx.currentTime);
+      celestialFilter.Q.setValueAtTime(0.4, ambientAudioCtx.currentTime);
 
-      ambientGainNode.connect(filter);
-      filter.connect(ambientAudioCtx.destination);
+      ambientGainNode.connect(celestialFilter);
+      celestialFilter.connect(ambientAudioCtx.destination);
 
-      const chords = [
-        { freq: 108.0, type: 'sine', detune: 0 },
-        { freq: 162.0, type: 'triangle', detune: -3 },
-        { freq: 216.0, type: 'sine', detune: 2 },
-        { freq: 270.0, type: 'sine', detune: -2 },
-        { freq: 324.0, type: 'triangle', detune: 3 },
-        { freq: 432.0, type: 'sine', detune: 0 },
+      // Acorde celestial aberto e acolhedor (puros tons senoidais)
+      const celestialChords = [
+        { freq: 130.81, gain: 0.12, detune: 0 },    // C3 (fundação suave e quente)
+        { freq: 196.00, gain: 0.15, detune: 1 },    // G3 (quinta perfeita)
+        { freq: 261.63, gain: 0.22, detune: -1 },   // C4 (oitava)
+        { freq: 329.63, gain: 0.20, detune: 1.5 },  // E4 (terça maior luminosa)
+        { freq: 392.00, gain: 0.18, detune: -1 },   // G4 (quinta)
+        { freq: 493.88, gain: 0.14, detune: 0.8 },  // B4 (sétima maior celestial)
+        { freq: 587.33, gain: 0.10, detune: -0.8 }, // D5 (nona suave e etérea)
       ];
 
-      ambientOscs = chords.map(item => {
+      // Respiração suave do volume (LFO muito lento e delicado: 0.07Hz ~ 14s)
+      ambientLfoNode = ambientAudioCtx.createOscillator();
+      ambientLfoNode.frequency.setValueAtTime(0.07, ambientAudioCtx.currentTime);
+      const lfoGain = ambientAudioCtx.createGain();
+      lfoGain.gain.setValueAtTime(0.008 * masterSoundVolume, ambientAudioCtx.currentTime);
+      ambientLfoNode.connect(lfoGain);
+      lfoGain.connect(ambientGainNode.gain);
+      ambientLfoNode.start();
+
+      ambientOscs = celestialChords.map(item => {
         const osc = ambientAudioCtx.createOscillator();
-        osc.type = item.type;
+        const oscGain = ambientAudioCtx.createGain();
+        osc.type = 'sine'; // Senoide pura, limpa e aveludada
         osc.frequency.setValueAtTime(item.freq, ambientAudioCtx.currentTime);
         osc.detune.setValueAtTime(item.detune, ambientAudioCtx.currentTime);
-        osc.connect(ambientGainNode);
+        oscGain.gain.setValueAtTime(item.gain, ambientAudioCtx.currentTime);
+
+        osc.connect(oscGain);
+        oscGain.connect(ambientGainNode);
         osc.start();
         return osc;
       });
 
     } else if (currentSoundPreset === 'chuva') {
-      // 2. CHUVA MANSA (Filtro lowpass aconchegante)
+      // 2. CHUVA SERENA (Ruído rosa aveludado com filtro aconchegante)
       const rainFilter = ambientAudioCtx.createBiquadFilter();
       rainFilter.type = 'lowpass';
-      rainFilter.frequency.setValueAtTime(800, ambientAudioCtx.currentTime);
-      rainFilter.Q.setValueAtTime(0.7, ambientAudioCtx.currentTime);
+      rainFilter.frequency.setValueAtTime(520, ambientAudioCtx.currentTime);
+      rainFilter.Q.setValueAtTime(0.35, ambientAudioCtx.currentTime);
 
       ambientGainNode.connect(rainFilter);
       rainFilter.connect(ambientAudioCtx.destination);
 
-      const noiseBuf = createProceduralNoiseBuffer(ambientAudioCtx, 4);
+      const noiseBuf = createProceduralWarmNoiseBuffer(ambientAudioCtx, 4);
       ambientNoiseSource = ambientAudioCtx.createBufferSource();
       ambientNoiseSource.buffer = noiseBuf;
       ambientNoiseSource.loop = true;
       ambientNoiseSource.connect(ambientGainNode);
       ambientNoiseSource.start();
 
-    } else if (currentSoundPreset === 'brisa') {
-      // 3. BRISA SUAVE (Bandpass modulado com LFO lento)
-      const windFilter = ambientAudioCtx.createBiquadFilter();
-      windFilter.type = 'bandpass';
-      windFilter.frequency.setValueAtTime(340, ambientAudioCtx.currentTime);
-      windFilter.Q.setValueAtTime(1.8, ambientAudioCtx.currentTime);
+    } else if (currentSoundPreset === 'aguas' || currentSoundPreset === 'brisa') {
+      // 3. ÁGUAS TRANQUILAS (Salmo 23 - Ribeirinho calmo e relaxante)
+      const waterFilter = ambientAudioCtx.createBiquadFilter();
+      waterFilter.type = 'bandpass';
+      waterFilter.frequency.setValueAtTime(550, ambientAudioCtx.currentTime);
+      waterFilter.Q.setValueAtTime(1.2, ambientAudioCtx.currentTime);
 
-      ambientGainNode.connect(windFilter);
-      windFilter.connect(ambientAudioCtx.destination);
+      ambientGainNode.connect(waterFilter);
+      waterFilter.connect(ambientAudioCtx.destination);
 
-      // LFO para oscilar a brisa suavemente
+      // LFO para modular o murmúrio da água
       ambientLfoNode = ambientAudioCtx.createOscillator();
-      ambientLfoNode.frequency.setValueAtTime(0.12, ambientAudioCtx.currentTime);
+      ambientLfoNode.frequency.setValueAtTime(0.2, ambientAudioCtx.currentTime);
       const lfoGain = ambientAudioCtx.createGain();
-      lfoGain.gain.setValueAtTime(180, ambientAudioCtx.currentTime);
+      lfoGain.gain.setValueAtTime(120, ambientAudioCtx.currentTime);
       ambientLfoNode.connect(lfoGain);
-      lfoGain.connect(windFilter.frequency);
+      lfoGain.connect(waterFilter.frequency);
       ambientLfoNode.start();
 
-      const noiseBuf = createProceduralNoiseBuffer(ambientAudioCtx, 4);
+      const noiseBuf = createProceduralWarmNoiseBuffer(ambientAudioCtx, 4);
       ambientNoiseSource = ambientAudioCtx.createBufferSource();
       ambientNoiseSource.buffer = noiseBuf;
       ambientNoiseSource.loop = true;
@@ -787,19 +827,35 @@ function toggleSound() {
 function playEndSound() {
   if (!soundEnabled) return;
   try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
-      const osc  = audioCtx.createOscillator();
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    audioCtx = audioCtx || new AudioContextClass();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const now = audioCtx.currentTime;
+    // Sino do Santuário Sagrado (528Hz Frequência da Paz + harmônicos celestiais com reverberação longa)
+    const bellHarmonics = [
+      { freq: 264.0,  gain: 0.16, decay: 4.2 }, // Sub-harmônico quente
+      { freq: 528.0,  gain: 0.28, decay: 3.8 }, // Tom fundamental da paz
+      { freq: 1056.0, gain: 0.12, decay: 2.5 }, // Brilho de oitava
+      { freq: 1584.0, gain: 0.05, decay: 1.8 }  // Cristal delicado
+    ];
+
+    bellHarmonics.forEach(h => {
+      const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(h.freq, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(h.gain * masterSoundVolume, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + h.decay);
+
       osc.connect(gain);
       gain.connect(audioCtx.destination);
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0, audioCtx.currentTime + i * 0.4);
-      gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + i * 0.4 + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.4 + 1.2);
-      osc.start(audioCtx.currentTime + i * 0.4);
-      osc.stop(audioCtx.currentTime + i * 0.4 + 1.2);
+
+      osc.start(now);
+      osc.stop(now + h.decay + 0.1);
     });
   } catch(e) {}
 }
