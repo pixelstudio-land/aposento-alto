@@ -1,5 +1,5 @@
 // Aposento Alto — Service Worker (PWA Offline Shell)
-const CACHE_NAME = 'aposento-alto-v1.1';
+const CACHE_NAME = 'aposento-alto-v1.2';
 
 const STATIC_ASSETS = [
   './',
@@ -13,7 +13,8 @@ const STATIC_ASSETS = [
   './images/hero_sunrise_mountains.jpg',
   './images/nature_path_light.jpg',
   './images/devotional_bible_morning.jpg',
-  './images/person_gratitude_nature.jpg'
+  './images/person_gratitude_nature.jpg',
+  './images/og_share.jpg'
 ];
 
 // Instalação do Service Worker & Cache de Ativos
