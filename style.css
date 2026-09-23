@@ -865,11 +865,28 @@ body {
 
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: 36px 16px;
   color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
 }
-.empty-state span { font-size: 2.5rem; display: block; margin-bottom: 12px; }
-.empty-state p { font-size: 0.9rem; line-height: 1.6; }
+.empty-state-svg {
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.35));
+  opacity: 0.9;
+}
+.empty-state p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  max-width: 360px;
+  margin: 0 auto;
+  color: var(--text-sub);
+  word-break: normal;
+  overflow-wrap: break-word;
+}
 
 /* ── 14. PEDIDOS DE INTERCESSÃO ──────────── */
 .section-pedidos {}
@@ -1236,51 +1253,170 @@ body {
   position: relative;
   z-index: 1;
   border-top: 1px solid var(--border);
-  padding: 56px 0 0;
+  padding: 64px 0 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(5, 8, 18, 0.95) 100%);
 }
 
 .footer-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: 1.4fr 1fr 1.4fr;
+  gap: 48px;
   align-items: start;
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
-.footer-logo .logo-text { font-size: 1.4rem; display: block; margin-bottom: 8px; }
-.footer-logo p { font-size: 0.85rem; color: var(--text-muted); }
+.footer-col-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
 
-.footer-links {
+.footer-brand-link {
+  display: inline-flex;
+}
+
+.footer-brand-desc {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.65;
+  max-width: 320px;
+}
+
+.footer-faith-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid var(--border-hover);
+  padding: 5px 14px;
+  border-radius: 99px;
+  width: fit-content;
+}
+
+.footer-col-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.footer-heading {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
+}
+
+.footer-nav-grid {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: center;
 }
-.footer-links a {
+
+.footer-link {
   font-size: 0.88rem;
   color: var(--text-sub);
   text-decoration: none;
-  transition: color var(--transition);
+  transition: all var(--transition);
+  display: inline-block;
 }
-.footer-links a:hover { color: var(--gold); }
 
-.footer-verse { text-align: right; }
-.footer-verse p {
-  font-family: var(--font-heading);
-  font-size: 0.95rem;
-  font-style: italic;
-  color: var(--text-sub);
-  line-height: 1.6;
-  margin-bottom: 6px;
+.footer-link:hover {
+  color: var(--gold);
+  transform: translateX(3px);
 }
-.footer-verse span { font-size: 0.8rem; color: var(--gold); }
+
+.footer-col-verse {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.footer-verse-card {
+  position: relative;
+  background: rgba(212, 175, 55, 0.04);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  text-align: left;
+  max-width: 380px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.footer-verse-mark {
+  font-family: var(--font-heading);
+  font-size: 2.8rem;
+  color: var(--gold);
+  opacity: 0.5;
+  line-height: 1;
+  margin-bottom: -10px;
+}
+
+.footer-verse-text {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-main);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+
+.footer-verse-ref {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 
 .footer-bottom {
   border-top: 1px solid var(--border);
-  padding: 20px 24px;
-  text-align: center;
+  padding: 22px 0;
+  background: rgba(4, 6, 14, 0.8);
 }
-.footer-bottom p { font-size: 0.8rem; color: var(--text-muted); }
+
+.footer-bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.footer-back-to-top {
+  color: var(--gold-light);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: color var(--transition);
+}
+
+.footer-back-to-top:hover {
+  color: var(--gold);
+}
+
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    text-align: center;
+  }
+  .footer-col-brand, .footer-col-nav, .footer-verse-card {
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+  }
+  .footer-col-verse {
+    justify-content: center;
+  }
+  .footer-bottom-inner {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
 
 /* ── 17. ANIMAÇÕES ───────────────────────── */
 /* Garantia absoluta de visibilidade imediata de 100% do conteúdo */
@@ -1464,9 +1600,10 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 0 16px rgba(212, 175, 55, 0.25);
 }
-.streak-flame {
+.streak-flame, .streak-flame-svg {
   display: inline-flex;
-  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
   filter: drop-shadow(0 0 6px rgba(255, 180, 0, 0.6));
   animation: flameBounce 2s infinite ease-in-out;
@@ -1667,6 +1804,15 @@ body {
   border-color: var(--gold);
   color: var(--gold-light);
   box-shadow: 0 0 20px rgba(212, 175, 55, 0.18);
+}
+.jornada-tab-svg {
+  flex-shrink: 0;
+  stroke: currentColor;
+  opacity: 0.85;
+}
+.jornada-tab-btn.active .jornada-tab-svg {
+  stroke: var(--gold);
+  opacity: 1;
 }
 .jornada-tab-title {
   font-size: 0.88rem;

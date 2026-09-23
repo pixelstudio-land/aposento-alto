@@ -574,12 +574,12 @@ function createProceduralWarmNoiseBuffer(ctx, durationSec = 4) {
   const data = buffer.getChannelData(0);
   let b0 = 0, b1 = 0, b2 = 0;
   for (let i = 0; i < bufferSize; i++) {
-    const white = (Math.random() * 2 - 1) * 0.35;
-    // Pink noise para eliminar asperezas metálicas
+    const white = (Math.random() * 2 - 1) * 0.5;
+    // Ruído rosa orgânico com amplitude encorpada e sem asperezas
     b0 = 0.99886 * b0 + white * 0.0555179;
     b1 = 0.99332 * b1 + white * 0.0750759;
     b2 = 0.96900 * b2 + white * 0.1538520;
-    data[i] = (b0 + b1 + b2 + white * 0.5) * 0.22;
+    data[i] = (b0 + b1 + b2 + white * 0.5) * 0.65;
   }
   return buffer;
 }
@@ -598,13 +598,18 @@ function startAmbientPad() {
       ambientAudioCtx.resume();
     }
 
+    // Ganho calibrado para cada tipo de som
+    let baseGain = 0.09;
+    if (currentSoundPreset === 'chuva') baseGain = 0.32;
+    if (currentSoundPreset === 'aguas') baseGain = 0.36;
+
     ambientGainNode = ambientAudioCtx.createGain();
-    ambientGainNode.gain.setValueAtTime(0.0001, ambientAudioCtx.currentTime);
-    const targetGain = 0.04 * masterSoundVolume;
-    ambientGainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, targetGain), ambientAudioCtx.currentTime + 2.5);
+    ambientGainNode.gain.setValueAtTime(0.001, ambientAudioCtx.currentTime);
+    const targetGain = Math.max(0.005, baseGain * masterSoundVolume);
+    ambientGainNode.gain.exponentialRampToValueAtTime(targetGain, ambientAudioCtx.currentTime + 1.2);
 
     if (currentSoundPreset === 'pad') {
-      // 1. HARPA CELESTIAL / PAD ANGELICAL (Harmonia pura Dó Maior 9ª, sem zumbidos)
+      // 1. HARPA CELESTIAL / PAD ANGELICAL (Harmonia pura Dó Maior 9ª)
       const celestialFilter = ambientAudioCtx.createBiquadFilter();
       celestialFilter.type = 'lowpass';
       celestialFilter.frequency.setValueAtTime(1100, ambientAudioCtx.currentTime);
@@ -613,10 +618,9 @@ function startAmbientPad() {
       ambientGainNode.connect(celestialFilter);
       celestialFilter.connect(ambientAudioCtx.destination);
 
-      // Acorde celestial aberto e acolhedor (puros tons senoidais)
       const celestialChords = [
-        { freq: 130.81, gain: 0.12, detune: 0 },    // C3 (fundação suave e quente)
-        { freq: 196.00, gain: 0.15, detune: 1 },    // G3 (quinta perfeita)
+        { freq: 130.81, gain: 0.14, detune: 0 },    // C3 (fundação suave e quente)
+        { freq: 196.00, gain: 0.16, detune: 1 },    // G3 (quinta perfeita)
         { freq: 261.63, gain: 0.22, detune: -1 },   // C4 (oitava)
         { freq: 329.63, gain: 0.20, detune: 1.5 },  // E4 (terça maior luminosa)
         { freq: 392.00, gain: 0.18, detune: -1 },   // G4 (quinta)
@@ -624,11 +628,11 @@ function startAmbientPad() {
         { freq: 587.33, gain: 0.10, detune: -0.8 }, // D5 (nona suave e etérea)
       ];
 
-      // Respiração suave do volume (LFO muito lento e delicado: 0.07Hz ~ 14s)
+      // Respiração suave do volume (LFO lento de 0.07Hz)
       ambientLfoNode = ambientAudioCtx.createOscillator();
       ambientLfoNode.frequency.setValueAtTime(0.07, ambientAudioCtx.currentTime);
       const lfoGain = ambientAudioCtx.createGain();
-      lfoGain.gain.setValueAtTime(0.008 * masterSoundVolume, ambientAudioCtx.currentTime);
+      lfoGain.gain.setValueAtTime(0.01 * masterSoundVolume, ambientAudioCtx.currentTime);
       ambientLfoNode.connect(lfoGain);
       lfoGain.connect(ambientGainNode.gain);
       ambientLfoNode.start();
@@ -636,7 +640,7 @@ function startAmbientPad() {
       ambientOscs = celestialChords.map(item => {
         const osc = ambientAudioCtx.createOscillator();
         const oscGain = ambientAudioCtx.createGain();
-        osc.type = 'sine'; // Senoide pura, limpa e aveludada
+        osc.type = 'sine';
         osc.frequency.setValueAtTime(item.freq, ambientAudioCtx.currentTime);
         osc.detune.setValueAtTime(item.detune, ambientAudioCtx.currentTime);
         oscGain.gain.setValueAtTime(item.gain, ambientAudioCtx.currentTime);
@@ -648,11 +652,11 @@ function startAmbientPad() {
       });
 
     } else if (currentSoundPreset === 'chuva') {
-      // 2. CHUVA SERENA (Ruído rosa aveludado com filtro aconchegante)
+      // 2. CHUVA SERENA (Gotas aconchegantes com presença audível e acolhedora)
       const rainFilter = ambientAudioCtx.createBiquadFilter();
       rainFilter.type = 'lowpass';
-      rainFilter.frequency.setValueAtTime(520, ambientAudioCtx.currentTime);
-      rainFilter.Q.setValueAtTime(0.35, ambientAudioCtx.currentTime);
+      rainFilter.frequency.setValueAtTime(1150, ambientAudioCtx.currentTime);
+      rainFilter.Q.setValueAtTime(0.4, ambientAudioCtx.currentTime);
 
       ambientGainNode.connect(rainFilter);
       rainFilter.connect(ambientAudioCtx.destination);
@@ -665,22 +669,29 @@ function startAmbientPad() {
       ambientNoiseSource.start();
 
     } else if (currentSoundPreset === 'aguas' || currentSoundPreset === 'brisa') {
-      // 3. ÁGUAS TRANQUILAS (Salmo 23 - Ribeirinho calmo e relaxante)
-      const waterFilter = ambientAudioCtx.createBiquadFilter();
-      waterFilter.type = 'bandpass';
-      waterFilter.frequency.setValueAtTime(550, ambientAudioCtx.currentTime);
-      waterFilter.Q.setValueAtTime(1.2, ambientAudioCtx.currentTime);
+      // 3. ÁGUAS TRANQUILAS (Salmo 23 - Ribeirinho vivo de águas cristalinas)
+      const waterLowpass = ambientAudioCtx.createBiquadFilter();
+      waterLowpass.type = 'lowpass';
+      waterLowpass.frequency.setValueAtTime(1400, ambientAudioCtx.currentTime);
+      waterLowpass.Q.setValueAtTime(0.3, ambientAudioCtx.currentTime);
 
-      ambientGainNode.connect(waterFilter);
-      waterFilter.connect(ambientAudioCtx.destination);
+      const waterPeak = ambientAudioCtx.createBiquadFilter();
+      waterPeak.type = 'peaking';
+      waterPeak.frequency.setValueAtTime(720, ambientAudioCtx.currentTime);
+      waterPeak.Q.setValueAtTime(1.4, ambientAudioCtx.currentTime);
+      waterPeak.gain.setValueAtTime(8, ambientAudioCtx.currentTime);
 
-      // LFO para modular o murmúrio da água
+      ambientGainNode.connect(waterLowpass);
+      waterLowpass.connect(waterPeak);
+      waterPeak.connect(ambientAudioCtx.destination);
+
+      // LFO para ondular o fluxo da correnteza com suavidade
       ambientLfoNode = ambientAudioCtx.createOscillator();
-      ambientLfoNode.frequency.setValueAtTime(0.2, ambientAudioCtx.currentTime);
+      ambientLfoNode.frequency.setValueAtTime(0.28, ambientAudioCtx.currentTime);
       const lfoGain = ambientAudioCtx.createGain();
-      lfoGain.gain.setValueAtTime(120, ambientAudioCtx.currentTime);
+      lfoGain.gain.setValueAtTime(160, ambientAudioCtx.currentTime);
       ambientLfoNode.connect(lfoGain);
-      lfoGain.connect(waterFilter.frequency);
+      lfoGain.connect(waterPeak.frequency);
       ambientLfoNode.start();
 
       const noiseBuf = createProceduralWarmNoiseBuffer(ambientAudioCtx, 4);
@@ -702,7 +713,7 @@ function stopAmbientPad() {
   try {
     const now = ambientAudioCtx.currentTime;
     ambientGainNode.gain.setValueAtTime(ambientGainNode.gain.value, now);
-    ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+    ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
     setTimeout(() => {
       ambientOscs.forEach(osc => {
         try { osc.stop(); osc.disconnect(); } catch (e) {}
@@ -719,7 +730,7 @@ function stopAmbientPad() {
       }
 
       isAmbientPlaying = false;
-    }, 900);
+    }, 700);
   } catch (err) {
     isAmbientPlaying = false;
   }
@@ -730,21 +741,26 @@ function selectSoundPreset(type, btn) {
   document.querySelectorAll('.sound-preset-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
-  if (isAmbientPlaying) {
-    stopAmbientPad();
-    setTimeout(() => {
-      if (timerRunning || document.getElementById('momento-overlay')?.classList.contains('open')) {
-        startAmbientPad();
-      }
-    }, 500);
+  stopAmbientPad();
+
+  if (type === 'silencio' || !soundEnabled) {
+    return;
   }
+
+  // Reprodução imediata do som escolhido para teste e oração
+  setTimeout(() => {
+    startAmbientPad();
+  }, 120);
 }
 
 function setSoundVolume(val) {
   masterSoundVolume = val / 100;
   if (ambientGainNode && ambientAudioCtx && isAmbientPlaying) {
-    const targetGain = 0.035 * masterSoundVolume;
-    ambientGainNode.gain.setValueAtTime(Math.max(0.0001, targetGain), ambientAudioCtx.currentTime);
+    let baseGain = 0.09;
+    if (currentSoundPreset === 'chuva') baseGain = 0.32;
+    if (currentSoundPreset === 'aguas') baseGain = 0.36;
+    const target = Math.max(0.001, baseGain * masterSoundVolume);
+    ambientGainNode.gain.setValueAtTime(target, ambientAudioCtx.currentTime);
   }
 }
 
@@ -1210,7 +1226,7 @@ async function loadTestemunhos() {
     if (!data || data.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="32" height="32" viewBox="0 0 60 60" fill="none" class="empty-state-svg" xmlns="http://www.w3.org/2000/svg"><path d="M30 8C22 8 10 16 10 28C10 34 14 39 20 42C18 45 14 48 10 50C16 50 24 47 28 44C29 44.3 30 44.5 30 44.5C38 44.5 50 37 50 28C50 16 38 8 30 8Z" fill="#D4AF37" opacity="0.85"/><circle cx="23" cy="24" r="2" fill="#0a0f1e"/><path d="M30 8L38 2L34 12" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/></svg>
           <p>Nenhum testemunho registrado ainda. Seja o primeiro a glorificar o nome de Deus!</p>
         </div>`;
       return;

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="favGold" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F5D77F"/>
+      <stop offset="50%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#AA820A"/>
+    </linearGradient>
+    <radialGradient id="favAura" cx="32" cy="32" r="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#080C18" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Fundo escuro sagrado com cantos arredondados -->
+  <rect width="64" height="64" rx="16" fill="#080C18"/>
+  <rect width="64" height="64" rx="16" stroke="#D4AF37" stroke-width="1.5" stroke-opacity="0.3"/>
+
+  <!-- Halo de luz suave -->
+  <circle cx="32" cy="32" r="24" fill="url(#favAura)"/>
+  <circle cx="32" cy="32" r="23" stroke="url(#favGold)" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.6"/>
+
+  <!-- Pomba Sagrada estilizada em ouro nobre -->
+  <g transform="translate(2, 2)">
+    <path d="M30 14C23 14 13 21 13 31C13 36 17 40 22 43C20 46 16 48 13 50C18 50 25 47 28 44.5C29 44.8 30 45 30 45C37 45 47 38 47 31C47 21 37 14 30 14Z" fill="url(#favGold)"/>
+    <circle cx="24" cy="27" r="1.5" fill="#080C18"/>
+    <!-- Ramo de Oliveira / Raio de Luz -->
+    <path d="M30 14L37 8L34 17" stroke="url(#favGold)" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Pequeno brilho celestial -->
+    <path d="M42 20L43 17L44 20L47 21L44 22L43 25L42 22L39 21Z" fill="#FFF8DC"/>
+  </g>
+</svg>
