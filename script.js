@@ -1943,3 +1943,53 @@ function shareJornadaDay(title, verse, ref) {
 updateStreakDisplay();
 renderJornada('ansiedade', 1);
 
+// ── 21. PWA & SERVICE WORKER ────────────────
+let deferredInstallPrompt = null;
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(reg => {
+        console.log('Aposento Alto PWA ativado:', reg.scope);
+      })
+      .catch(err => {
+        console.warn('PWA service worker aviso:', err);
+      });
+  });
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById('btn-pwa-install');
+  if (btn) btn.style.display = 'inline-flex';
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  const btn = document.getElementById('btn-pwa-install');
+  if (btn) btn.style.display = 'none';
+  console.log('Aposento Alto instalado com sucesso!');
+});
+
+function triggerPwaInstall() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        const btn = document.getElementById('btn-pwa-install');
+        if (btn) btn.style.display = 'none';
+      }
+      deferredInstallPrompt = null;
+    });
+  } else {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      alert('Para instalar no seu iPhone ou iPad:\n\n1. Toque no botão de Compartilhar (o ícone de quadrado com a seta para cima na barra do Safari)\n2. Role para baixo e selecione "Adicionar à Tela de Início"\n3. Toque em "Adicionar".\n\nO Aposento Alto ficará disponível como um app nativo!');
+    } else {
+      alert('Para instalar no seu dispositivo:\n\nAbra o menu do seu navegador (três pontinhos no topo) e selecione "Instalar aplicativo" ou "Adicionar à tela inicial".');
+    }
+  }
+}
+
+
