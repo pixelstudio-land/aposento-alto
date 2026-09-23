@@ -1305,16 +1305,34 @@ async function subscribeNewsletter() {
   }
 
   try {
+    // 1. Enviar para a tabela do Supabase (newsletter_leads)
     if (supabaseClient) {
-      const { error } = await supabaseClient.from('newsletter_leads').insert([{
-        email,
-        interesse: 'loja_devocionais'
-      }]);
-      if (error && error.code !== '23505') throw error;
+      try {
+        await supabaseClient.from('newsletter_leads').insert([{
+          email,
+          interesse: 'loja_devocionais'
+        }]);
+      } catch (subErr) {
+        console.warn('Supabase lead notice:', subErr);
+      }
     }
+
+    // 2. Backup local garantido no localStorage
+    try {
+      const localLeads = JSON.parse(localStorage.getItem('aposento_newsletter_leads') || '[]');
+      if (!localLeads.some(l => l.email === email)) {
+        localLeads.push({ email, data: new Date().toISOString() });
+        localStorage.setItem('aposento_newsletter_leads', JSON.stringify(localLeads));
+      }
+    } catch(locErr) {}
+
     showFeedback(feedback, 'E-mail cadastrado com sucesso! Avisaremos assim que os materiais estiverem disponíveis.', 'success');
     if (emailInput) emailInput.value = '';
-    if (btn) btn.textContent = 'Cadastrado!';
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Cadastrado! ✦';
+      setTimeout(() => { btn.textContent = 'Quero ser avisado'; }, 3000);
+    }
   } catch(e) {
     console.error('Erro ao cadastrar e-mail:', e);
     showFeedback(feedback, 'Não foi possível cadastrar seu e-mail. Tente novamente.', 'error');

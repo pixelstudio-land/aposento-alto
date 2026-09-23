@@ -140,7 +140,9 @@ body {
   justify-content: center;
   gap: 8px;
   font-family: var(--font-body);
+  font-size: 0.9rem;
   font-weight: 600;
+  padding: 12px 24px;
   text-decoration: none;
   border: none;
   cursor: pointer;
@@ -1245,8 +1247,30 @@ body {
 .loja-newsletter h3 { font-family: var(--font-heading); font-size: 1.8rem; color: var(--text-main); margin-bottom: 10px; }
 .loja-newsletter p { font-size: 0.92rem; color: var(--text-sub); margin-bottom: 24px; }
 
-.newsletter-form { display: flex; gap: 10px; }
-.newsletter-form .form-input { flex: 1; }
+.newsletter-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.newsletter-form .form-input {
+  flex: 1;
+  padding: 13px 18px;
+}
+.newsletter-form .btn {
+  padding: 13px 26px;
+  flex-shrink: 0;
+}
+@media (max-width: 540px) {
+  .newsletter-form {
+    flex-direction: column;
+    width: 100%;
+  }
+  .newsletter-form .form-input, .newsletter-form .btn {
+    width: 100%;
+  }
+}
 
 /* ── 16. FOOTER ──────────────────────────── */
 .footer {
@@ -1283,17 +1307,29 @@ body {
   max-width: 320px;
 }
 
-.footer-faith-pill {
-  display: inline-flex;
-  align-items: center;
+.footer-faith-verse {
+  background: rgba(212, 175, 55, 0.05);
+  border-left: 2px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  max-width: 320px;
+}
+
+.footer-faith-verse-text {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--gold-light);
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+
+.footer-faith-verse-ref {
   font-size: 0.74rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--gold);
-  background: var(--gold-dim);
-  border: 1px solid var(--border-hover);
-  padding: 5px 14px;
-  border-radius: 99px;
-  width: fit-content;
+  text-transform: uppercase;
 }
 
 .footer-col-nav {
