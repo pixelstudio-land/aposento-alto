@@ -42,9 +42,12 @@ self.addEventListener('activate', (event) => {
 
 // Estratégia de Busca: Stale-While-Revalidate com Fallback
 self.addEventListener('fetch', (event) => {
-  // Ignora requisições que não são GET ou que vão para o Supabase/Google Fonts dinâmico
+  // Ignora requisições que não são GET ou arquivos de streaming de áudio
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
+
+  // Áudio streaming / range requests passam direto
+  if (url.pathname.endsWith('.mp3')) return;
 
   // Requisições locais (mesma origem)
   if (url.origin === location.origin) {

@@ -559,7 +559,7 @@ let timerRunning   = false;
 let soundEnabled   = true;
 let audioCtx       = null;
 
-let currentSoundPreset = 'pad';
+let currentSoundPreset = 'cenaculo';
 let masterSoundVolume  = 0.7;
 let ambientAudioCtx    = null;
 let ambientGainNode    = null;
@@ -568,6 +568,22 @@ let ambientNoiseSource = null;
 let ambientLfoNode     = null;
 let isAmbientPlaying   = false;
 
+// ── REPRODUÇÃO INSTRUMENTAL COM LOOP SUAVE (FADE PIANÍSSIMO -> FORTÍSSIMO) ──
+let musicAudio         = null;
+let musicFadeInterval  = null;
+let isMusicLoopFading  = false;
+
+const MUSIC_TRACKS = {
+  cenaculo: {
+    title: 'Cenáculo Sereno',
+    src: 'audio/cenaculo_sereno.mp3'
+  },
+  graca: {
+    title: 'Graça & Descanso',
+    src: 'audio/graca_e_descanso.mp3'
+  }
+};
+
 function createProceduralWarmNoiseBuffer(ctx, durationSec = 4) {
   const bufferSize = ctx.sampleRate * durationSec;
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -575,7 +591,6 @@ function createProceduralWarmNoiseBuffer(ctx, durationSec = 4) {
   let b0 = 0, b1 = 0, b2 = 0;
   for (let i = 0; i < bufferSize; i++) {
     const white = (Math.random() * 2 - 1) * 0.5;
-    // Ruído rosa orgânico com amplitude encorpada e sem asperezas
     b0 = 0.99886 * b0 + white * 0.0555179;
     b1 = 0.99332 * b1 + white * 0.0750759;
     b2 = 0.96900 * b2 + white * 0.1538520;
@@ -584,10 +599,123 @@ function createProceduralWarmNoiseBuffer(ctx, durationSec = 4) {
   return buffer;
 }
 
+function playMusicTrack(key) {
+  stopProceduralAudio();
+  if (!soundEnabled || key === 'silencio') return;
+
+  const track = MUSIC_TRACKS[key];
+  if (!track) return;
+
+  if (!musicAudio) {
+    musicAudio = new Audio();
+    musicAudio.preload = 'auto';
+  }
+
+  // Se trocar de faixa
+  if (musicAudio.dataset.trackKey !== key) {
+    musicAudio.src = track.src;
+    musicAudio.dataset.trackKey = key;
+    musicAudio.currentTime = 0;
+  }
+
+  attachMusicEvents();
+
+  // Inicia no pianíssimo (0.015) e faz crescendo até o fortíssimo do usuário (volume definido)
+  musicAudio.volume = 0.015;
+  const playPromise = musicAudio.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      isAmbientPlaying = true;
+      isMusicLoopFading = false;
+      fadeMusicTo(masterSoundVolume, 4000);
+    }).catch(err => {
+      console.warn('Audio play prevented or interrupted:', err);
+    });
+  }
+}
+
+function attachMusicEvents() {
+  if (!musicAudio) return;
+
+  musicAudio.ontimeupdate = () => {
+    if (!musicAudio || !isAmbientPlaying || isMusicLoopFading) return;
+    const dur = musicAudio.duration;
+    if (!dur || isNaN(dur)) return;
+
+    // Faltando 8 segundos para o final da faixa:
+    // Reduz o som gradualmente para pianíssimo (sussurro)
+    const remaining = dur - musicAudio.currentTime;
+    if (remaining <= 8 && remaining > 0.4) {
+      isMusicLoopFading = true;
+      fadeMusicTo(0.015, Math.max(1200, (remaining - 0.4) * 1000));
+    }
+  };
+
+  musicAudio.onended = () => {
+    if (!isAmbientPlaying || !soundEnabled) return;
+    restartMusicLoop();
+  };
+}
+
+function restartMusicLoop() {
+  if (!musicAudio) return;
+  musicAudio.currentTime = 0;
+  musicAudio.volume = 0.015; // Pianíssimo absoluto no início
+  const playPromise = musicAudio.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      isMusicLoopFading = false;
+      // Crescendo suave: eleva do pianíssimo de volta para o volume fortíssimo (definido pelo usuário) em 5 segundos
+      fadeMusicTo(masterSoundVolume, 5000);
+    }).catch(err => console.warn('Music restart error:', err));
+  }
+}
+
+function fadeMusicTo(targetVol, durationMs = 4000) {
+  if (!musicAudio) return;
+  clearInterval(musicFadeInterval);
+  const startVol = Math.max(0, musicAudio.volume);
+  const target = Math.min(1, Math.max(0, targetVol));
+  const steps = 40;
+  const stepTime = Math.max(25, Math.floor(durationMs / steps));
+  let step = 0;
+
+  musicFadeInterval = setInterval(() => {
+    step++;
+    const progress = Math.min(1, step / steps);
+    // Curva senoidal elegante de transição dinâmica
+    const factor = (1 - Math.cos(progress * Math.PI)) / 2;
+    const currentVal = startVol + (target - startVol) * factor;
+    if (musicAudio) {
+      musicAudio.volume = Math.min(1, Math.max(0, currentVal));
+    }
+
+    if (step >= steps) {
+      clearInterval(musicFadeInterval);
+      if (musicAudio) musicAudio.volume = target;
+    }
+  }, stepTime);
+}
+
 function startAmbientPad() {
-  if (!soundEnabled || isAmbientPlaying) return;
+  if (!soundEnabled) return;
   if (currentSoundPreset === 'silencio') return;
 
+  if (currentSoundPreset === 'cenaculo' || currentSoundPreset === 'graca') {
+    playMusicTrack(currentSoundPreset);
+    return;
+  }
+
+  if (currentSoundPreset === 'aguas') {
+    if (musicAudio) {
+      musicAudio.pause();
+    }
+    startProceduralWater();
+  }
+}
+
+function startProceduralWater() {
+  if (isAmbientPlaying) return;
   try {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
@@ -598,128 +726,55 @@ function startAmbientPad() {
       ambientAudioCtx.resume();
     }
 
-    // Ganho calibrado para cada tipo de som
-    let baseGain = 0.09;
-    if (currentSoundPreset === 'chuva') baseGain = 0.32;
-    if (currentSoundPreset === 'aguas') baseGain = 0.36;
-
+    const baseGain = 0.36;
     ambientGainNode = ambientAudioCtx.createGain();
     ambientGainNode.gain.setValueAtTime(0.001, ambientAudioCtx.currentTime);
     const targetGain = Math.max(0.005, baseGain * masterSoundVolume);
     ambientGainNode.gain.exponentialRampToValueAtTime(targetGain, ambientAudioCtx.currentTime + 1.2);
 
-    if (currentSoundPreset === 'pad') {
-      // 1. HARPA CELESTIAL / PAD ANGELICAL (Harmonia pura Dó Maior 9ª)
-      const celestialFilter = ambientAudioCtx.createBiquadFilter();
-      celestialFilter.type = 'lowpass';
-      celestialFilter.frequency.setValueAtTime(1100, ambientAudioCtx.currentTime);
-      celestialFilter.Q.setValueAtTime(0.4, ambientAudioCtx.currentTime);
+    const waterLowpass = ambientAudioCtx.createBiquadFilter();
+    waterLowpass.type = 'lowpass';
+    waterLowpass.frequency.setValueAtTime(1400, ambientAudioCtx.currentTime);
+    waterLowpass.Q.setValueAtTime(0.3, ambientAudioCtx.currentTime);
 
-      ambientGainNode.connect(celestialFilter);
-      celestialFilter.connect(ambientAudioCtx.destination);
+    const waterPeak = ambientAudioCtx.createBiquadFilter();
+    waterPeak.type = 'peaking';
+    waterPeak.frequency.setValueAtTime(720, ambientAudioCtx.currentTime);
+    waterPeak.Q.setValueAtTime(1.4, ambientAudioCtx.currentTime);
+    waterPeak.gain.setValueAtTime(8, ambientAudioCtx.currentTime);
 
-      const celestialChords = [
-        { freq: 130.81, gain: 0.14, detune: 0 },    // C3 (fundação suave e quente)
-        { freq: 196.00, gain: 0.16, detune: 1 },    // G3 (quinta perfeita)
-        { freq: 261.63, gain: 0.22, detune: -1 },   // C4 (oitava)
-        { freq: 329.63, gain: 0.20, detune: 1.5 },  // E4 (terça maior luminosa)
-        { freq: 392.00, gain: 0.18, detune: -1 },   // G4 (quinta)
-        { freq: 493.88, gain: 0.14, detune: 0.8 },  // B4 (sétima maior celestial)
-        { freq: 587.33, gain: 0.10, detune: -0.8 }, // D5 (nona suave e etérea)
-      ];
+    ambientGainNode.connect(waterLowpass);
+    waterLowpass.connect(waterPeak);
+    waterPeak.connect(ambientAudioCtx.destination);
 
-      // Respiração suave do volume (LFO lento de 0.07Hz)
-      ambientLfoNode = ambientAudioCtx.createOscillator();
-      ambientLfoNode.frequency.setValueAtTime(0.07, ambientAudioCtx.currentTime);
-      const lfoGain = ambientAudioCtx.createGain();
-      lfoGain.gain.setValueAtTime(0.01 * masterSoundVolume, ambientAudioCtx.currentTime);
-      ambientLfoNode.connect(lfoGain);
-      lfoGain.connect(ambientGainNode.gain);
-      ambientLfoNode.start();
+    ambientLfoNode = ambientAudioCtx.createOscillator();
+    ambientLfoNode.frequency.setValueAtTime(0.28, ambientAudioCtx.currentTime);
+    const lfoGain = ambientAudioCtx.createGain();
+    lfoGain.gain.setValueAtTime(160, ambientAudioCtx.currentTime);
+    ambientLfoNode.connect(lfoGain);
+    lfoGain.connect(waterPeak.frequency);
+    ambientLfoNode.start();
 
-      ambientOscs = celestialChords.map(item => {
-        const osc = ambientAudioCtx.createOscillator();
-        const oscGain = ambientAudioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(item.freq, ambientAudioCtx.currentTime);
-        osc.detune.setValueAtTime(item.detune, ambientAudioCtx.currentTime);
-        oscGain.gain.setValueAtTime(item.gain, ambientAudioCtx.currentTime);
-
-        osc.connect(oscGain);
-        oscGain.connect(ambientGainNode);
-        osc.start();
-        return osc;
-      });
-
-    } else if (currentSoundPreset === 'chuva') {
-      // 2. CHUVA SERENA (Gotas aconchegantes com presença audível e acolhedora)
-      const rainFilter = ambientAudioCtx.createBiquadFilter();
-      rainFilter.type = 'lowpass';
-      rainFilter.frequency.setValueAtTime(1150, ambientAudioCtx.currentTime);
-      rainFilter.Q.setValueAtTime(0.4, ambientAudioCtx.currentTime);
-
-      ambientGainNode.connect(rainFilter);
-      rainFilter.connect(ambientAudioCtx.destination);
-
-      const noiseBuf = createProceduralWarmNoiseBuffer(ambientAudioCtx, 4);
-      ambientNoiseSource = ambientAudioCtx.createBufferSource();
-      ambientNoiseSource.buffer = noiseBuf;
-      ambientNoiseSource.loop = true;
-      ambientNoiseSource.connect(ambientGainNode);
-      ambientNoiseSource.start();
-
-    } else if (currentSoundPreset === 'aguas' || currentSoundPreset === 'brisa') {
-      // 3. ÁGUAS TRANQUILAS (Salmo 23 - Ribeirinho vivo de águas cristalinas)
-      const waterLowpass = ambientAudioCtx.createBiquadFilter();
-      waterLowpass.type = 'lowpass';
-      waterLowpass.frequency.setValueAtTime(1400, ambientAudioCtx.currentTime);
-      waterLowpass.Q.setValueAtTime(0.3, ambientAudioCtx.currentTime);
-
-      const waterPeak = ambientAudioCtx.createBiquadFilter();
-      waterPeak.type = 'peaking';
-      waterPeak.frequency.setValueAtTime(720, ambientAudioCtx.currentTime);
-      waterPeak.Q.setValueAtTime(1.4, ambientAudioCtx.currentTime);
-      waterPeak.gain.setValueAtTime(8, ambientAudioCtx.currentTime);
-
-      ambientGainNode.connect(waterLowpass);
-      waterLowpass.connect(waterPeak);
-      waterPeak.connect(ambientAudioCtx.destination);
-
-      // LFO para ondular o fluxo da correnteza com suavidade
-      ambientLfoNode = ambientAudioCtx.createOscillator();
-      ambientLfoNode.frequency.setValueAtTime(0.28, ambientAudioCtx.currentTime);
-      const lfoGain = ambientAudioCtx.createGain();
-      lfoGain.gain.setValueAtTime(160, ambientAudioCtx.currentTime);
-      ambientLfoNode.connect(lfoGain);
-      lfoGain.connect(waterPeak.frequency);
-      ambientLfoNode.start();
-
-      const noiseBuf = createProceduralWarmNoiseBuffer(ambientAudioCtx, 4);
-      ambientNoiseSource = ambientAudioCtx.createBufferSource();
-      ambientNoiseSource.buffer = noiseBuf;
-      ambientNoiseSource.loop = true;
-      ambientNoiseSource.connect(ambientGainNode);
-      ambientNoiseSource.start();
-    }
+    const noiseBuf = createProceduralWarmNoiseBuffer(ambientAudioCtx, 4);
+    ambientNoiseSource = ambientAudioCtx.createBufferSource();
+    ambientNoiseSource.buffer = noiseBuf;
+    ambientNoiseSource.loop = true;
+    ambientNoiseSource.connect(ambientGainNode);
+    ambientNoiseSource.start();
 
     isAmbientPlaying = true;
   } catch (err) {
-    console.warn('Ambient sound error:', err);
+    console.warn('Water audio error:', err);
   }
 }
 
-function stopAmbientPad() {
-  if (!isAmbientPlaying || !ambientGainNode || !ambientAudioCtx) return;
+function stopProceduralAudio() {
+  if (!ambientGainNode || !ambientAudioCtx) return;
   try {
     const now = ambientAudioCtx.currentTime;
     ambientGainNode.gain.setValueAtTime(ambientGainNode.gain.value, now);
-    ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+    ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
     setTimeout(() => {
-      ambientOscs.forEach(osc => {
-        try { osc.stop(); osc.disconnect(); } catch (e) {}
-      });
-      ambientOscs = [];
-
       if (ambientNoiseSource) {
         try { ambientNoiseSource.stop(); ambientNoiseSource.disconnect(); } catch(e) {}
         ambientNoiseSource = null;
@@ -728,12 +783,31 @@ function stopAmbientPad() {
         try { ambientLfoNode.stop(); ambientLfoNode.disconnect(); } catch(e) {}
         ambientLfoNode = null;
       }
+    }, 450);
+  } catch(e) {}
+}
 
-      isAmbientPlaying = false;
-    }, 700);
-  } catch (err) {
-    isAmbientPlaying = false;
+function stopAmbientPad() {
+  if (musicAudio) {
+    clearInterval(musicFadeInterval);
+    isMusicLoopFading = false;
+    const start = musicAudio.volume;
+    let s = 0;
+    const quickFade = setInterval(() => {
+      s++;
+      if (musicAudio) musicAudio.volume = Math.max(0, start * (1 - s / 10));
+      if (s >= 10) {
+        clearInterval(quickFade);
+        if (musicAudio) {
+          musicAudio.pause();
+          musicAudio.volume = masterSoundVolume;
+        }
+      }
+    }, 35);
   }
+
+  stopProceduralAudio();
+  isAmbientPlaying = false;
 }
 
 function selectSoundPreset(type, btn) {
@@ -747,7 +821,7 @@ function selectSoundPreset(type, btn) {
     return;
   }
 
-  // Reprodução imediata do som escolhido para teste e oração
+  // Reprodução imediata da nova faixa para teste e oração
   setTimeout(() => {
     startAmbientPad();
   }, 120);
@@ -755,10 +829,11 @@ function selectSoundPreset(type, btn) {
 
 function setSoundVolume(val) {
   masterSoundVolume = val / 100;
-  if (ambientGainNode && ambientAudioCtx && isAmbientPlaying) {
-    let baseGain = 0.09;
-    if (currentSoundPreset === 'chuva') baseGain = 0.32;
-    if (currentSoundPreset === 'aguas') baseGain = 0.36;
+  if (musicAudio && !isMusicLoopFading) {
+    musicAudio.volume = masterSoundVolume;
+  }
+  if (ambientGainNode && ambientAudioCtx && currentSoundPreset === 'aguas') {
+    const baseGain = 0.36;
     const target = Math.max(0.001, baseGain * masterSoundVolume);
     ambientGainNode.gain.setValueAtTime(target, ambientAudioCtx.currentTime);
   }
