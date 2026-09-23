@@ -540,13 +540,29 @@ let timerRunning   = false;
 let soundEnabled   = true;
 let audioCtx       = null;
 
-let ambientAudioCtx = null;
-let ambientGainNode = null;
-let ambientOscs = [];
-let isAmbientPlaying = false;
+let currentSoundPreset = 'pad';
+let masterSoundVolume  = 0.7;
+let ambientAudioCtx    = null;
+let ambientGainNode    = null;
+let ambientOscs        = [];
+let ambientNoiseSource = null;
+let ambientLfoNode     = null;
+let isAmbientPlaying   = false;
+
+function createProceduralNoiseBuffer(ctx, durationSec = 3) {
+  const bufferSize = ctx.sampleRate * durationSec;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * 0.9;
+  }
+  return buffer;
+}
 
 function startAmbientPad() {
   if (!soundEnabled || isAmbientPlaying) return;
+  if (currentSoundPreset === 'silencio') return;
+
   try {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
@@ -558,40 +574,86 @@ function startAmbientPad() {
     }
 
     ambientGainNode = ambientAudioCtx.createGain();
-    const filter = ambientAudioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(360, ambientAudioCtx.currentTime);
-    filter.Q.setValueAtTime(1.2, ambientAudioCtx.currentTime);
-
-    ambientGainNode.connect(filter);
-    filter.connect(ambientAudioCtx.destination);
-
     ambientGainNode.gain.setValueAtTime(0.0001, ambientAudioCtx.currentTime);
-    ambientGainNode.gain.exponentialRampToValueAtTime(0.035, ambientAudioCtx.currentTime + 2.5);
+    const targetGain = 0.035 * masterSoundVolume;
+    ambientGainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, targetGain), ambientAudioCtx.currentTime + 2.0);
 
-    // Frequências harmônicas alinhadas em 432Hz (A2=108, E3=162, A3=216, C#4=270, E4=324, A4=432)
-    const chords = [
-      { freq: 108.0, type: 'sine', detune: 0 },
-      { freq: 162.0, type: 'triangle', detune: -3 },
-      { freq: 216.0, type: 'sine', detune: 2 },
-      { freq: 270.0, type: 'sine', detune: -2 },
-      { freq: 324.0, type: 'triangle', detune: 3 },
-      { freq: 432.0, type: 'sine', detune: 0 },
-    ];
+    if (currentSoundPreset === 'pad') {
+      // 1. PAD CELESTIAL 432Hz
+      const filter = ambientAudioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(360, ambientAudioCtx.currentTime);
+      filter.Q.setValueAtTime(1.2, ambientAudioCtx.currentTime);
 
-    ambientOscs = chords.map(item => {
-      const osc = ambientAudioCtx.createOscillator();
-      osc.type = item.type;
-      osc.frequency.setValueAtTime(item.freq, ambientAudioCtx.currentTime);
-      osc.detune.setValueAtTime(item.detune, ambientAudioCtx.currentTime);
-      osc.connect(ambientGainNode);
-      osc.start();
-      return osc;
-    });
+      ambientGainNode.connect(filter);
+      filter.connect(ambientAudioCtx.destination);
+
+      const chords = [
+        { freq: 108.0, type: 'sine', detune: 0 },
+        { freq: 162.0, type: 'triangle', detune: -3 },
+        { freq: 216.0, type: 'sine', detune: 2 },
+        { freq: 270.0, type: 'sine', detune: -2 },
+        { freq: 324.0, type: 'triangle', detune: 3 },
+        { freq: 432.0, type: 'sine', detune: 0 },
+      ];
+
+      ambientOscs = chords.map(item => {
+        const osc = ambientAudioCtx.createOscillator();
+        osc.type = item.type;
+        osc.frequency.setValueAtTime(item.freq, ambientAudioCtx.currentTime);
+        osc.detune.setValueAtTime(item.detune, ambientAudioCtx.currentTime);
+        osc.connect(ambientGainNode);
+        osc.start();
+        return osc;
+      });
+
+    } else if (currentSoundPreset === 'chuva') {
+      // 2. CHUVA MANSA (Filtro lowpass aconchegante)
+      const rainFilter = ambientAudioCtx.createBiquadFilter();
+      rainFilter.type = 'lowpass';
+      rainFilter.frequency.setValueAtTime(800, ambientAudioCtx.currentTime);
+      rainFilter.Q.setValueAtTime(0.7, ambientAudioCtx.currentTime);
+
+      ambientGainNode.connect(rainFilter);
+      rainFilter.connect(ambientAudioCtx.destination);
+
+      const noiseBuf = createProceduralNoiseBuffer(ambientAudioCtx, 4);
+      ambientNoiseSource = ambientAudioCtx.createBufferSource();
+      ambientNoiseSource.buffer = noiseBuf;
+      ambientNoiseSource.loop = true;
+      ambientNoiseSource.connect(ambientGainNode);
+      ambientNoiseSource.start();
+
+    } else if (currentSoundPreset === 'brisa') {
+      // 3. BRISA SUAVE (Bandpass modulado com LFO lento)
+      const windFilter = ambientAudioCtx.createBiquadFilter();
+      windFilter.type = 'bandpass';
+      windFilter.frequency.setValueAtTime(340, ambientAudioCtx.currentTime);
+      windFilter.Q.setValueAtTime(1.8, ambientAudioCtx.currentTime);
+
+      ambientGainNode.connect(windFilter);
+      windFilter.connect(ambientAudioCtx.destination);
+
+      // LFO para oscilar a brisa suavemente
+      ambientLfoNode = ambientAudioCtx.createOscillator();
+      ambientLfoNode.frequency.setValueAtTime(0.12, ambientAudioCtx.currentTime);
+      const lfoGain = ambientAudioCtx.createGain();
+      lfoGain.gain.setValueAtTime(180, ambientAudioCtx.currentTime);
+      ambientLfoNode.connect(lfoGain);
+      lfoGain.connect(windFilter.frequency);
+      ambientLfoNode.start();
+
+      const noiseBuf = createProceduralNoiseBuffer(ambientAudioCtx, 4);
+      ambientNoiseSource = ambientAudioCtx.createBufferSource();
+      ambientNoiseSource.buffer = noiseBuf;
+      ambientNoiseSource.loop = true;
+      ambientNoiseSource.connect(ambientGainNode);
+      ambientNoiseSource.start();
+    }
 
     isAmbientPlaying = true;
   } catch (err) {
-    console.warn('Ambient pad error:', err);
+    console.warn('Ambient sound error:', err);
   }
 }
 
@@ -600,16 +662,49 @@ function stopAmbientPad() {
   try {
     const now = ambientAudioCtx.currentTime;
     ambientGainNode.gain.setValueAtTime(ambientGainNode.gain.value, now);
-    ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 1.0);
+    ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
     setTimeout(() => {
       ambientOscs.forEach(osc => {
         try { osc.stop(); osc.disconnect(); } catch (e) {}
       });
       ambientOscs = [];
+
+      if (ambientNoiseSource) {
+        try { ambientNoiseSource.stop(); ambientNoiseSource.disconnect(); } catch(e) {}
+        ambientNoiseSource = null;
+      }
+      if (ambientLfoNode) {
+        try { ambientLfoNode.stop(); ambientLfoNode.disconnect(); } catch(e) {}
+        ambientLfoNode = null;
+      }
+
       isAmbientPlaying = false;
-    }, 1100);
+    }, 900);
   } catch (err) {
     isAmbientPlaying = false;
+  }
+}
+
+function selectSoundPreset(type, btn) {
+  currentSoundPreset = type;
+  document.querySelectorAll('.sound-preset-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  if (isAmbientPlaying) {
+    stopAmbientPad();
+    setTimeout(() => {
+      if (timerRunning || document.getElementById('momento-overlay')?.classList.contains('open')) {
+        startAmbientPad();
+      }
+    }, 500);
+  }
+}
+
+function setSoundVolume(val) {
+  masterSoundVolume = val / 100;
+  if (ambientGainNode && ambientAudioCtx && isAmbientPlaying) {
+    const targetGain = 0.035 * masterSoundVolume;
+    ambientGainNode.gain.setValueAtTime(Math.max(0.0001, targetGain), ambientAudioCtx.currentTime);
   }
 }
 
@@ -818,6 +913,7 @@ async function recordPrayerCompletion(durationMinutes) {
 
 /* ── 9. PEDIDOS DE ORAÇÃO (SUPABASE) ─────── */
 let intercedidosLocais = JSON.parse(localStorage.getItem('aposento_intercedidos') || '[]');
+let currentPedidoCatFilter = 'todas';
 
 async function loadPedidos() {
   const container = document.getElementById('pedidos-list');
@@ -834,7 +930,7 @@ async function loadPedidos() {
       .select('*')
       .eq('ativo', true)
       .order('created_at', { ascending: false })
-      .limit(30);
+      .limit(40);
 
     if (error) throw error;
 
@@ -849,21 +945,40 @@ async function loadPedidos() {
 
     container.innerHTML = data.map(p => {
       const prayed = intercedidosLocais.includes(p.id);
+
+      // Extrair ou detectar categoria
+      let cat = p.categoria || 'Geral';
+      let cleanPedido = p.pedido || '';
+      const tagMatch = cleanPedido.match(/^\[(.*?)\]\s*(.*)$/);
+      if (tagMatch) {
+        cat = tagMatch[1];
+        cleanPedido = tagMatch[2];
+      }
+
+      const isHidden = (currentPedidoCatFilter !== 'todas' && cat.toLowerCase() !== currentPedidoCatFilter.toLowerCase()) ? 'style="display:none;"' : '';
+      const safeNome = escapeHtml(p.nome || 'Anônimo');
+      const safePedido = escapeHtml(cleanPedido);
+      const safeQuote = safePedido.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
       return `
-        <div class="pedido-item" id="pedido-${p.id}">
+        <div class="pedido-item" id="pedido-${p.id}" data-category="${escapeHtml(cat)}" ${isHidden}>
           <div class="pedido-item-header">
             <span class="pedido-item-nome">
-              ${escapeHtml(p.nome || 'Anônimo')}
+              ${safeNome}
               ${p.cidade ? `<span class="pedido-item-cidade"> · ${escapeHtml(p.cidade)}</span>` : ''}
+              <span class="pedido-cat-badge">${escapeHtml(cat)}</span>
             </span>
             <span class="pedido-item-hora">${timeAgo(p.created_at)}</span>
           </div>
-          <div class="pedido-item-text">${escapeHtml(p.pedido)}</div>
+          <div class="pedido-item-text">${safePedido}</div>
           <div class="pedido-item-footer">
             <button class="pedido-item-pray ${prayed ? 'prayed' : ''}" onclick="interceder('${p.id}')">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 8h14"/></svg>
               <span>${prayed ? 'Intercedido!' : 'Interceder'}</span>
               <span class="pray-count">(${p.intercessoes || 0})</span>
+            </button>
+            <button class="btn-contar-graca" onclick="celebrarRespostaOração('${p.id}', '${safeNome}', '${safeQuote}')" title="Contar que Deus respondeu esse pedido">
+              ✦ Deus Respondeu!
             </button>
             ${(p.intercessoes || 0) > 0 ? `<span class="intercessoes-text">${p.intercessoes} ${p.intercessoes === 1 ? 'irmão orou' : 'irmãos oraram'}</span>` : ''}
           </div>
@@ -876,6 +991,49 @@ async function loadPedidos() {
   }
 }
 
+function filterPedidosCat(cat, btn) {
+  currentPedidoCatFilter = cat;
+  document.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const items = document.querySelectorAll('#pedidos-list .pedido-item');
+  items.forEach(item => {
+    const itemCat = item.getAttribute('data-category') || 'Geral';
+    if (cat === 'todas' || itemCat.toLowerCase() === cat.toLowerCase()) {
+      item.style.display = '';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
+function celebrarRespostaOração(id, nome, pedidoTexto) {
+  const testemunhosSection = document.getElementById('testemunhos');
+  const nomeInput = document.getElementById('testemunho-nome');
+  const textoInput = document.getElementById('testemunho-text');
+  const cardForm = document.querySelector('.testemunho-form-card');
+
+  if (testemunhosSection) {
+    testemunhosSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  if (nomeInput && nome !== 'Anônimo') {
+    nomeInput.value = nome;
+  }
+
+  if (textoInput) {
+    const resumo = pedidoTexto ? `pela causa de "${pedidoTexto.substring(0, 60)}..."` : 'por esta causa';
+    textoInput.value = `Glória a Deus! Em resposta à oração ${resumo}, o Senhor manifestou o Seu poder e operou a vitória: `;
+    setTimeout(() => textoInput.focus(), 600);
+  }
+
+  if (cardForm) {
+    cardForm.classList.remove('highlight-testemunho');
+    void cardForm.offsetWidth;
+    cardForm.classList.add('highlight-testemunho');
+  }
+}
+
 function renderLocalPedidos() {
   const container = document.getElementById('pedidos-list');
   if (!container) return;
@@ -885,9 +1043,12 @@ function renderLocalPedidos() {
     return;
   }
   container.innerHTML = [...pedidos].reverse().map(p => `
-    <div class="pedido-item">
+    <div class="pedido-item" data-category="${escapeHtml(p.categoria || 'Geral')}">
       <div class="pedido-item-header">
-        <span class="pedido-item-nome">${escapeHtml(p.nome || 'Anônimo')}</span>
+        <span class="pedido-item-nome">
+          ${escapeHtml(p.nome || 'Anônimo')}
+          <span class="pedido-cat-badge">${escapeHtml(p.categoria || 'Geral')}</span>
+        </span>
         <span class="pedido-item-hora">${p.hora || ''}</span>
       </div>
       <div class="pedido-item-text">${escapeHtml(p.pedido || p.text)}</div>
@@ -898,6 +1059,7 @@ function renderLocalPedidos() {
 async function savePedido() {
   const nome = document.getElementById('pedido-nome')?.value.trim() || 'Anônimo';
   const cidade = document.getElementById('pedido-cidade')?.value.trim() || null;
+  const categoria = document.getElementById('pedido-categoria')?.value || 'Geral';
   const pedido = document.getElementById('pedido-text')?.value.trim();
   const feedback = document.getElementById('pedido-feedback');
   const btn = document.getElementById('btn-save-pedido');
@@ -913,18 +1075,20 @@ async function savePedido() {
   }
 
   try {
+    const formattedPedido = (categoria && categoria !== 'Geral') ? `[${categoria}] ${pedido}` : pedido;
+
     if (supabaseClient) {
       const { error } = await supabaseClient.from('pedidos_oracao').insert([{
         nome,
         cidade,
-        pedido
+        pedido: formattedPedido
       }]);
       if (error) throw error;
       showFeedback(feedback, 'Pedido publicado com sucesso! A comunidade estará orando por você.', 'success');
       loadPedidos();
     } else {
       const pedidos = JSON.parse(localStorage.getItem('aposento_pedidos') || '[]');
-      pedidos.push({ nome, cidade, pedido, created_at: new Date().toISOString() });
+      pedidos.push({ nome, cidade, pedido: formattedPedido, categoria, created_at: new Date().toISOString() });
       localStorage.setItem('aposento_pedidos', JSON.stringify(pedidos));
       showFeedback(feedback, 'Pedido salvo localmente!', 'success');
       renderLocalPedidos();
@@ -1122,3 +1286,570 @@ const yearEl = document.getElementById('current-year');
 if (yearEl) {
   yearEl.textContent = new Date().getFullYear();
 }
+
+
+/* ── 13. STREAK DIAS COM DEUS ────────────── */
+function getStreakData() {
+  const defaultData = {
+    streak: 1,
+    lastDate: '',
+    history: []
+  };
+  try {
+    const raw = localStorage.getItem('aposento_streak_data');
+    if (!raw) return defaultData;
+    return JSON.parse(raw);
+  } catch(e) {
+    return defaultData;
+  }
+}
+
+function saveStreakData(data) {
+  try {
+    localStorage.setItem('aposento_streak_data', JSON.stringify(data));
+  } catch(e) {}
+}
+
+function getTodayString() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function getYesterdayString() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function updateStreakDisplay() {
+  const data = getStreakData();
+  const streakCountEl = document.getElementById('streak-text');
+  const modalCountEl = document.getElementById('streak-modal-days');
+
+  const daysLabel = data.streak === 1 ? '1 dia com Deus' : `${data.streak} dias com Deus`;
+  if (streakCountEl) streakCountEl.textContent = daysLabel;
+  if (modalCountEl) modalCountEl.textContent = data.streak;
+}
+
+function recordPrayerDay() {
+  const data = getStreakData();
+  const today = getTodayString();
+  const yesterday = getYesterdayString();
+
+  if (data.lastDate === today) {
+    return;
+  }
+
+  if (data.lastDate === yesterday) {
+    data.streak += 1;
+  } else if (!data.lastDate) {
+    data.streak = 1;
+  } else {
+    data.streak = 1;
+  }
+
+  data.lastDate = today;
+  if (!data.history.includes(today)) {
+    data.history.push(today);
+  }
+  saveStreakData(data);
+  updateStreakDisplay();
+}
+
+function openStreakModal() {
+  const modal = document.getElementById('streak-modal-overlay');
+  if (!modal) return;
+
+  const data = getStreakData();
+  updateStreakDisplay();
+
+  const weekDaysContainer = document.getElementById('streak-week-days');
+  if (weekDaysContainer) {
+    const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const now = new Date();
+    const currentDayOfWeek = now.getDay();
+
+    let html = '';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(now.getDate() - (currentDayOfWeek - i));
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const isCompleted = data.history.includes(dateStr) || (data.lastDate === dateStr);
+      const isToday = (i === currentDayOfWeek);
+
+      html += `
+        <div class="streak-day-item ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}">
+          <span class="streak-day-name">${dayNames[i]}</span>
+          <div class="streak-day-circle">
+            ${isCompleted ? '✦' : (isToday ? '•' : '○')}
+          </div>
+        </div>
+      `;
+    }
+    weekDaysContainer.innerHTML = html;
+  }
+
+  modal.classList.add('open');
+}
+
+function closeStreakModal() {
+  const modal = document.getElementById('streak-modal-overlay');
+  if (modal) modal.classList.remove('open');
+}
+
+
+/* ── 14. MOMENTO NO APOSENTO (EXPERIÊNCIA GUIADA) ── */
+let momentoCurrentStep = 1;
+let momentoBreathingInterval = null;
+let momentoBreathingCycle = 1;
+let momentoTimerInterval = null;
+let momentoTimerRemaining = 3 * 60;
+
+function openMomentoAposento() {
+  const overlay = document.getElementById('momento-overlay');
+  if (!overlay) return;
+
+  overlay.classList.add('open');
+  momentoCurrentStep = 1;
+  momentoTimerRemaining = 3 * 60;
+  updateMomentoStepUI(1);
+
+  startBreathingCycle();
+  startAmbientPad();
+}
+
+function closeMomentoAposento() {
+  const overlay = document.getElementById('momento-overlay');
+  if (overlay) overlay.classList.remove('open');
+  stopBreathingCycle();
+  clearInterval(momentoTimerInterval);
+
+  if (!timerRunning) {
+    stopAmbientPad();
+  }
+}
+
+function nextMomentoStep(step) {
+  momentoCurrentStep = step;
+  updateMomentoStepUI(step);
+
+  if (step === 1) {
+    startBreathingCycle();
+    clearInterval(momentoTimerInterval);
+  } else if (step === 2) {
+    stopBreathingCycle();
+    clearInterval(momentoTimerInterval);
+    const currentVerseText = document.getElementById('verse-text')?.textContent;
+    const currentVerseRef = document.getElementById('verse-ref')?.textContent;
+    if (currentVerseText && currentVerseText !== 'Carregando...') {
+      const vTextEl = document.getElementById('momento-verse-text');
+      const vRefEl = document.getElementById('momento-verse-ref');
+      if (vTextEl) vTextEl.textContent = `"${currentVerseText}"`;
+      if (vRefEl) vRefEl.textContent = currentVerseRef;
+    }
+  } else if (step === 3) {
+    stopBreathingCycle();
+    startMomentoTimer();
+  }
+}
+
+function updateMomentoStepUI(step) {
+  for (let i = 1; i <= 3; i++) {
+    const nav = document.getElementById(`step-nav-${i}`);
+    const pane = document.getElementById(`momento-step-${i}`);
+    if (nav) nav.classList.toggle('active', i === step);
+    if (pane) pane.classList.toggle('active', i === step);
+  }
+}
+
+function startBreathingCycle() {
+  stopBreathingCycle();
+  momentoBreathingCycle = 1;
+  const circle = document.getElementById('breathing-circle');
+  const textEl = document.getElementById('breathing-text');
+  const cycleEl = document.getElementById('breathing-cycle-num');
+
+  const phases = [
+    { text: 'Inspire a Paz...', cls: 'inhale', dur: 4000 },
+    { text: 'Descanse em Deus...', cls: 'hold', dur: 4000 },
+    { text: 'Expire o fardo...', cls: 'exhale', dur: 4000 }
+  ];
+
+  let currentPhaseIdx = 0;
+
+  function runPhase() {
+    const p = phases[currentPhaseIdx];
+    if (circle) {
+      circle.className = `breathing-circle ${p.cls}`;
+    }
+    if (textEl) textEl.textContent = p.text;
+
+    currentPhaseIdx = (currentPhaseIdx + 1) % phases.length;
+    if (currentPhaseIdx === 0) {
+      momentoBreathingCycle++;
+      if (cycleEl) cycleEl.textContent = Math.min(3, momentoBreathingCycle);
+    }
+  }
+
+  runPhase();
+  momentoBreathingInterval = setInterval(runPhase, 4000);
+}
+
+function stopBreathingCycle() {
+  if (momentoBreathingInterval) {
+    clearInterval(momentoBreathingInterval);
+    momentoBreathingInterval = null;
+  }
+  const circle = document.getElementById('breathing-circle');
+  if (circle) circle.className = 'breathing-circle';
+}
+
+function startMomentoTimer() {
+  clearInterval(momentoTimerInterval);
+  const displayEl = document.getElementById('momento-timer-display');
+
+  function updateMDisp() {
+    const m = Math.floor(momentoTimerRemaining / 60);
+    const s = momentoTimerRemaining % 60;
+    if (displayEl) displayEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+  updateMDisp();
+
+  momentoTimerInterval = setInterval(() => {
+    momentoTimerRemaining--;
+    updateMDisp();
+    if (momentoTimerRemaining <= 0) {
+      clearInterval(momentoTimerInterval);
+      finishMomentoAposento();
+    }
+  }, 1000);
+}
+
+function finishMomentoAposento() {
+  clearInterval(momentoTimerInterval);
+  recordPrayerDay();
+  recordPrayerCompletion(3);
+  playEndSound();
+
+  const finishBtn = document.getElementById('btn-finish-momento');
+  if (finishBtn) {
+    finishBtn.innerHTML = '<span>✦ Bênção Guardada! Glória a Deus!</span>';
+    finishBtn.style.background = '#2ecc71';
+  }
+
+  setTimeout(() => {
+    closeMomentoAposento();
+    if (finishBtn) {
+      finishBtn.innerHTML = '<span>✦ Concluir e Guardar Bênção</span>';
+      finishBtn.style.background = '';
+    }
+    openStreakModal();
+  }, 1200);
+}
+
+
+/* ── 15. JORNADAS DEVOCIONAIS (7 DIAS) ───── */
+const JORNADAS_DATA = {
+  ansiedade: {
+    id: 'ansiedade',
+    title: 'Vencendo a Ansiedade e o Medo',
+    description: '7 dias mergulhando nas promessas do Pai que trazem descanso sereno à sua mente.',
+    days: [
+      {
+        day: 1,
+        title: 'A Paz que Excede Todo Entendimento',
+        verse: 'Não andeis ansiosos de coisa alguma; em tudo, porém, sejam conhecidas, diante de Deus, as vossas petições, pela oração e pela súplica, com ações de graças.',
+        ref: 'Filipenses 4:6-7',
+        devotional: 'A ansiedade tenta nos convencer de que precisamos controlar o incontrolável. A oração é o antídoto santo: entregar nas mãos Daquele que sustenta as estrelas os detalhes do seu amanhã.',
+        prayer: 'Senhor Jesus, entrego agora em Tuas mãos tudo aquilo que aperta meu peito. Eu escolho confiar no Teu cuidado e recebo a Tua paz hoje. Amém.'
+      },
+      {
+        day: 2,
+        title: 'O Dia de Amanhã Pertence a Deus',
+        verse: 'Não vos inquieteis, pois, pelo dia de amanhã, porque o dia de amanhã cuidará de si mesmo. Basta a cada dia o seu mal.',
+        ref: 'Mateus 6:34',
+        devotional: 'Viver no futuro é roubar a graça que Deus preparou para o dia de hoje. A cada manhã, as misericórdias do Senhor se renovam com a porção exata para suas forças.',
+        prayer: 'Pai celestial, liberta-me do anseio pelo amanhã. Ensina-me a saborear o dia de hoje com gratidão e na certeza de que Tu já estás no meu futuro. Amém.'
+      },
+      {
+        day: 3,
+        title: 'O Senhor é Meu Pastor, Nada Me Faltará',
+        verse: 'O Senhor é o meu pastor; nada me faltará. Deitar-me faz em verdes pastos, guia-me mansamente a águas mansas.',
+        ref: 'Salmo 23:1-2',
+        devotional: 'Ovelhas não se preocupam de onde virá a próxima pastagem porque confiam nos passos do Pastor. Descanse no fato de que o Senhor conhece suas carências antes mesmo de você pedir.',
+        prayer: 'Bom Pastor, aquieta minha alma agitada. Leva-me às Tuas águas de descanso e restaura o meu fôlego espiritual. Amém.'
+      },
+      {
+        day: 4,
+        title: 'Sob a Sombra do Onipotente',
+        verse: 'Aquele que habita no esconderijo do Altíssimo, à sombra do Onipotente descansará. Direi do Senhor: Ele é o meu refúgio e a minha fortaleza, o meu Deus, em quem confio.',
+        ref: 'Salmo 91:1-2',
+        devotional: 'Não há lugar mais seguro no universo do que a presença de Deus. Não importa o tamanho da tempestade lá fora, no Aposento Alto você está sob a cobertura do Altíssimo.',
+        prayer: 'Meu Deus e refúgio, coloco minha vida e minha família sob as Tuas asas protetoras. Nenhum mal tem autoridade sobre a minha paz. Amém.'
+      },
+      {
+        day: 5,
+        title: 'Não Temas, Pois Eu Sou Contigo',
+        verse: 'Não temas, porque eu sou contigo; não te assombres, porque eu sou o teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça.',
+        ref: 'Isaías 41:10',
+        devotional: 'O medo perde a força quando nos lembramos de quem segura a nossa mão direita. Deus não apenas caminha ao seu lado; Ele te sustenta com Sua força infalível.',
+        prayer: 'Senhor, cala a voz do medo em minha mente. Enche meu coração com a Tua coragem e a certeza do Teu abraço protetor. Amém.'
+      },
+      {
+        day: 6,
+        title: 'Lançando Todo o Fardo Sobre Ele',
+        verse: 'Lançando sobre ele toda a vossa ansiedade, porque ele tem cuidado de vós.',
+        ref: '1 Pedro 5:7',
+        devotional: 'Lançar significa soltar intencionalmente. Não carregue peso que não foi desenhado para as suas costas. Deus tem prazer em carregar o que te oprime.',
+        prayer: 'Pai, eu solto agora o fardo pesado. Despejo diante do Teu altar minhas preocupações financeiras, de saúde e familiares. Tu cuidas de mim. Amém.'
+      },
+      {
+        day: 7,
+        title: 'A Minha Paz Vos Dou',
+        verse: 'Deixo-vos a paz, a minha paz vos dou; não vo-la dou como o mundo a dá. Não se turbe o vosso coração, nem se atemorize.',
+        ref: 'João 14:27',
+        devotional: 'A paz de Jesus não depende de circunstâncias calmas; ela é uma âncora viva no meio da tempestade. Celebre hoje a vitória da mente guardada por Cristo.',
+        prayer: 'Senhor Jesus, obrigado por esses 7 dias de renovação. Eu recebo e tomo posse da Tua paz definitiva. Minha mente pertence a Ti. Amém!'
+      }
+    ]
+  },
+  familia: {
+    id: 'familia',
+    title: 'Edificando o Lar na Presença de Deus',
+    description: '7 dias clamando por proteção, união, cura de feridas e bênçãos sobre cada familiar.',
+    days: [
+      {
+        day: 1,
+        title: 'Eu e a Minha Casa Serviremos ao Senhor',
+        verse: 'Porém eu e a minha casa serviremos ao Senhor.',
+        ref: 'Josué 24:15',
+        devotional: 'Uma declaração de fé que atravessa gerações. Quando você se posiciona no Aposento Alto pela sua família, o ambiente espiritual da sua casa é transformado.',
+        prayer: 'Senhor Deus, consagro a minha casa e cada um dos meus familiares ao Teu senhorio. Que haja reverência e amor debaixo do nosso teto. Amém.'
+      },
+      {
+        day: 2,
+        title: 'Bem-Aventurado o Lar que Teme a Deus',
+        verse: 'Bem-aventurado aquele que teme ao Senhor e anda nos seus caminhos! A tua mulher será como a videira frutífera aos lados da tua casa; os teus filhos como plantas de oliveira à roda da tua mesa.',
+        ref: 'Salmo 128:1,3',
+        devotional: 'O temor do Senhor atrai fartura emocional, proteção e estabilidade para dentro do lar. A bênção de Deus não acrescenta dores.',
+        prayer: 'Pai bendito, derrama do Teu Espírito sobre os meus relacionamentos familiares. Faze da minha casa um manancial de alegria e frutificação. Amém.'
+      },
+      {
+        day: 3,
+        title: 'Perdão e Graça Entre Nós',
+        verse: 'Suportai-vos uns aos outros, perdoai-vos mutuamente, caso alguém tenha motivo de queixa contra outrem. Assim como o Senhor vos perdoou, assim também perdoai vós.',
+        ref: 'Colossenses 3:13',
+        devotional: 'Famílias fortes não são aquelas que nunca erram, mas aquelas que dominam a arte de perdoar depressa e acolher com o mesmo amor que receberam da Cruz.',
+        prayer: 'Jesus, sara as feridas de palavras duras ou desentendimentos no meu lar. Dá-me um coração manso para perdoar e pedir perdão. Amém.'
+      },
+      {
+        day: 4,
+        title: 'A Proteção e Sabedoria dos Filhos',
+        verse: 'Ensina a criança no caminho em que deve andar, e, ainda quando for velho, não se desviará dele.',
+        ref: 'Provérbios 22:6',
+        devotional: 'Nossos filhos e jovens são flechas nas mãos do Guerreiro. Que eles cresçam protegidos das ciladas do mundo e com raízes firmes na verdade.',
+        prayer: 'Senhor, cerca os meus filhos e parentes mais jovens com Teus anjos. Guarda os passos deles e ilumina suas decisões. Amém.'
+      },
+      {
+        day: 5,
+        title: 'Armadura Espiritual Sobre as Nossas Portas',
+        verse: 'Revesti-vos de toda a armadura de Deus, para que possais estar firmes contra as astutas ciladas do diabo.',
+        ref: 'Efésios 6:11',
+        devotional: 'Toda contenda e divisão são neutralizadas quando colocamos o sangue do Cordeiro nos umbrais das nossas portas através da oração diária.',
+        prayer: 'Senhor, blinda a minha casa contra todo dardo inflamado de discórdia, enfermidade ou escassez. Reina em nosso meio com autoridade santa. Amém.'
+      },
+      {
+        day: 6,
+        title: 'O Amor que Tudo Sofre e Jamais Acaba',
+        verse: 'O amor é paciente, é benigno; o amor não arde em ciúmes, não se ufana, não se ensoberbe... tudo sofre, tudo crê, tudo espera, tudo suporta.',
+        ref: '1 Coríntios 13:4,7',
+        devotional: 'O amor bíblico é uma decisão diária de honrar e abençoar o outro, mesmo nos dias difíceis. Ele renova os laços conjugais e fraternos.',
+        prayer: 'Pai de amor, enche meu coração da Tua paciência e doçura. Que o amor de Cristo seja o idioma falado em nossa convivência. Amém.'
+      },
+      {
+        day: 7,
+        title: 'A Casa Edificada sobre a Rocha',
+        verse: 'Se o Senhor não edificar a casa, em vão trabalham os que a edificam; se o Senhor não guardar a cidade, em vão vigia a sentinela.',
+        ref: 'Salmo 127:1',
+        devotional: 'Entregue o governo do seu lar a Deus. Quando Ele é o alicerce, nenhuma ventania ou enchente pode derrubar a sua família.',
+        prayer: 'Senhor, a minha família é Tua! Concluo esses 7 dias com fé inabalável de que Tu és o Senhor absoluto do meu lar. Amém!'
+      }
+    ]
+  },
+  renovacao: {
+    id: 'renovacao',
+    title: 'Renovação Espiritual e Poder do Alto',
+    description: '3 dias intensos de quebrantamento, sede pela presença de Deus e renovação do primeiro amor.',
+    days: [
+      {
+        day: 1,
+        title: 'Cria em Mim um Coração Puro',
+        verse: 'Cria em mim, ó Deus, um coração puro e renova dentro de mim um espírito inabalável. Não me lances fora da tua presença e não retires de mim o teu Espírito Santo.',
+        ref: 'Salmo 51:10-11',
+        devotional: 'O avivamento começa no espelho. Quando nos despimos de todo orgulho e nos achegamos com sinceridade a Deus, o fogo sagrado volta a queimar em nosso peito.',
+        prayer: 'Senhor, sonda o meu íntimo. Lava-me de toda mornidão espiritual e reacende a chama do Teu amor em mim hoje. Amém.'
+      },
+      {
+        day: 2,
+        title: 'O Vento Impetuoso do Espírito',
+        verse: 'E de repente veio do céu um som, como de um vento veemente e impetuoso... e todos foram cheios do Espírito Santo.',
+        ref: 'Atos 2:2,4',
+        devotional: 'Assim como no cenáculo em Jerusalém, o Aposento Alto é o lugar da promessa. Não dependemos da nossa própria força, mas do poder do Espírito Santo que habita em nós.',
+        prayer: 'Espírito Santo, sopra Tua brisa e Teu poder sobre a minha vida agora. Enche-me até transbordar de alegria e autoridade espiritual. Amém.'
+      },
+      {
+        day: 3,
+        title: 'Renovados como a Águia',
+        verse: 'Mas os que esperam no Senhor renovam as suas forças, sobem com asas como águias, correm e não se cansam, caminham e não se fatigam.',
+        ref: 'Isaías 40:31',
+        devotional: 'O cansaço da alma desaparece na presença do Todo-Poderoso. Saia deste lugar renovado, ungido e pronto para vencer qualquer desafio em nome de Jesus.',
+        prayer: 'Senhor Todo-Poderoso, recebo novas forças neste dia! Renovo meu compromisso de Te buscar todos os dias. Tu és o meu tudo. Amém e amém!'
+      }
+    ]
+  }
+};
+
+let currentJornadaKey = 'ansiedade';
+let currentJornadaDay = 1;
+
+function getJornadasProgress() {
+  try {
+    const raw = localStorage.getItem('aposento_jornadas_progress');
+    return raw ? JSON.parse(raw) : { ansiedade: [], familia: [], renovacao: [] };
+  } catch(e) {
+    return { ansiedade: [], familia: [], renovacao: [] };
+  }
+}
+
+function saveJornadasProgress(progress) {
+  try {
+    localStorage.setItem('aposento_jornadas_progress', JSON.stringify(progress));
+  } catch(e) {}
+}
+
+function renderJornada(key, dayNum = 1) {
+  const container = document.getElementById('jornada-container');
+  if (!container) return;
+
+  const data = JORNADAS_DATA[key];
+  if (!data) return;
+
+  currentJornadaKey = key;
+  currentJornadaDay = dayNum;
+
+  const progressData = getJornadasProgress();
+  const completedDays = progressData[key] || [];
+  const totalDays = data.days.length;
+  const percent = Math.round((completedDays.length / totalDays) * 100);
+
+  const dayInfo = data.days.find(d => d.day === dayNum) || data.days[0];
+  const isDayCompleted = completedDays.includes(dayNum);
+
+  container.innerHTML = `
+    <div class="jornada-header-info">
+      <div class="jornada-title-wrap">
+        <h3>${escapeHtml(data.title)}</h3>
+        <p>${escapeHtml(data.description)}</p>
+      </div>
+      <div class="jornada-progress-box">
+        <div class="jornada-progress-labels">
+          <span>Progresso da Trilha</span>
+          <span>${completedDays.length}/${totalDays} dias (${percent}%)</span>
+        </div>
+        <div class="jornada-progress-bar">
+          <div class="jornada-progress-fill" style="width: ${percent}%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegação de Dias -->
+    <div class="jornada-days-nav">
+      ${data.days.map(d => {
+        const done = completedDays.includes(d.day);
+        const active = (d.day === dayNum);
+        return `
+          <button class="day-tab-btn ${active ? 'active' : ''} ${done ? 'completed' : ''}" onclick="renderJornada('${key}', ${d.day})">
+            <span class="day-num">Dia ${d.day}</span>
+            <span class="day-status-icon">${done ? '✓' : '✦'}</span>
+          </button>
+        `;
+      }).join('')}
+    </div>
+
+    <!-- Conteúdo do Dia -->
+    <div class="jornada-day-body">
+      <div class="jornada-day-title-badge">✦ DIA ${dayInfo.day} DE ${totalDays}</div>
+      <h4 class="jornada-day-heading">${escapeHtml(dayInfo.title)}</h4>
+
+      <div class="jornada-verse-card">
+        <p class="jornada-verse-text">"${escapeHtml(dayInfo.verse)}"</p>
+        <span class="jornada-verse-ref">${escapeHtml(dayInfo.ref)}</span>
+      </div>
+
+      <div class="jornada-devocional-text">
+        <p>${escapeHtml(dayInfo.devotional)}</p>
+      </div>
+
+      <div class="jornada-prayer-card">
+        <h4>✦ Clamor Dirigido para Hoje</h4>
+        <p>"${escapeHtml(dayInfo.prayer)}"</p>
+      </div>
+
+      <div class="jornada-day-actions">
+        <button class="btn btn-glass btn-sm" onclick="shareJornadaDay('${escapeHtml(dayInfo.title)}', '${escapeHtml(dayInfo.verse)}', '${escapeHtml(dayInfo.ref)}')">
+          Compartilhar Bênção
+        </button>
+        <button class="btn ${isDayCompleted ? 'btn-glass' : 'btn-primary btn-glow'}" id="btn-complete-day" onclick="completeJornadaDay('${key}', ${dayInfo.day})">
+          <span>${isDayCompleted ? '✓ Dia Concluído' : '✦ Concluir Dia de Oração'}</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function switchJornada(key, btn) {
+  document.querySelectorAll('.jornada-tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderJornada(key, 1);
+}
+
+function completeJornadaDay(key, dayNum) {
+  const progress = getJornadasProgress();
+  if (!progress[key]) progress[key] = [];
+
+  if (!progress[key].includes(dayNum)) {
+    progress[key].push(dayNum);
+    saveJornadasProgress(progress);
+    recordPrayerDay();
+    recordPrayerCompletion(2);
+  }
+
+  renderJornada(key, dayNum);
+
+  const btn = document.getElementById('btn-complete-day');
+  if (btn) {
+    btn.innerHTML = '<span>✓ Glória a Deus! Dia Registrado</span>';
+  }
+}
+
+function shareJornadaDay(title, verse, ref) {
+  const shareText = `*Aposento Alto — ${title}*\n\n"${verse}" (${ref})\n\nVenha orar conosco: ${window.location.origin || 'https://aposentoalto.org'}`;
+  if (navigator.share) {
+    navigator.share({ title: `Aposento Alto: ${title}`, text: shareText }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(shareText).then(() => {
+      alert('Versículo da jornada copiado com sucesso para compartilhar!');
+    });
+  }
+}
+
+// Inicializar novos módulos
+updateStreakDisplay();
+renderJornada('ansiedade', 1);
+

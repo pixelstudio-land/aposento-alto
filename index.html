@@ -43,6 +43,7 @@
         <ul class="nav-list">
           <li><a href="#versiculo" class="nav-link">Versículo</a></li>
           <li><a href="#oracao" class="nav-link">Oração</a></li>
+          <li><a href="#jornadas" class="nav-link">Jornadas</a></li>
           <li><a href="#diario" class="nav-link">Diário</a></li>
           <li><a href="#pedidos" class="nav-link">Intercessão</a></li>
           <li><a href="#testemunhos" class="nav-link">Testemunhos</a></li>
@@ -51,6 +52,10 @@
       </nav>
 
       <div class="header-actions">
+        <div class="streak-badge" id="streak-badge" onclick="openStreakModal()" title="Sua constância de oração">
+          <span class="streak-flame">🔥</span>
+          <span class="streak-text" id="streak-text">1 dia com Deus</span>
+        </div>
         <a href="#oracao" class="btn btn-sm btn-primary">
           <span>Entrar em Oração</span>
         </a>
@@ -70,6 +75,7 @@
     <ul class="mobile-nav-list">
       <li><a href="#versiculo" class="mobile-nav-link">Versículo do Dia</a></li>
       <li><a href="#oracao" class="mobile-nav-link">Timer de Oração</a></li>
+      <li><a href="#jornadas" class="mobile-nav-link">Jornadas de Fé</a></li>
       <li><a href="#diario" class="mobile-nav-link">Diário Espiritual</a></li>
       <li><a href="#pedidos" class="mobile-nav-link">Pedidos de Intercessão</a></li>
       <li><a href="#testemunhos" class="mobile-nav-link">Testemunhos</a></li>
@@ -97,11 +103,11 @@
           <strong>este é o seu lugar de encontro, oração e renovação.</strong>
         </p>
         <div class="hero-cta-group reveal-up">
-          <a href="#oracao" class="btn btn-lg btn-primary btn-glow">
-            <span>✦ Começar em Oração</span>
-          </a>
-          <a href="#versiculo" class="btn btn-lg btn-glass">
-            <span>Versículo do Dia</span>
+          <button class="btn btn-lg btn-primary btn-glow" onclick="openMomentoAposento()">
+            <span>✦ Momento no Aposento</span>
+          </button>
+          <a href="#oracao" class="btn btn-lg btn-glass">
+            <span>Timer de Oração</span>
           </a>
         </div>
         <div class="hero-verse reveal-up">
@@ -222,10 +228,71 @@
             <p class="timer-verse-text" id="timer-verse">"Sede quietos e sabei que eu sou Deus." (Salmo 46:10)</p>
           </div>
 
+          <!-- Sound Ambiance Mixer -->
+          <div class="sound-mixer-wrap">
+            <div class="mixer-header">
+              <span class="mixer-title">✦ Ambiência Sonora</span>
+              <div class="volume-slider-wrap" title="Ajustar Volume">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                <input type="range" id="sound-volume" min="0" max="100" value="70" oninput="setSoundVolume(this.value)" aria-label="Volume">
+              </div>
+            </div>
+            <div class="sound-presets">
+              <button class="sound-preset-btn active" data-sound="pad" onclick="selectSoundPreset('pad', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                Pad 432Hz
+              </button>
+              <button class="sound-preset-btn" data-sound="chuva" onclick="selectSoundPreset('chuva', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="M8 22l-1 2"/><path d="M12 22l-1 2"/><path d="M16 22l-1 2"/></svg>
+                Chuva Mansa
+              </button>
+              <button class="sound-preset-btn" data-sound="brisa" onclick="selectSoundPreset('brisa', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+                Brisa Suave
+              </button>
+              <button class="sound-preset-btn" data-sound="silencio" onclick="selectSoundPreset('silencio', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+                Silêncio
+              </button>
+            </div>
+          </div>
+
           <div class="timer-stats-badge" id="timer-stats-wrap">
             <span class="timer-stats-dot"></span>
             <span id="global-prayers-stat">Carregando orações da comunidade...</span>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         JORNADAS DEVOCIONAIS (PLANOS DE 7 DIAS)
+         ========================================== -->
+    <section class="section section-jornadas" id="jornadas">
+      <div class="container">
+        <div class="section-header text-center reveal-up">
+          <span class="badge-pill">✦ CAMINHOS DE FÉ</span>
+          <h2 class="section-title">Jornadas Devocionais</h2>
+          <p class="section-subtitle">Planos bíblicos guiados para edificar sua vida espiritual dia após dia com oração dirigida.</p>
+
+          <div class="jornadas-tabs">
+            <button class="jornada-tab-btn active" data-jornada="ansiedade" onclick="switchJornada('ansiedade', this)">
+              <span class="jornada-tab-icon">🛡️</span>
+              <span class="jornada-tab-title">Vencendo a Ansiedade <span class="jornada-tab-days">7 dias</span></span>
+            </button>
+            <button class="jornada-tab-btn" data-jornada="familia" onclick="switchJornada('familia', this)">
+              <span class="jornada-tab-icon">🏡</span>
+              <span class="jornada-tab-title">Pela Minha Família <span class="jornada-tab-days">7 dias</span></span>
+            </button>
+            <button class="jornada-tab-btn" data-jornada="renovacao" onclick="switchJornada('renovacao', this)">
+              <span class="jornada-tab-icon">🔥</span>
+              <span class="jornada-tab-title">Renovação Espiritual <span class="jornada-tab-days">3 dias</span></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="jornada-card reveal-up" id="jornada-container">
+          <!-- Renderizado via JavaScript com progresso e dias interativos -->
         </div>
       </div>
     </section>
@@ -309,6 +376,17 @@
               <input type="text" id="pedido-cidade" class="form-input" placeholder="Ex: Belo Horizonte/MG">
             </div>
             <div class="form-group">
+              <label for="pedido-categoria">Categoria do Pedido</label>
+              <select id="pedido-categoria" class="form-input">
+                <option value="Geral">✦ Oração Geral</option>
+                <option value="Saude">🩺 Saúde e Cura</option>
+                <option value="Familia">👨‍👩‍👧 Família e Lar</option>
+                <option value="Provisao">💼 Trabalho e Provisão</option>
+                <option value="Espiritual">🕊️ Vida Espiritual</option>
+                <option value="Causas">⚖️ Causas Urgentes e Milagres</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label for="pedido-text">Seu pedido ou clamor</label>
               <textarea id="pedido-text" class="form-textarea" rows="4" placeholder="Escreva aqui seu pedido de oração..."></textarea>
             </div>
@@ -323,6 +401,17 @@
               <h3>Mural de Intercessão</h3>
               <span class="live-pill"><span class="live-dot"></span> Ao Vivo</span>
             </div>
+
+            <!-- Filtros de Categorias dos Pedidos -->
+            <div class="pedidos-filter-tabs">
+              <button class="filter-tab-btn active" data-cat="todas" onclick="filterPedidosCat('todas', this)">✦ Todas</button>
+              <button class="filter-tab-btn" data-cat="Saude" onclick="filterPedidosCat('Saude', this)">Saúde</button>
+              <button class="filter-tab-btn" data-cat="Familia" onclick="filterPedidosCat('Familia', this)">Família</button>
+              <button class="filter-tab-btn" data-cat="Provisao" onclick="filterPedidosCat('Provisao', this)">Trabalho</button>
+              <button class="filter-tab-btn" data-cat="Espiritual" onclick="filterPedidosCat('Espiritual', this)">Espiritual</button>
+              <button class="filter-tab-btn" data-cat="Causas" onclick="filterPedidosCat('Causas', this)">Milagres</button>
+            </div>
+
             <div id="pedidos-list" class="pedidos-list">
               <div class="empty-state">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>
@@ -466,6 +555,158 @@
       <p>Feito com fé e propósito &nbsp;✦&nbsp; Aposento Alto © <span id="current-year">2026</span></p>
     </div>
   </footer>
+
+  <!-- ==========================================
+       MODAL: MOMENTO NO APOSENTO (EXPERIÊNCIA GUIADA)
+       ========================================== -->
+  <div class="momento-overlay" id="momento-overlay" role="dialog" aria-modal="true" aria-labelledby="momento-title">
+    <div class="momento-card">
+      <button class="momento-close-btn" onclick="closeMomentoAposento()" aria-label="Fechar Momento no Aposento">✕</button>
+
+      <!-- Indicador de Passos -->
+      <div class="momento-steps-nav">
+        <div class="momento-step-indicator active" id="step-nav-1">
+          <span class="step-num">1</span>
+          <span class="step-label">Aquietai-vos</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="momento-step-indicator" id="step-nav-2">
+          <span class="step-num">2</span>
+          <span class="step-label">A Palavra</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="momento-step-indicator" id="step-nav-3">
+          <span class="step-num">3</span>
+          <span class="step-label">Oração</span>
+        </div>
+      </div>
+
+      <!-- Passo 1: Aquietar e Respirar -->
+      <div class="momento-step-pane active" id="momento-step-1">
+        <div class="momento-pane-header">
+          <span class="badge-pill">✦ ETAPA 1 DE 3</span>
+          <h2 class="momento-pane-title" id="momento-title">Aquiete sua Alma</h2>
+          <p class="momento-pane-verse">"Aquietai-vos e sabei que eu sou Deus." — Salmo 46:10</p>
+        </div>
+
+        <div class="breathing-container">
+          <div class="breathing-circle-aura"></div>
+          <div class="breathing-circle" id="breathing-circle">
+            <span class="breathing-text" id="breathing-text">Inspire a Paz...</span>
+          </div>
+        </div>
+
+        <div class="breathing-guidance">
+          <p id="breathing-subtext">Respire profundamente e descanse a mente na presença de Deus.</p>
+          <div class="breathing-cycles-counter">
+            Ciclo <span id="breathing-cycle-num">1</span> de 3
+          </div>
+        </div>
+
+        <div class="momento-actions">
+          <button class="btn btn-primary btn-glow" onclick="nextMomentoStep(2)">
+            <span>Prosseguir para a Palavra ➔</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Passo 2: Meditação na Palavra -->
+      <div class="momento-step-pane" id="momento-step-2">
+        <div class="momento-pane-header">
+          <span class="badge-pill">✦ ETAPA 2 DE 3</span>
+          <h2 class="momento-pane-title">A Palavra para Hoje</h2>
+          <p class="momento-pane-subtitle">Guarde este ensinamento sagrado no íntimo do seu coração.</p>
+        </div>
+
+        <div class="momento-verse-box">
+          <div class="momento-verse-icon">📖</div>
+          <p class="momento-verse-content" id="momento-verse-text">"Não andeis ansiosos por coisa alguma; antes, em tudo, sejam os vossos pedidos conhecidos diante de Deus."</p>
+          <span class="momento-verse-author" id="momento-verse-ref">Filipenses 4:6</span>
+        </div>
+
+        <div class="momento-reflection-box">
+          <h4>✦ Reflexão do Dia</h4>
+          <p id="momento-reflection-text">Deus conhece suas dores, seus planos e cada batimento do seu coração. Ao entregar seus fardos hoje no Aposento Alto, você declara que Ele cuida de tudo antes mesmo que o sol se ponha.</p>
+        </div>
+
+        <div class="momento-actions">
+          <button class="btn btn-glass" onclick="nextMomentoStep(1)">
+            <span>Voltar</span>
+          </button>
+          <button class="btn btn-primary btn-glow" onclick="nextMomentoStep(3)">
+            <span>Entrar em Oração ➔</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Passo 3: Oração & Clamor -->
+      <div class="momento-step-pane" id="momento-step-3">
+        <div class="momento-pane-header">
+          <span class="badge-pill">✦ ETAPA 3 DE 3</span>
+          <h2 class="momento-pane-title">Clamor e Comunhão</h2>
+          <p class="momento-pane-subtitle">Dobre o coração diante do Criador. Este momento é unicamente seu e Dele.</p>
+        </div>
+
+        <div class="momento-prayer-box">
+          <div class="momento-prayer-timer">
+            <span class="momento-time-display" id="momento-timer-display">03:00</span>
+            <span class="momento-time-label">Tempo em intimidade</span>
+          </div>
+
+          <div class="momento-audio-status">
+            <span class="live-dot"></span> Som celestial reproduzindo suavemente
+          </div>
+
+          <div class="momento-prayer-guide">
+            <p><em>"Senhor, aquieta meus pensamentos, perdoa minhas fraquezas e renova minha fé. Guia meus passos hoje e abençoa minha casa. Amém."</em></p>
+          </div>
+        </div>
+
+        <div class="momento-actions">
+          <button class="btn btn-glass" onclick="nextMomentoStep(2)">
+            <span>Voltar</span>
+          </button>
+          <button class="btn btn-primary btn-glow" id="btn-finish-momento" onclick="finishMomentoAposento()">
+            <span>✦ Concluir e Guardar Bênção</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: DIAS COM DEUS (STREAK DE ORAÇÃO)
+       ========================================== -->
+  <div class="streak-modal-overlay" id="streak-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="streak-modal-title">
+    <div class="streak-modal-card">
+      <button class="momento-close-btn" onclick="closeStreakModal()" aria-label="Fechar Modal de Ofensiva">✕</button>
+
+      <div class="streak-modal-flame">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="#D4AF37">
+          <path d="M12 2C10.5 4.5 9 6.5 9 9.5C9 12 11 13 11 15C11 16.5 9.8 17.5 8.5 17.5C7.2 17.5 6 16.2 6 14.5C6 11.5 8.5 8.5 9 6.5C5.5 8.5 3 12 3 16C3 20 6.5 23 11.5 23C16.5 23 20 19.5 20 14.5C20 8.5 14 6 12 2Z"/>
+        </svg>
+      </div>
+
+      <h2 class="streak-modal-title" id="streak-modal-title"><span id="streak-modal-days">1</span> dia de oração consecutiva</h2>
+      <p class="streak-modal-subtitle">"Orai sem cessar. Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco." (1 Ts 5:17-18)</p>
+
+      <!-- Dias da Semana -->
+      <div class="streak-week-days" id="streak-week-days">
+        <!-- Renderizado dinamicamente via JS (Dom a Sáb com status) -->
+      </div>
+
+      <div class="streak-message-box">
+        <p id="streak-custom-msg">Você reservou um tempo sagrado com Deus hoje. A constância abre as janelas do céu sobre a sua vida!</p>
+      </div>
+
+      <div class="streak-modal-actions">
+        <button class="btn btn-primary btn-block" onclick="closeStreakModal()">
+          Glória a Deus! ✦ Continuar
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Supabase JS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
