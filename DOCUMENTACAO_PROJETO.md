@@ -307,9 +307,11 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
     *"Aquele que habita no esconderijo do Altíssimo, à sombra do Onipotente descansará."* — **Salmo 91:1**
 - **Coluna 2 — Navegação Rápida:**
   - Acesso direto a todas as seções (Versículo, Oração, Jornadas, Diário, Intercessão, Testemunhos, Loja).
-- **Coluna 3 — Promessa Bíblica de Comunhão:**
-  - Card estilizado com aspas e citação:  
-    *"Onde dois ou três estiverem reunidos em meu nome, ali estou eu no meio deles."* — **Mateus 18:20**
+- **Coluna 3 — Card Fotográfico "O Quarto Secreto":**
+  - Fotografia sagrada da Bíblia na luz da alvorada (`og_share.jpg`) com moldura em *glassmorphism* e borda dourada suave.
+  - Tag: `✦ O QUARTO SECRETO ✦`
+  - Passagem: *"Entra no teu quarto e, fechada a porta, ora a teu Pai em secreto."* — **Mateus 6:6**
+  - Botão de Ação: `✦ Entrar em Oração` (redireciona para o timer devocional).
 - **Linha de Fechamento:**  
   `Feito com fé e propósito ✦ Aposento Alto © 2026` + Link `Voltar ao topo ↑`.
 
