@@ -552,7 +552,7 @@ displayVerse(VERSICULOS[currentVerseIndex]);
 
 
 /* ── 6. TIMER DE ORAÇÃO & PAD CELESTIAL (432Hz) ──── */
-let timerDuration  = 5 * 60;
+let timerDuration  = 10 * 60; // Padrão de 10 min sincronizado com a interface
 let timerRemaining = timerDuration;
 let timerInterval  = null;
 let timerRunning   = false;
@@ -768,13 +768,12 @@ function startProceduralWater() {
   }
 }
 
-function stopProceduralAudio() {
+function stopProceduralAudio(immediate = false) {
   if (!ambientGainNode || !ambientAudioCtx) return;
   try {
     const now = ambientAudioCtx.currentTime;
-    ambientGainNode.gain.setValueAtTime(ambientGainNode.gain.value, now);
-    ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
-    setTimeout(() => {
+    if (immediate) {
+      ambientGainNode.gain.setValueAtTime(0, now);
       if (ambientNoiseSource) {
         try { ambientNoiseSource.stop(); ambientNoiseSource.disconnect(); } catch(e) {}
         ambientNoiseSource = null;
@@ -783,53 +782,84 @@ function stopProceduralAudio() {
         try { ambientLfoNode.stop(); ambientLfoNode.disconnect(); } catch(e) {}
         ambientLfoNode = null;
       }
-    }, 450);
+    } else {
+      ambientGainNode.gain.setValueAtTime(ambientGainNode.gain.value, now);
+      ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+      setTimeout(() => {
+        if (ambientNoiseSource) {
+          try { ambientNoiseSource.stop(); ambientNoiseSource.disconnect(); } catch(e) {}
+          ambientNoiseSource = null;
+        }
+        if (ambientLfoNode) {
+          try { ambientLfoNode.stop(); ambientLfoNode.disconnect(); } catch(e) {}
+          ambientLfoNode = null;
+        }
+      }, 350);
+    }
   } catch(e) {}
 }
 
-function stopAmbientPad() {
+function stopAmbientPad(immediate = false) {
   if (musicAudio) {
     clearInterval(musicFadeInterval);
     isMusicLoopFading = false;
-    const start = musicAudio.volume;
-    let s = 0;
-    const quickFade = setInterval(() => {
-      s++;
-      if (musicAudio) musicAudio.volume = Math.max(0, start * (1 - s / 10));
-      if (s >= 10) {
-        clearInterval(quickFade);
-        if (musicAudio) {
-          musicAudio.pause();
-          musicAudio.volume = masterSoundVolume;
+    if (immediate || currentSoundPreset === 'silencio') {
+      try {
+        musicAudio.pause();
+        musicAudio.currentTime = 0;
+        musicAudio.volume = 0;
+      } catch(e) {}
+    } else {
+      const start = musicAudio.volume;
+      let s = 0;
+      const quickFade = setInterval(() => {
+        s++;
+        if (musicAudio) musicAudio.volume = Math.max(0, start * (1 - s / 8));
+        if (s >= 8) {
+          clearInterval(quickFade);
+          if (musicAudio) {
+            try {
+              musicAudio.pause();
+              musicAudio.volume = 0;
+            } catch(e) {}
+          }
         }
-      }
-    }, 35);
+      }, 25);
+    }
   }
 
-  stopProceduralAudio();
+  stopProceduralAudio(immediate || currentSoundPreset === 'silencio');
   isAmbientPlaying = false;
 }
 
 function selectSoundPreset(type, btn) {
   currentSoundPreset = type;
-  document.querySelectorAll('.sound-preset-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.sound-preset-btn').forEach(b => {
+    const match = (b.getAttribute('data-sound') === type) || (b === btn);
+    b.classList.toggle('active', match);
+  });
 
-  stopAmbientPad();
-
-  if (type === 'silencio' || !soundEnabled) {
+  if (type === 'silencio') {
+    // Silêncio sagrado absoluto e imediato: corta qualquer som instantaneamente
+    stopAmbientPad(true);
     return;
   }
 
-  // Reprodução imediata da nova faixa para teste e oração
+  stopAmbientPad(false);
+
+  if (!soundEnabled) return;
+
+  // Iniciar a nova faixa suavemente
   setTimeout(() => {
-    startAmbientPad();
-  }, 120);
+    if (currentSoundPreset === type) {
+      startAmbientPad();
+    }
+  }, 100);
 }
 
 function setSoundVolume(val) {
   masterSoundVolume = val / 100;
-  if (musicAudio && !isMusicLoopFading) {
+  if (musicAudio && !isMusicLoopFading && currentSoundPreset !== 'silencio') {
     musicAudio.volume = masterSoundVolume;
   }
   if (ambientGainNode && ambientAudioCtx && currentSoundPreset === 'aguas') {
@@ -845,7 +875,7 @@ function updateTimerDisplay() {
   const el = document.getElementById('timer-display');
   if (el) el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 
-  const circle       = document.getElementById('timer-circle');
+  const circle = document.getElementById('timer-circle') || document.querySelector('.timer-progress');
   const circumference = 628.3;
   if (circle) circle.style.strokeDashoffset = circumference * (1 - timerRemaining / timerDuration);
 }
@@ -854,17 +884,19 @@ function toggleTimer() {
   if (timerRunning) {
     clearInterval(timerInterval);
     timerRunning = false;
-    stopAmbientPad();
+    stopAmbientPad(true);
   } else {
     if (timerRemaining <= 0) timerRemaining = timerDuration;
-    startAmbientPad();
+    if (currentSoundPreset !== 'silencio') {
+      startAmbientPad();
+    }
     timerInterval = setInterval(() => {
       timerRemaining--;
       updateTimerDisplay();
       if (timerRemaining <= 0) {
         clearInterval(timerInterval);
         timerRunning = false;
-        stopAmbientPad();
+        stopAmbientPad(true);
         playEndSound();
         updatePlayPauseIcon();
         recordPrayerCompletion(Math.max(1, Math.round(timerDuration / 60)));
@@ -886,7 +918,7 @@ function resetTimer() {
   clearInterval(timerInterval);
   timerRunning   = false;
   timerRemaining = timerDuration;
-  stopAmbientPad();
+  stopAmbientPad(true);
   updateTimerDisplay();
   updatePlayPauseIcon();
 }
@@ -894,9 +926,15 @@ function resetTimer() {
 function setPreset(minutes) {
   clearInterval(timerInterval);
   timerRunning   = false;
-  stopAmbientPad();
+  stopAmbientPad(true);
   timerDuration  = minutes * 60;
   timerRemaining = timerDuration;
+
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    const bMin = parseInt(btn.getAttribute('data-min'), 10);
+    btn.classList.toggle('active', bMin === minutes);
+  });
+
   updateTimerDisplay();
   updatePlayPauseIcon();
   const idx = Math.floor(Math.random() * TIMER_VERSES.length);
@@ -904,13 +942,20 @@ function setPreset(minutes) {
   if (el) el.textContent = TIMER_VERSES[idx];
 }
 
+function setTimer(val) {
+  const minutes = val > 60 ? Math.round(val / 60) : val;
+  setPreset(minutes);
+}
+
 function toggleSound() {
   soundEnabled = !soundEnabled;
-  document.getElementById('icon-sound-on').style.display  = soundEnabled ? 'block' : 'none';
-  document.getElementById('icon-sound-off').style.display = soundEnabled ? 'none'  : 'block';
+  const onIcon = document.getElementById('icon-sound-on');
+  const offIcon = document.getElementById('icon-sound-off');
+  if (onIcon) onIcon.style.display  = soundEnabled ? 'block' : 'none';
+  if (offIcon) offIcon.style.display = soundEnabled ? 'none'  : 'block';
   if (!soundEnabled) {
-    stopAmbientPad();
-  } else if (timerRunning) {
+    stopAmbientPad(true);
+  } else if (timerRunning && currentSoundPreset !== 'silencio') {
     startAmbientPad();
   }
 }
@@ -1495,7 +1540,7 @@ function getYesterdayString() {
 function updateStreakDisplay() {
   const data = getStreakData();
   const streakCountEl = document.getElementById('streak-text');
-  const modalCountEl = document.getElementById('streak-modal-days');
+  const modalCountEl = document.getElementById('streak-modal-days') || document.getElementById('streak-modal-count');
 
   const daysLabel = data.streak === 1 ? '1 dia com Deus' : `${data.streak} dias com Deus`;
   if (streakCountEl) streakCountEl.textContent = daysLabel;
@@ -1586,7 +1631,7 @@ function openMomentoAposento() {
   updateMomentoStepUI(1);
 
   startBreathingCycle();
-  startAmbientPad();
+  // Silêncio sagrado durante a respiração inicial. Música só inicia na etapa 3 se permitido.
 }
 
 function closeMomentoAposento() {
@@ -1596,8 +1641,12 @@ function closeMomentoAposento() {
   clearInterval(momentoTimerInterval);
 
   if (!timerRunning) {
-    stopAmbientPad();
+    stopAmbientPad(true);
   }
+}
+
+function goToMomentoStep(step) {
+  nextMomentoStep(step);
 }
 
 function nextMomentoStep(step) {
@@ -1613,22 +1662,27 @@ function nextMomentoStep(step) {
     const currentVerseText = document.getElementById('verse-text')?.textContent;
     const currentVerseRef = document.getElementById('verse-ref')?.textContent;
     if (currentVerseText && currentVerseText !== 'Carregando...') {
-      const vTextEl = document.getElementById('momento-verse-text');
-      const vRefEl = document.getElementById('momento-verse-ref');
+      const vTextEl = document.getElementById('momento-verse-text') || document.getElementById('momento-daily-verse');
+      const vRefEl = document.getElementById('momento-verse-ref') || document.getElementById('momento-daily-ref');
       if (vTextEl) vTextEl.textContent = `"${currentVerseText}"`;
       if (vRefEl) vRefEl.textContent = currentVerseRef;
     }
   } else if (step === 3) {
     stopBreathingCycle();
     startMomentoTimer();
+    if (soundEnabled && currentSoundPreset !== 'silencio') {
+      startAmbientPad();
+    }
   }
 }
 
 function updateMomentoStepUI(step) {
   for (let i = 1; i <= 3; i++) {
-    const nav = document.getElementById(`step-nav-${i}`);
+    const nav1 = document.getElementById(`step-nav-${i}`);
+    const nav2 = document.getElementById(`step-indicator-${i}`);
     const pane = document.getElementById(`momento-step-${i}`);
-    if (nav) nav.classList.toggle('active', i === step);
+    if (nav1) nav1.classList.toggle('active', i === step);
+    if (nav2) nav2.classList.toggle('active', i === step);
     if (pane) pane.classList.toggle('active', i === step);
   }
 }
@@ -2156,4 +2210,47 @@ function showPixFeedback(msg) {
       btnText.textContent = '✦ Copiar Chave Pix';
     }, 4500);
   }
+}
+
+// ── 24. INICIALIZAÇÃO DE TIMER E EVENTOS GLOBAIS DE MODAIS ──
+function initTimerDefaults() {
+  const activePreset = document.querySelector('.preset-btn.active');
+  if (activePreset) {
+    const m = parseInt(activePreset.getAttribute('data-min'), 10);
+    if (!isNaN(m)) {
+      timerDuration = m * 60;
+      timerRemaining = timerDuration;
+    }
+  } else {
+    timerDuration = 10 * 60;
+    timerRemaining = timerDuration;
+  }
+  updateTimerDisplay();
+}
+
+// Fechar modais ao clicar no fundo translúcido (fora do card)
+document.addEventListener('click', (e) => {
+  const momentoOverlay = document.getElementById('momento-overlay');
+  if (momentoOverlay && e.target === momentoOverlay) {
+    closeMomentoAposento();
+  }
+  const streakOverlay = document.getElementById('streak-modal-overlay');
+  if (streakOverlay && e.target === streakOverlay) {
+    closeStreakModal();
+  }
+});
+
+// Fechar modais com tecla ESC
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' || e.key === 'Esc') {
+    closeMomentoAposento();
+    closeStreakModal();
+  }
+});
+
+// Inicialização segura após montagem do DOM
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTimerDefaults);
+} else {
+  initTimerDefaults();
 }

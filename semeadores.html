@@ -2,32 +2,32 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Comunidade & Intercessão — Aposento Alto</title>
-  <meta name="description" content="Mural sagrado de pedidos de oração e testemunhos de fé. Compartilhe sua causa e ore pelas famílias em todo o país.">
-  <meta name="theme-color" content="#080C18">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Semeadores & Livraria Devocional — Aposento Alto</title>
+  <meta name="description" content="Apoie voluntariamente o projeto Aposento Alto e encontre instrumentos e livros selecionados para aprofundar sua intimidade com Deus.">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://aposentoalto.com.br/comunidade.html">
-  <meta property="og:title" content="Comunidade & Intercessão — Aposento Alto">
-  <meta property="og:description" content="Clame junto com irmãos e celebre testemunhos de milagres e respostas divinas.">
+  <meta property="og:url" content="https://aposentoalto.com.br/semeadores.html">
+  <meta property="og:title" content="Semeadores & Livraria Devocional — Aposento Alto">
+  <meta property="og:description" content="Apoio voluntário e instrumentos consagrados para sua vida de oração.">
   <meta property="og:image" content="https://aposentoalto.com.br/images/og_share.jpg">
 
-  <!-- Fontes -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#080C18">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- Canvas de estrelas -->
   <canvas id="stars-canvas"></canvas>
 
-  <!-- HEADER -->
+  <!-- ==========================================
+       HEADER
+       ========================================== -->
   <header class="header" id="header">
     <div class="container header-container">
       <a href="index.html" class="logo-link" aria-label="Aposento Alto - Início">
@@ -45,8 +45,8 @@
           <li><a href="oracao.html" class="nav-link">Oração</a></li>
           <li><a href="jornadas.html" class="nav-link">Jornadas</a></li>
           <li><a href="diario.html" class="nav-link">Diário</a></li>
-          <li><a href="comunidade.html" class="nav-link active" style="color:var(--gold);">Comunidade</a></li>
-          <li><a href="semeadores.html" class="nav-link">Semeadores</a></li>
+          <li><a href="comunidade.html" class="nav-link">Comunidade</a></li>
+          <li><a href="semeadores.html" class="nav-link active" style="color:var(--gold);">Semeadores</a></li>
         </ul>
       </nav>
 
@@ -78,148 +78,117 @@
       <li><a href="oracao.html" class="mobile-nav-link">Sala de Oração</a></li>
       <li><a href="jornadas.html" class="mobile-nav-link">Jornadas de Fé</a></li>
       <li><a href="diario.html" class="mobile-nav-link">Diário Espiritual</a></li>
-      <li><a href="comunidade.html" class="mobile-nav-link" style="color:var(--gold);">Comunidade & Intercessão</a></li>
-      <li><a href="semeadores.html" class="mobile-nav-link">Semeadores da Obra</a></li>
+      <li><a href="comunidade.html" class="mobile-nav-link">Comunidade & Intercessão</a></li>
+      <li><a href="semeadores.html" class="mobile-nav-link" style="color:var(--gold);">Semeadores & Livraria</a></li>
       <li><a href="javascript:void(0)" onclick="triggerPwaInstall(); closeMobileMenu();" class="mobile-nav-link" style="color:var(--gold);">✦ Instalar Aplicativo</a></li>
     </ul>
   </div>
 
-  <main style="padding-top: var(--header-h);">
+  <main style="padding-top: calc(var(--header-h) + 20px);">
 
-    <!-- PEDIDOS DE INTERCESSÃO -->
-    <section class="section section-pedidos" id="pedidos">
+    <!-- ==========================================
+         SEÇÃO DE SEMEADORES & APOIO
+         ========================================== -->
+    <section class="section section-loja" id="semeadores">
       <div class="container">
+        
+        <!-- CARD DE SEMEADORES / PIX VOLUNTÁRIO -->
+        <div class="pix-semeadores-card reveal-up" id="pix-apoio" style="max-width: 760px; margin: 0 auto 60px;">
+          <div class="pix-card-header">
+            <span class="badge-pill">✦ APOIO VOLUNTÁRIO ✦</span>
+            <h1 class="pix-title" style="font-size: 2.2rem; margin-top: 12px;">Semeie no Aposento Alto</h1>
+            <p class="pix-subtitle" style="font-size: 0.95rem; line-height: 1.65; max-width: 620px; margin: 12px auto 0;">
+              O Aposento Alto é 100% gratuito e livre de anúncios invasivos. Se este lugar de paz tem abençoado o seu dia e você deseja contribuir voluntariamente para mantermos os servidores no ar e alcançarmos mais vidas, sua oferta é muito bem-vinda.
+            </p>
+          </div>
+
+          <div class="pix-box" style="margin-top: 24px;">
+            <div class="pix-info-row">
+              <span class="pix-info-label">Chave Pix (CNPJ):</span>
+              <span class="pix-key-val" id="pix-key-text">53.315.364/0001-27</span>
+            </div>
+            <div class="pix-info-row">
+              <span class="pix-info-label">Beneficiário:</span>
+              <span class="pix-info-val">Julio Cesar Cardone</span>
+            </div>
+
+            <div class="pix-actions" style="margin-top: 18px;">
+              <button class="btn btn-primary btn-glow" id="btn-copy-pix" onclick="copyPixKey()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="btn-copy-pix-text">✦ Copiar Chave Pix</span>
+              </button>
+            </div>
+
+            <p class="pix-feedback" id="pix-feedback" style="display:none;"></p>
+
+            <div class="pix-verse" style="margin-top: 22px;">
+              <em>"Cada um dê conforme determinou em seu coração, não com pesar ou por obrigação, pois Deus ama quem dá com alegria."</em>
+              <span>(2 Coríntios 9:7)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- VITRINE DEVOCIONAL RECOMENDADA (AMAZON) -->
         <div class="section-header text-center reveal-up">
-          <span class="badge-pill">✦ INTERCESSÃO EM COMUNHÃO ✦</span>
-          <h1 class="section-title">Pedidos de Oração</h1>
-          <p class="section-subtitle">Compartilhe sua causa com fé. Irmãos e irmãs em todo o país clamarão junto com você no altar secreto.</p>
+          <span class="badge-pill">✦ LIVRARIA & DEVOCIONAL ✦</span>
+          <h2 class="section-title">Instrumentos para sua Caminhada</h2>
+          <p class="section-subtitle">Obras e materiais consagrados para aprofundar suas orações no quarto secreto. Entregues com segurança e rapidez na sua casa pela Amazon.</p>
         </div>
 
-        <div class="pedidos-grid">
-          <!-- Formulário de Pedidos -->
-          <div class="pedido-form-card reveal-up">
-            <h3>Enviar Causa para Oração</h3>
-            <div class="form-group">
-              <label for="pedido-nome">Seu nome (opcional)</label>
-              <input type="text" id="pedido-nome" class="form-input" placeholder="Ex: Maria ou Anônimo">
+        <div class="loja-grid" style="margin-top: 36px;">
+
+          <div class="loja-card reveal-up">
+            <div class="loja-card-badge loja-card-badge-destaque">Bíblia Sagrada</div>
+            <div class="loja-card-icon">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             </div>
-            <div class="form-group">
-              <label for="pedido-cidade">Cidade / Estado (opcional)</label>
-              <input type="text" id="pedido-cidade" class="form-input" placeholder="Ex: Belo Horizonte/MG">
-            </div>
-            <div class="form-group">
-              <label for="pedido-categoria">Categoria do Pedido</label>
-              <select id="pedido-categoria" class="form-input">
-                <option value="Geral">Oração Geral</option>
-                <option value="Saude">Saúde e Cura</option>
-                <option value="Familia">Família e Lar</option>
-                <option value="Provisao">Trabalho e Provisão</option>
-                <option value="Espiritual">Vida Espiritual</option>
-                <option value="Causas">Causas Urgentes e Milagres</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="pedido-texto">Seu Pedido de Oração</label>
-              <textarea id="pedido-texto" class="form-textarea" rows="4" placeholder="Descreva sua causa para orarmos juntos..."></textarea>
-            </div>
-            <button class="btn btn-primary btn-block" onclick="sendPedidoOracao()">
-              ✦ Enviar para o Mural de Clamor
-            </button>
+            <h3>Bíblia de Estudo NVI</h3>
+            <p>Edição nobre com comentários teológicos, mapas históricos e introdução aos livros sagrados para enriquecer sua meditação.</p>
+            <div class="loja-price">Edição Especial</div>
+            <a href="https://www.amazon.com.br/s?k=biblia+de+estudo+nvi" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-block">
+              <span>Ver na Amazon ↗</span>
+            </a>
           </div>
 
-          <!-- Mural Público de Pedidos -->
-          <div class="pedidos-mural reveal-up">
-            <div class="pedidos-mural-header">
-              <h3>Mural de Clamor <span class="entries-count" id="pedidos-count">0</span></h3>
+          <div class="loja-card reveal-up">
+            <div class="loja-card-badge">Intimidade</div>
+            <div class="loja-card-icon">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M12 2v20M5 8h14"/></svg>
             </div>
-
-            <!-- Abas de Filtro por Categoria -->
-            <div class="pedidos-filter-tabs">
-              <button class="filter-tab-btn active" data-category="Todos" onclick="filterPedidos('Todos', this)">Todos</button>
-              <button class="filter-tab-btn" data-category="Saude" onclick="filterPedidos('Saude', this)">Saúde</button>
-              <button class="filter-tab-btn" data-category="Familia" onclick="filterPedidos('Familia', this)">Família</button>
-              <button class="filter-tab-btn" data-category="Provisao" onclick="filterPedidos('Provisao', this)">Provisão</button>
-              <button class="filter-tab-btn" data-category="Espiritual" onclick="filterPedidos('Espiritual', this)">Espiritual</button>
-              <button class="filter-tab-btn" data-category="Causas" onclick="filterPedidos('Causas', this)">Milagres</button>
-            </div>
-
-            <div id="pedidos-list" class="pedidos-list">
-              <div class="empty-state">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                <p>Nenhum pedido de oração ativo. Envie sua causa para a comunidade orar com você.</p>
-              </div>
-            </div>
+            <h3>Diário de Oração em Couro</h3>
+            <p>Caderno artesanal de capa dura para registrar clamores diários, reflexões de fé e o cumprimento das promessas divinas.</p>
+            <div class="loja-price">Capa Dura</div>
+            <a href="https://www.amazon.com.br/s?k=diario+de+oracao+capa+dura" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-block">
+              <span>Ver na Amazon ↗</span>
+            </a>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- TESTEMUNHOS -->
-    <section class="section section-testemunhos" id="testemunhos" style="border-top: 1px solid var(--border);">
-      <div class="container">
-        <div class="section-header text-center reveal-up">
-          <span class="badge-pill">✦ O PODER DE DEUS ✦</span>
-          <h2 class="section-title">Testemunhos da Comunidade</h2>
-          <p class="section-subtitle">Conte o que o Senhor fez por você. Seu testemunho edifica e acende a esperança de quem está em aflição.</p>
-
-          <!-- Banner Visual de Celebração e Gratidão -->
-          <div class="jornada-visual-banner reveal-up" style="margin-top: 32px;">
-            <div class="jornada-banner-img-wrap">
-              <img src="images/person_gratitude_nature.jpg" alt="Pessoa em gratidão e celebração a Deus" class="jornada-banner-img" loading="lazy">
-              <div class="jornada-banner-overlay"></div>
+          <div class="loja-card reveal-up">
+            <div class="loja-card-badge">Clássico da Fé</div>
+            <div class="loja-card-icon">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </div>
-            <div class="jornada-banner-content">
-              <span class="jornada-banner-tag">✦ GRAÇA ALCANÇADA ✦</span>
-              <p class="jornada-banner-verse">"Mudaste o meu pranto em dança; a minha alma cantará louvores a ti."</p>
-              <span class="jornada-banner-ref">(Salmo 30:11-12)</span>
-            </div>
+            <h3>Mero Cristianismo (C.S. Lewis)</h3>
+            <p>Uma das obras mais lúcidas e impactantes da literatura cristã mundial sobre os fundamentos da fé, amor e esperança.</p>
+            <div class="loja-price">Best-Seller</div>
+            <a href="https://www.amazon.com.br/s?k=mero+cristianismo+cs+lewis" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-block">
+              <span>Ver na Amazon ↗</span>
+            </a>
           </div>
+
         </div>
 
-        <div class="testemunhos-grid">
-          <!-- Formulário -->
-          <div class="testemunho-form-card reveal-up">
-            <h3>Compartilhar seu Testemunho</h3>
-            <div class="form-group">
-              <label for="testemunho-nome">Seu nome (opcional)</label>
-              <input type="text" id="testemunho-nome" class="form-input" placeholder="Ex: João">
-            </div>
-            <div class="form-group">
-              <label for="testemunho-cidade">Cidade / Estado (opcional)</label>
-              <input type="text" id="testemunho-cidade" class="form-input" placeholder="Ex: Curitiba/PR">
-            </div>
-            <div class="form-group">
-              <label for="testemunho-titulo">Resumo da Vitória</label>
-              <input type="text" id="testemunho-titulo" class="form-input" placeholder="Ex: Porta de emprego aberta, cura no hospital...">
-            </div>
-            <div class="form-group">
-              <label for="testemunho-texto">Relato do Milagre</label>
-              <textarea id="testemunho-texto" class="form-textarea" rows="5" placeholder="Conte como Deus respondeu à sua oração..."></textarea>
-            </div>
-            <button class="btn btn-primary btn-block" onclick="sendTestemunho()">
-              ✦ Publicar Testemunho
-            </button>
-          </div>
-
-          <!-- Mural de Testemunhos -->
-          <div class="testemunhos-mural reveal-up">
-            <div class="pedidos-mural-header">
-              <h3>Testemunhos Vivos <span class="entries-count" id="testemunhos-count">0</span></h3>
-            </div>
-            <div id="testemunhos-list" class="testemunhos-list">
-              <div class="empty-state">
-                <svg width="32" height="32" viewBox="0 0 60 60" fill="none" class="empty-state-svg" xmlns="http://www.w3.org/2000/svg"><path d="M30 8C22 8 10 16 10 28C10 34 14 39 20 42C18 45 14 48 10 50C16 50 24 47 28 44C29 44.3 30 44.5 30 44.5C38 44.5 50 37 50 28C50 16 38 8 30 8Z" fill="#D4AF37" opacity="0.85"/><circle cx="23" cy="24" r="2" fill="#0a0f1e"/><path d="M30 8L38 2L34 12" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/></svg>
-                <p>Nenhum testemunho registrado ainda. Seja o primeiro a glorificar o nome de Deus!</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER -->
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
   <footer class="footer" id="footer">
     <div class="container footer-container">
       <div class="footer-col-brand">
@@ -245,8 +214,8 @@
           <a href="oracao.html" class="footer-link">Sala de Oração</a>
           <a href="jornadas.html" class="footer-link">Jornadas de Fé</a>
           <a href="diario.html" class="footer-link">Diário Espiritual</a>
-          <a href="comunidade.html" class="footer-link">Comunidade & Pedidos</a>
-          <a href="semeadores.html" class="footer-link">Semeadores da Obra</a>
+          <a href="comunidade.html" class="footer-link">Comunidade & Fé</a>
+          <a href="semeadores.html" class="footer-link" style="color:var(--gold);">Semeadores</a>
         </div>
       </div>
 
@@ -260,9 +229,9 @@
             <span class="footer-secret-tag">✦ O QUARTO SECRETO ✦</span>
             <p class="footer-secret-verse">"Entra no teu quarto e, fechada a porta, ora a teu Pai em secreto."</p>
             <span class="footer-secret-ref">Mateus 6:6</span>
-            <button onclick="openMomentoAposento()" class="btn btn-xs btn-primary footer-secret-btn">
-              <span>✦ Momento Guiado</span>
-            </button>
+            <a href="oracao.html" class="btn btn-xs btn-primary footer-secret-btn">
+              <span>✦ Entrar em Oração</span>
+            </a>
           </div>
         </div>
       </div>
@@ -271,34 +240,52 @@
     <div class="footer-bottom">
       <div class="container footer-bottom-inner">
         <p>Feito com fé e propósito &nbsp;✦&nbsp; Aposento Alto © <span id="current-year">2026</span></p>
-        <a href="#pedidos" class="footer-back-to-top">Voltar ao topo ↑</a>
+        <a href="#header" class="footer-back-to-top">Voltar ao topo ↑</a>
       </div>
     </div>
   </footer>
 
-  <!-- MOBILE APP BOTTOM NAVIGATION BAR -->
+  <!-- ==========================================
+       MOBILE APP BOTTOM NAVIGATION BAR (BARRA DO APLICATIVO)
+       ========================================== -->
   <nav class="mobile-app-bar" id="mobile-app-bar" aria-label="Navegação do Aplicativo">
-    <a href="index.html" class="app-tab">
-      <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <a href="index.html" class="app-tab" data-tab="hero">
+      <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
       <span class="app-tab-label">Início</span>
     </a>
-    <a href="oracao.html" class="app-tab">
-      <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+
+    <a href="oracao.html" class="app-tab" data-tab="oracao">
+      <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
       <span class="app-tab-label">Orar</span>
     </a>
+
+    <!-- Botão Central Dourado: Momento no Aposento -->
     <a href="javascript:void(0)" onclick="openMomentoAposento()" class="app-tab app-tab-highlight" title="Momento no Aposento">
       <div class="app-tab-highlight-circle">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C9.5 6 7 9.5 7 14C7 17.5 9.2 21 12 21C14.8 21 17 17.5 17 14C17 11 15 8 13.5 6C13.2 8.5 11.5 10 10.5 11C10 8.5 11.2 5 12 2Z" fill="#080C18"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C9.5 6 7 9.5 7 14C7 17.5 9.2 21 12 21C14.8 21 17 17.5 17 14C17 11 15 8 13.5 6C13.2 8.5 11.5 10 10.5 11C10 8.5 11.2 5 12 2Z" fill="#080C18"/>
+        </svg>
       </div>
       <span class="app-tab-label">Momento</span>
     </a>
-    <a href="jornadas.html" class="app-tab">
-      <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+
+    <a href="jornadas.html" class="app-tab" data-tab="jornadas">
+      <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
       <span class="app-tab-label">Jornadas</span>
     </a>
-    <a href="comunidade.html" class="app-tab active">
-      <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span class="app-tab-label">Mural</span>
+
+    <a href="comunidade.html" class="app-tab" data-tab="comunidade">
+      <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <span class="app-tab-label">Comunidade</span>
     </a>
   </nav>
 
@@ -442,7 +429,7 @@
 
       <!-- Dias da Semana -->
       <div class="streak-week-days" id="streak-week-days">
-        <!-- Renderizado dinamicamente via JS -->
+        <!-- Renderizado dinamicamente via JS (Dom a Sáb com status) -->
       </div>
 
       <div class="streak-message-box">

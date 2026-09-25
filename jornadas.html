@@ -46,6 +46,7 @@
           <li><a href="jornadas.html" class="nav-link active" style="color:var(--gold);">Jornadas</a></li>
           <li><a href="diario.html" class="nav-link">Diário</a></li>
           <li><a href="comunidade.html" class="nav-link">Comunidade</a></li>
+          <li><a href="semeadores.html" class="nav-link">Semeadores</a></li>
         </ul>
       </nav>
 
@@ -78,6 +79,7 @@
       <li><a href="jornadas.html" class="mobile-nav-link" style="color:var(--gold);">Jornadas de Fé</a></li>
       <li><a href="diario.html" class="mobile-nav-link">Diário Espiritual</a></li>
       <li><a href="comunidade.html" class="mobile-nav-link">Comunidade & Intercessão</a></li>
+      <li><a href="semeadores.html" class="mobile-nav-link">Semeadores & Livraria</a></li>
       <li><a href="javascript:void(0)" onclick="triggerPwaInstall(); closeMobileMenu();" class="mobile-nav-link" style="color:var(--gold);">✦ Instalar Aplicativo</a></li>
     </ul>
   </div>
@@ -157,6 +159,7 @@
           <a href="jornadas.html" class="footer-link">Jornadas de Fé</a>
           <a href="diario.html" class="footer-link">Diário Espiritual</a>
           <a href="comunidade.html" class="footer-link">Comunidade & Pedidos</a>
+          <a href="semeadores.html" class="footer-link">Semeadores</a>
         </div>
       </div>
 
@@ -212,105 +215,157 @@
     </a>
   </nav>
 
-  <!-- MODAIS -->
-  <div class="momento-overlay" id="momento-overlay">
+  <!-- ==========================================
+       MODAL: MOMENTO NO APOSENTO (EXPERIÊNCIA GUIADA)
+       ========================================== -->
+  <div class="momento-overlay" id="momento-overlay" role="dialog" aria-modal="true" aria-labelledby="momento-title">
     <div class="momento-card">
-      <button class="momento-close-btn" onclick="closeMomentoAposento()" aria-label="Fechar">&#x2715;</button>
+      <button class="momento-close-btn" onclick="closeMomentoAposento()" aria-label="Fechar Momento no Aposento">✕</button>
+
+      <!-- Indicador de Passos -->
       <div class="momento-steps-nav">
-        <div class="momento-step-indicator active" id="step-indicator-1"><div class="step-num">1</div><span class="step-label">Aquietar</span></div>
+        <div class="momento-step-indicator active" id="step-nav-1">
+          <span class="step-num">1</span>
+          <span class="step-label">Aquietai-vos</span>
+        </div>
         <div class="step-connector"></div>
-        <div class="momento-step-indicator" id="step-indicator-2"><div class="step-num">2</div><span class="step-label">Palavra</span></div>
+        <div class="momento-step-indicator" id="step-nav-2">
+          <span class="step-num">2</span>
+          <span class="step-label">A Palavra</span>
+        </div>
         <div class="step-connector"></div>
-        <div class="momento-step-indicator" id="step-indicator-3"><div class="step-num">3</div><span class="step-label">Clamor</span></div>
+        <div class="momento-step-indicator" id="step-nav-3">
+          <span class="step-num">3</span>
+          <span class="step-label">Oração</span>
+        </div>
       </div>
+
+      <!-- Passo 1: Aquietar e Respirar -->
       <div class="momento-step-pane active" id="momento-step-1">
         <div class="momento-pane-header">
-          <h3 class="momento-pane-title">Aquietai-vos</h3>
-          <p class="momento-pane-verse">"Aquietai-vos e sabei que Eu sou Deus." (Salmo 46:10)</p>
-          <p class="momento-pane-subtitle">Desacelere o coração. Acompanhe a respiração para esvaziar a mente.</p>
+          <span class="badge-pill">✦ ETAPA 1 DE 3</span>
+          <h2 class="momento-pane-title" id="momento-title">Aquiete sua Alma</h2>
+          <p class="momento-pane-verse">"Aquietai-vos e sabei que eu sou Deus." — Salmo 46:10</p>
         </div>
+
         <div class="breathing-container">
           <div class="breathing-circle-aura"></div>
           <div class="breathing-circle" id="breathing-circle">
-            <span class="breathing-text" id="breathing-text">Inspire a paz...</span>
+            <span class="breathing-text" id="breathing-text">Inspire a Paz...</span>
           </div>
         </div>
+
         <div class="breathing-guidance">
-          <span class="breathing-cycles-counter" id="breathing-counter">Ciclo 1 de 3</span>
-          <p id="breathing-sub">Puxe o ar suavemente pelas narinas.</p>
+          <p id="breathing-subtext">Respire profundamente e descanse a mente na presença de Deus.</p>
+          <div class="breathing-cycles-counter">
+            Ciclo <span id="breathing-cycle-num">1</span> de 3
+          </div>
         </div>
+
         <div class="momento-actions">
           <button class="btn btn-outline" onclick="closeMomentoAposento()">Pular</button>
-          <button class="btn btn-primary" onclick="goToMomentoStep(2)">Avançar para a Palavra →</button>
+          <button class="btn btn-primary btn-glow" onclick="nextMomentoStep(2)">
+            <span>Prosseguir para a Palavra ➔</span>
+          </button>
         </div>
       </div>
+
+      <!-- Passo 2: Meditação na Palavra -->
       <div class="momento-step-pane" id="momento-step-2">
         <div class="momento-pane-header">
-          <h3 class="momento-pane-title">A Palavra Viva</h3>
-          <p class="momento-pane-subtitle">Guarde esta verdade no seu coração antes de clamar.</p>
+          <span class="badge-pill">✦ ETAPA 2 DE 3</span>
+          <h2 class="momento-pane-title">A Palavra para Hoje</h2>
+          <p class="momento-pane-subtitle">Guarde este ensinamento sagrado no íntimo do seu coração.</p>
         </div>
+
         <div class="momento-verse-box">
-          <div class="momento-verse-icon">✦</div>
-          <p class="momento-verse-content" id="momento-daily-verse">"O Senhor é o meu pastor; nada me faltará. Em verdes pastagens me faz repousar."</p>
-          <span class="momento-verse-author" id="momento-daily-ref">Salmo 23:1-2</span>
+          <div class="momento-verse-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <p class="momento-verse-content" id="momento-verse-text">"Não andeis ansiosos por coisa alguma; antes, em tudo, sejam os vossos pedidos conhecidos diante de Deus."</p>
+          <span class="momento-verse-author" id="momento-verse-ref">Filipenses 4:6</span>
         </div>
+
         <div class="momento-reflection-box">
-          <h4>Meditação do Aposento</h4>
-          <p id="momento-daily-reflection">Deus não prometeu ausência de tempestades, mas garantiu a presença d’Ele no barco. Entregue a Ele todo o peso que você tem carregado e descanse na certeza de que você é cuidado por um Pai perfeito.</p>
+          <h4>✦ Reflexão do Dia</h4>
+          <p id="momento-reflection-text">Deus conhece suas dores, seus planos e cada batimento do seu coração. Ao entregar seus fardos hoje no Aposento Alto, você declara que Ele cuida de tudo antes mesmo que o sol se ponha.</p>
         </div>
+
         <div class="momento-actions">
-          <button class="btn btn-outline" onclick="goToMomentoStep(1)">← Voltar</button>
-          <button class="btn btn-primary btn-glow" onclick="goToMomentoStep(3)">Entrar em Oração →</button>
+          <button class="btn btn-glass" onclick="nextMomentoStep(1)">
+            <span>Voltar</span>
+          </button>
+          <button class="btn btn-primary btn-glow" onclick="nextMomentoStep(3)">
+            <span>Entrar em Oração ➔</span>
+          </button>
         </div>
       </div>
+
+      <!-- Passo 3: Oração & Clamor -->
       <div class="momento-step-pane" id="momento-step-3">
         <div class="momento-pane-header">
-          <h3 class="momento-pane-title">Comunhão no Secreto</h3>
-          <p class="momento-pane-subtitle">Fale com o Pai. Ele já conhece o seu coração e está te ouvindo.</p>
+          <span class="badge-pill">✦ ETAPA 3 DE 3</span>
+          <h2 class="momento-pane-title">Clamor e Comunhão</h2>
+          <p class="momento-pane-subtitle">Dobre o coração diante do Criador. Este momento é unicamente seu e Dele.</p>
         </div>
+
         <div class="momento-prayer-box">
           <div class="momento-prayer-timer">
-            <span class="momento-time-display" id="momento-timer-num">03:00</span>
-            <span class="momento-time-label">Tempo de oração consagrado</span>
+            <span class="momento-time-display" id="momento-timer-display">03:00</span>
+            <span class="momento-time-label">Tempo em intimidade</span>
           </div>
+
           <div class="momento-audio-status">
-            <span>Áudio de fundo ativado: <strong>Paz Celestial</strong></span>
+            <span class="live-dot"></span> Som celestial reproduzindo suavemente
           </div>
+
           <div class="momento-prayer-guide">
-            <p><em>"Senhor, aquieta meus pensamentos. Derrama a Tua presença neste lugar. Eu coloco diante de Ti as minhas dores, meus planos e minha família. Que a Tua paz que excede todo entendimento tome conta do meu ser agora. Em nome de Jesus, amém."</em></p>
+            <p><em>"Senhor, aquieta meus pensamentos, perdoa minhas fraquezas e renova minha fé. Guia meus passos hoje e abençoa minha casa. Amém."</em></p>
           </div>
         </div>
+
         <div class="momento-actions">
-          <button class="btn btn-primary btn-glow" onclick="finishMomentoAposento()">✦ Concluir e Guardar Bênção</button>
+          <button class="btn btn-glass" onclick="nextMomentoStep(2)">
+            <span>Voltar</span>
+          </button>
+          <button class="btn btn-primary btn-glow" id="btn-finish-momento" onclick="finishMomentoAposento()">
+            <span>✦ Concluir e Guardar Bênção</span>
+          </button>
         </div>
       </div>
+
     </div>
   </div>
 
-  <div class="streak-modal-overlay" id="streak-modal-overlay">
+  <!-- ==========================================
+       MODAL: DIAS COM DEUS (STREAK DE ORAÇÃO)
+       ========================================== -->
+  <div class="streak-modal-overlay" id="streak-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="streak-modal-title">
     <div class="streak-modal-card">
-      <button class="momento-close-btn" onclick="closeStreakModal()" aria-label="Fechar">&#x2715;</button>
+      <button class="momento-close-btn" onclick="closeStreakModal()" aria-label="Fechar Modal de Ofensiva">✕</button>
+
       <div class="streak-modal-flame">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2C9.5 6 7 9.5 7 14C7 17.5 9.2 21 12 21C14.8 21 17 17.5 17 14C17 11 15 8 13.5 6C13.2 8.5 11.5 10 10.5 11C10 8.5 11.2 5 12 2Z" fill="#F5D77F" stroke="#D4AF37" stroke-width="1.2"/>
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="#D4AF37">
+          <path d="M12 2C10.5 4.5 9 6.5 9 9.5C9 12 11 13 11 15C11 16.5 9.8 17.5 8.5 17.5C7.2 17.5 6 16.2 6 14.5C6 11.5 8.5 8.5 9 6.5C5.5 8.5 3 12 3 16C3 20 6.5 23 11.5 23C16.5 23 20 19.5 20 14.5C20 8.5 14 6 12 2Z"/>
         </svg>
       </div>
-      <h3 class="streak-modal-title"><span id="streak-modal-count">1</span> dia de oração consecutiva</h3>
-      <p class="streak-modal-subtitle">"Orai sem cessar. Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco." (1 Tessalonicenses 5:17-18)</p>
-      <div class="streak-week-days">
-        <div class="streak-day-item" data-day="0"><span class="streak-day-name">Dom</span><div class="streak-day-circle">✦</div></div>
-        <div class="streak-day-item" data-day="1"><span class="streak-day-name">Seg</span><div class="streak-day-circle">✦</div></div>
-        <div class="streak-day-item" data-day="2"><span class="streak-day-name">Ter</span><div class="streak-day-circle">✦</div></div>
-        <div class="streak-day-item" data-day="3"><span class="streak-day-name">Qua</span><div class="streak-day-circle">✦</div></div>
-        <div class="streak-day-item" data-day="4"><span class="streak-day-name">Qui</span><div class="streak-day-circle">✦</div></div>
-        <div class="streak-day-item" data-day="5"><span class="streak-day-name">Sex</span><div class="streak-day-circle">✦</div></div>
-        <div class="streak-day-item" data-day="6"><span class="streak-day-name">Sáb</span><div class="streak-day-circle">✦</div></div>
+
+      <h2 class="streak-modal-title" id="streak-modal-title"><span id="streak-modal-days">1</span> dia de oração consecutiva</h2>
+      <p class="streak-modal-subtitle">"Orai sem cessar. Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco." (1 Ts 5:17-18)</p>
+
+      <!-- Dias da Semana -->
+      <div class="streak-week-days" id="streak-week-days">
+        <!-- Renderizado dinamicamente via JS (Dom a Sáb com status) -->
       </div>
+
       <div class="streak-message-box">
-        <p>A constância não é sobre perfeição, é sobre fidelidade diária. Deus honra cada minuto consagrado no secreto.</p>
+        <p id="streak-custom-msg">Você reservou um tempo sagrado com Deus hoje. A constância abre as janelas do céu sobre a sua vida!</p>
       </div>
+
       <div class="streak-modal-actions">
-        <button class="btn btn-primary btn-block" onclick="closeStreakModal()">Continuar Firme na Presença</button>
+        <button class="btn btn-primary btn-block" onclick="closeStreakModal()">
+          Glória a Deus! ✦ Continuar
+        </button>
       </div>
     </div>
   </div>
