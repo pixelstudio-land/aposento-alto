@@ -64,30 +64,24 @@
 
       <nav class="nav-menu" aria-label="Menu Principal">
         <ul class="nav-list">
-          <li><a href="#versiculo" class="nav-link">Versículo</a></li>
-          <li><a href="#oracao" class="nav-link">Oração</a></li>
-          <li><a href="#jornadas" class="nav-link">Jornadas</a></li>
-          <li><a href="#diario" class="nav-link">Diário</a></li>
-          <li><a href="#pedidos" class="nav-link">Intercessão</a></li>
-          <li><a href="#testemunhos" class="nav-link">Testemunhos</a></li>
-          <li><a href="#loja" class="nav-link">Loja</a></li>
+          <li><a href="index.html" class="nav-link active" style="color:var(--gold);">Início</a></li>
+          <li><a href="oracao.html" class="nav-link">Oração</a></li>
+          <li><a href="jornadas.html" class="nav-link">Jornadas</a></li>
+          <li><a href="diario.html" class="nav-link">Diário</a></li>
+          <li><a href="comunidade.html" class="nav-link">Comunidade</a></li>
         </ul>
       </nav>
 
       <div class="header-actions">
-        <button class="btn btn-xs btn-glass" id="btn-pwa-install" onclick="triggerPwaInstall()" style="display:none;" title="Instalar aplicativo no celular ou computador">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span>Instalar App</span>
-        </button>
         <div class="streak-badge" id="streak-badge" onclick="openStreakModal()" title="Sua constância de oração">
           <svg class="streak-flame-svg" width="15" height="15" viewBox="0 0 24 24" fill="none">
             <path d="M12 2C9.5 6 7 9.5 7 14C7 17.5 9.2 21 12 21C14.8 21 17 17.5 17 14C17 11 15 8 13.5 6C13.2 8.5 11.5 10 10.5 11C10 8.5 11.2 5 12 2Z" fill="#F5D77F" stroke="#D4AF37" stroke-width="1.2"/>
           </svg>
           <span class="streak-text" id="streak-text">1 dia com Deus</span>
         </div>
-        <a href="#oracao" class="btn btn-sm btn-primary">
-          <span>Entrar em Oração</span>
-        </a>
+        <button class="btn btn-sm btn-primary" onclick="openMomentoAposento()">
+          <span>✦ Momento Guiado</span>
+        </button>
         <button class="menu-toggle" id="menu-toggle" aria-label="Abrir Menu">
           <span></span><span></span><span></span>
         </button>
@@ -102,13 +96,11 @@
       <button class="mobile-drawer-close" id="mobile-drawer-close">&#x2715;</button>
     </div>
     <ul class="mobile-nav-list">
-      <li><a href="#versiculo" class="mobile-nav-link">Versículo do Dia</a></li>
-      <li><a href="#oracao" class="mobile-nav-link">Timer de Oração</a></li>
-      <li><a href="#jornadas" class="mobile-nav-link">Jornadas de Fé</a></li>
-      <li><a href="#diario" class="mobile-nav-link">Diário Espiritual</a></li>
-      <li><a href="#pedidos" class="mobile-nav-link">Pedidos de Intercessão</a></li>
-      <li><a href="#testemunhos" class="mobile-nav-link">Testemunhos</a></li>
-      <li><a href="#loja" class="mobile-nav-link">Loja Cristã</a></li>
+      <li><a href="index.html" class="mobile-nav-link" style="color:var(--gold);">Início</a></li>
+      <li><a href="oracao.html" class="mobile-nav-link">Sala de Oração</a></li>
+      <li><a href="jornadas.html" class="mobile-nav-link">Jornadas de Fé</a></li>
+      <li><a href="diario.html" class="mobile-nav-link">Diário Espiritual</a></li>
+      <li><a href="comunidade.html" class="mobile-nav-link">Comunidade & Intercessão</a></li>
       <li><a href="javascript:void(0)" onclick="triggerPwaInstall(); closeMobileMenu();" class="mobile-nav-link" style="color:var(--gold);">✦ Instalar Aplicativo</a></li>
     </ul>
   </div>
@@ -136,8 +128,8 @@
           <button class="btn btn-lg btn-primary btn-glow" onclick="openMomentoAposento()">
             <span>✦ Momento no Aposento</span>
           </button>
-          <a href="#oracao" class="btn btn-lg btn-glass">
-            <span>Timer de Oração</span>
+          <a href="oracao.html" class="btn btn-lg btn-glass">
+            <span>Sala de Oração & Silêncio</span>
           </a>
         </div>
         <div class="hero-verse reveal-up">
@@ -201,327 +193,84 @@
     </section>
 
     <!-- ==========================================
-         TIMER DE ORAÇÃO
+         PORTAIS DO SANTUÁRIO (OS 4 APOSENTOS)
          ========================================== -->
-    <section class="section section-oracao" id="oracao">
+    <section class="section section-portais" id="portais">
       <div class="container">
         <div class="section-header text-center reveal-up">
-          <span class="badge-pill">✦ TEMPO COM DEUS</span>
-          <h2 class="section-title">Timer de Oração</h2>
-          <p class="section-subtitle">Reserve um tempo sagrado. Aquiete sua alma e encontre a Deus.</p>
+          <span class="badge-pill">✦ SEUS APOSENTOS SAGRADOS ✦</span>
+          <h2 class="section-title">Escolha seu Momento com Deus</h2>
+          <p class="section-subtitle">Cada ambiente foi preparado com carinho para você aquietar a mente, aprofundar sua comunhão e encontrar paz no secreto.</p>
         </div>
 
-        <div class="timer-card reveal-up">
-          <div class="timer-presets">
-            <button class="preset-btn active" data-min="5">5 min</button>
-            <button class="preset-btn" data-min="10">10 min</button>
-            <button class="preset-btn" data-min="15">15 min</button>
-            <button class="preset-btn" data-min="30">30 min</button>
-            <button class="preset-btn" data-min="60">1 hora</button>
-          </div>
+        <div class="portais-grid">
 
-          <div class="timer-display">
-            <div class="timer-ring">
-              <svg class="timer-svg" viewBox="0 0 220 220">
-                <circle class="timer-track" cx="110" cy="110" r="100" stroke-width="6"/>
-                <circle class="timer-progress" id="timer-circle" cx="110" cy="110" r="100" stroke-width="6" stroke-dasharray="628.3" stroke-dashoffset="0"/>
-              </svg>
-              <div class="timer-time" id="timer-display">05:00</div>
-            </div>
-          </div>
-
-          <div class="timer-controls">
-            <button class="timer-btn" id="timer-reset" onclick="resetTimer()" title="Reiniciar">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-            </button>
-            <button class="timer-btn timer-btn-play" id="timer-toggle" onclick="toggleTimer()">
-              <svg id="icon-play" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <svg id="icon-pause" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-            </button>
-            <button class="timer-btn" id="timer-sound" onclick="toggleSound()" title="Som ambiente">
-              <svg id="icon-sound-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-              <svg id="icon-sound-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-            </button>
-          </div>
-
-          <div class="timer-verse-wrap">
-            <p class="timer-verse-text" id="timer-verse">"Sede quietos e sabei que eu sou Deus." (Salmo 46:10)</p>
-          </div>
-
-          <!-- Sound Ambiance Mixer -->
-          <div class="sound-mixer-wrap">
-            <div class="mixer-header">
-              <span class="mixer-title">✦ Ambiência Sonora</span>
-              <div class="volume-slider-wrap" title="Ajustar Volume">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                <input type="range" id="sound-volume" min="0" max="100" value="70" oninput="setSoundVolume(this.value)" aria-label="Volume">
+          <!-- 1. Sala de Oração -->
+          <a href="oracao.html" class="portal-card reveal-up">
+            <div class="portal-header">
+              <div class="portal-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
               </div>
+              <span class="portal-tag">Silêncio & Paz</span>
             </div>
-            <div class="sound-presets">
-              <button class="sound-preset-btn active" data-sound="cenaculo" onclick="selectSoundPreset('cenaculo', this)">
-                Cenáculo Sereno
-              </button>
-              <button class="sound-preset-btn" data-sound="graca" onclick="selectSoundPreset('graca', this)">
-                Graça &amp; Descanso
-              </button>
-              <button class="sound-preset-btn" data-sound="aguas" onclick="selectSoundPreset('aguas', this)">
-                Águas Tranquilas
-              </button>
-              <button class="sound-preset-btn" data-sound="silencio" onclick="selectSoundPreset('silencio', this)">
-                Silêncio
-              </button>
-            </div>
-          </div>
+            <h3 class="portal-title">Sala de Oração & Sons</h3>
+            <p class="portal-desc">Temporizador devocional dedicado com sons relaxantes da criação (chuva suave, fogueira, rio e harpa) para aquietar sua alma.</p>
+            <span class="portal-action-link">Entrar no Quarto Secreto →</span>
+          </a>
 
-          <div class="timer-stats-badge" id="timer-stats-wrap">
-            <span class="timer-stats-dot"></span>
-            <span id="global-prayers-stat">Carregando orações da comunidade...</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==========================================
-         JORNADAS DEVOCIONAIS (PLANOS DE 7 DIAS)
-         ========================================== -->
-    <section class="section section-jornadas" id="jornadas">
-      <div class="container">
-        <div class="section-header text-center reveal-up">
-          <span class="badge-pill">✦ CAMINHOS DE FÉ</span>
-          <h2 class="section-title">Jornadas Devocionais</h2>
-          <p class="section-subtitle">Planos bíblicos guiados para edificar sua vida espiritual dia após dia com oração dirigida.</p>
-
-          <!-- Banner Visual da Natureza / Caminho -->
-          <div class="jornada-visual-banner reveal-up">
-            <div class="jornada-banner-img-wrap">
-              <img src="images/nature_path_light.jpg" alt="Caminho iluminado na natureza" class="jornada-banner-img" loading="lazy">
-              <div class="jornada-banner-overlay"></div>
-            </div>
-            <div class="jornada-banner-content">
-              <span class="jornada-banner-tag">✦ A JORNADA DO JUSTO ✦</span>
-              <p class="jornada-banner-verse">"Lâmpada para os meus pés é a tua palavra e luz para o meu caminho."</p>
-              <span class="jornada-banner-ref">(Salmo 119:105)</span>
-            </div>
-          </div>
-
-          <div class="jornadas-tabs">
-            <button class="jornada-tab-btn active" data-jornada="ansiedade" onclick="switchJornada('ansiedade', this)">
-              <svg class="jornada-tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span class="jornada-tab-title">Vencendo a Ansiedade <span class="jornada-tab-days">7 dias</span></span>
-            </button>
-            <button class="jornada-tab-btn" data-jornada="familia" onclick="switchJornada('familia', this)">
-              <svg class="jornada-tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-              <span class="jornada-tab-title">Pela Minha Família <span class="jornada-tab-days">7 dias</span></span>
-            </button>
-            <button class="jornada-tab-btn" data-jornada="renovacao" onclick="switchJornada('renovacao', this)">
-              <svg class="jornada-tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C9.5 6 7 9.5 7 14C7 17.5 9.2 21 12 21C14.8 21 17 17.5 17 14C17 11 15 8 13.5 6C13.2 8.5 11.5 10 10.5 11C10 8.5 11.2 5 12 2Z"/></svg>
-              <span class="jornada-tab-title">Renovação Espiritual <span class="jornada-tab-days">3 dias</span></span>
-            </button>
-          </div>
-        </div>
-
-        <div class="jornada-card reveal-up" id="jornada-container">
-          <!-- Renderizado via JavaScript com progresso e dias interativos -->
-        </div>
-      </div>
-    </section>
-
-    <!-- ==========================================
-         DIÁRIO ESPIRITUAL
-         ========================================== -->
-    <section class="section section-diario" id="diario">
-      <div class="container">
-        <div class="section-header text-center reveal-up">
-          <span class="badge-pill">✦ DIÁRIO DA ALMA</span>
-          <h2 class="section-title">Diário Espiritual</h2>
-          <p class="section-subtitle">Registre o que Deus tem falado ao seu coração. Seus testemunhos, orações e gratidão.</p>
-        </div>
-
-        <!-- Card de Inspiração / Momento Devocional com Deus -->
-        <div class="diario-inspiration-card reveal-up">
-          <div class="diario-inspiration-img-wrap">
-            <img src="images/devotional_bible_morning.jpg" alt="Bíblia aberta na manhã com luz suave" class="diario-inspiration-img" loading="lazy">
-            <div class="diario-inspiration-overlay"></div>
-          </div>
-          <div class="diario-inspiration-content">
-            <span class="badge-pill">✦ SEU MOMENTO SAGRADO</span>
-            <h3 class="diario-inspiration-title">O Encontro Matinal com a Presença de Deus</h3>
-            <p class="diario-inspiration-verse">"Pela manhã ouvirás a minha voz, ó Senhor; pela manhã me apresentarei a ti e vigiarei." (Salmo 5:3)</p>
-            <p class="diario-inspiration-desc">Reservar alguns minutos diante da Palavra é regar as raízes da sua alma. Escreva o que o Senhor falou com você hoje.</p>
-          </div>
-        </div>
-
-        <div class="diario-grid">
-          <!-- Formulário -->
-          <div class="diario-form-card reveal-up">
-            <h3>Nova Entrada</h3>
-            <div class="form-group">
-              <label for="diario-date">Data</label>
-              <input type="date" id="diario-date" class="form-input">
-            </div>
-            <div class="form-group">
-              <label for="diario-title">Título</label>
-              <input type="text" id="diario-title" class="form-input" placeholder="Ex: Deus me falou hoje...">
-            </div>
-            <div class="form-group">
-              <label for="diario-verse">Versículo do momento</label>
-              <input type="text" id="diario-verse" class="form-input" placeholder="Ex: Salmo 23:1">
-            </div>
-            <div class="form-group">
-              <label for="diario-text">Reflexão / Testemunho</label>
-              <textarea id="diario-text" class="form-textarea" rows="5" placeholder="Escreva o que está em seu coração..."></textarea>
-            </div>
-            <button class="btn btn-primary btn-block" onclick="saveDiarioEntry()">
-              ✦ Salvar no Diário
-            </button>
-          </div>
-
-          <!-- Entradas salvas -->
-          <div class="diario-entries-card reveal-up">
-            <div class="diario-entries-header">
-              <h3>Minhas Entradas <span class="entries-count" id="entries-count">0</span></h3>
-              <button class="btn btn-glass btn-xs" id="btn-export-diario" onclick="exportDiario()" title="Exportar ou Imprimir Diário em PDF">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                Exportar (PDF)
-              </button>
-            </div>
-            <div id="diario-entries" class="diario-entries-list">
-              <div class="empty-state">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                <p>Seu diário está vazio. Comece registrando o que Deus tem falado ao seu coração.</p>
+          <!-- 2. Jornadas de Fé -->
+          <a href="jornadas.html" class="portal-card reveal-up">
+            <div class="portal-header">
+              <div class="portal-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
               </div>
+              <span class="portal-tag">Trilhas de 7 Dias</span>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+            <h3 class="portal-title">Jornadas Devocionais</h3>
+            <p class="portal-desc">Planos bíblicos guiados dia após dia para vencer a ansiedade, edificar sua família e experimentar renovação espiritual.</p>
+            <span class="portal-action-link">Iniciar Trilha Devocional →</span>
+          </a>
 
-    <!-- ==========================================
-         PEDIDOS DE INTERCESSÃO
-         ========================================== -->
-    <section class="section section-pedidos" id="pedidos">
-      <div class="container">
-        <div class="section-header text-center reveal-up">
-          <span class="badge-pill">✦ INTERCESSÃO EM COMUNHÃO</span>
-          <h2 class="section-title">Pedidos de Oração</h2>
-          <p class="section-subtitle">Compartilhe sua causa. Irmãos e irmãs em todo o país orarão com você.</p>
-        </div>
-
-        <div class="pedidos-grid">
-          <div class="pedido-form-card reveal-up">
-            <h3>Enviar Pedido de Oração</h3>
-            <div class="form-group">
-              <label for="pedido-nome">Seu nome (opcional)</label>
-              <input type="text" id="pedido-nome" class="form-input" placeholder="Ex: Maria">
-            </div>
-            <div class="form-group">
-              <label for="pedido-cidade">Cidade / Estado (opcional)</label>
-              <input type="text" id="pedido-cidade" class="form-input" placeholder="Ex: Belo Horizonte/MG">
-            </div>
-            <div class="form-group">
-              <label for="pedido-categoria">Categoria do Pedido</label>
-              <select id="pedido-categoria" class="form-input">
-                <option value="Geral">Oração Geral</option>
-                <option value="Saude">Saúde e Cura</option>
-                <option value="Familia">Família e Lar</option>
-                <option value="Provisao">Trabalho e Provisão</option>
-                <option value="Espiritual">Vida Espiritual</option>
-                <option value="Causas">Causas Urgentes e Milagres</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="pedido-text">Seu pedido ou clamor</label>
-              <textarea id="pedido-text" class="form-textarea" rows="4" placeholder="Escreva aqui seu pedido de oração..."></textarea>
-            </div>
-            <button class="btn btn-primary btn-block" id="btn-save-pedido" onclick="savePedido()">
-              ✦ Enviar Pedido para o Mural
-            </button>
-            <p id="pedido-feedback" class="form-feedback" style="display:none;"></p>
-          </div>
-
-          <div class="pedidos-mural reveal-up">
-            <div class="pedidos-mural-header">
-              <h3>Mural de Intercessão</h3>
-              <span class="live-pill"><span class="live-dot"></span> Ao Vivo</span>
-            </div>
-
-            <!-- Filtros de Categorias dos Pedidos -->
-            <div class="pedidos-filter-tabs">
-              <button class="filter-tab-btn active" data-cat="todas" onclick="filterPedidosCat('todas', this)">✦ Todas</button>
-              <button class="filter-tab-btn" data-cat="Saude" onclick="filterPedidosCat('Saude', this)">Saúde</button>
-              <button class="filter-tab-btn" data-cat="Familia" onclick="filterPedidosCat('Familia', this)">Família</button>
-              <button class="filter-tab-btn" data-cat="Provisao" onclick="filterPedidosCat('Provisao', this)">Trabalho</button>
-              <button class="filter-tab-btn" data-cat="Espiritual" onclick="filterPedidosCat('Espiritual', this)">Espiritual</button>
-              <button class="filter-tab-btn" data-cat="Causas" onclick="filterPedidosCat('Causas', this)">Milagres</button>
-            </div>
-
-            <div id="pedidos-list" class="pedidos-list">
-              <div class="empty-state">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>
-                <p>Carregando pedidos de oração...</p>
+          <!-- 3. Diário Espiritual -->
+          <a href="diario.html" class="portal-card reveal-up">
+            <div class="portal-header">
+              <div class="portal-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
               </div>
+              <span class="portal-tag">Intimidade Secreta</span>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+            <h3 class="portal-title">Diário Espiritual</h3>
+            <p class="portal-desc">Seu caderno pessoal com Deus. Guarde orações íntimas, respostas do Senhor e versículos com total privacidade no seu aparelho.</p>
+            <span class="portal-action-link">Abrir meu Caderno →</span>
+          </a>
 
-    <!-- ==========================================
-         TESTEMUNHOS & GRAÇAS ALCANÇADAS
-         ========================================== -->
-    <section class="section section-testemunhos" id="testemunhos">
-      <div class="container">
-        <div class="section-header text-center reveal-up">
-          <span class="badge-pill">✦ GRAÇAS ALCANÇADAS</span>
-          <h2 class="section-title">Mural de Testemunhos</h2>
-          <p class="section-subtitle">"Contai entre as nações a sua glória, entre todos os povos as suas maravilhas." (Salmo 96:3)</p>
-        </div>
-
-        <!-- Banner de Alegria e Gratidão na Natureza -->
-        <div class="testemunhos-inspiration-banner reveal-up">
-          <div class="testemunhos-img-wrap">
-            <img src="images/person_gratitude_nature.jpg" alt="Alegria e gratidão a Deus na natureza" class="testemunhos-img" loading="lazy">
-            <div class="testemunhos-img-overlay"></div>
-          </div>
-          <div class="testemunhos-img-caption">
-            <span class="testemunhos-tag">✦ A ALEGRIA DA RESPOSTA ✦</span>
-            <h3>"Mudaste o meu pranto em festa; a minha alma cantará louvores a ti."</h3>
-            <p>Salmo 30:11-12 · Cada testemunho compartilhado aqui é uma semente viva de esperança para irmãos em todo o país.</p>
-          </div>
-        </div>
-
-        <div class="testemunhos-grid">
-          <div class="testemunho-form-card reveal-up">
-            <h3>Compartilhar Bênção</h3>
-            <div class="form-group">
-              <label for="testemunho-nome">Seu nome (opcional)</label>
-              <input type="text" id="testemunho-nome" class="form-input" placeholder="Ex: João Carlos">
-            </div>
-            <div class="form-group">
-              <label for="testemunho-text">Seu testemunho / Oração respondida</label>
-              <textarea id="testemunho-text" class="form-textarea" rows="4" placeholder="Conte o milagre, livramento, cura ou provisão que Deus operou..."></textarea>
-            </div>
-            <button class="btn btn-primary btn-block" id="btn-save-testemunho" onclick="saveTestemunho()">
-              ✦ Publicar Testemunho
-            </button>
-            <p id="testemunho-feedback" class="form-feedback" style="display:none;"></p>
-          </div>
-
-          <div class="testemunhos-mural reveal-up">
-            <div class="pedidos-mural-header">
-              <h3>Testemunhos da Comunidade</h3>
-              <span class="entries-count" id="testemunhos-count">0</span>
-            </div>
-            <div id="testemunhos-list" class="testemunhos-list">
-              <div class="empty-state">
-                <svg width="32" height="32" viewBox="0 0 60 60" fill="none" class="empty-state-svg" xmlns="http://www.w3.org/2000/svg"><path d="M30 8C22 8 10 16 10 28C10 34 14 39 20 42C18 45 14 48 10 50C16 50 24 47 28 44C29 44.3 30 44.5 30 44.5C38 44.5 50 37 50 28C50 16 38 8 30 8Z" fill="#D4AF37" opacity="0.85"/><circle cx="23" cy="24" r="2" fill="#0a0f1e"/><path d="M30 8L38 2L34 12" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/></svg>
-                <p>Nenhum testemunho registrado ainda. Seja o primeiro a glorificar o nome de Deus!</p>
+          <!-- 4. Comunidade & Intercessão -->
+          <a href="comunidade.html" class="portal-card reveal-up">
+            <div class="portal-header">
+              <div class="portal-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
               </div>
+              <span class="portal-tag">Aliança & Fé</span>
             </div>
-          </div>
+            <h3 class="portal-title">Mural de Clamor & Milagres</h3>
+            <p class="portal-desc">Deixe sua causa para intercessão, ore pelas famílias de todo o país e celebre testemunhos de vitórias alcançadas.</p>
+            <span class="portal-action-link">Participar da Comunidade →</span>
+          </a>
+
         </div>
       </div>
     </section>
+
+
+
 
     <!-- ==========================================
          LOJA CRISTÃ & SEMEADORES
@@ -545,8 +294,8 @@
               <span class="pix-key-val" id="pix-key-text">53.315.364/0001-27</span>
             </div>
             <div class="pix-info-row">
-              <span class="pix-info-label">Instituição / Conta:</span>
-              <span class="pix-info-val">InfinitePay (MEI)</span>
+              <span class="pix-info-label">Beneficiário:</span>
+              <span class="pix-info-val">Julio Cesar Cardone</span>
             </div>
 
             <div class="pix-actions">
@@ -648,12 +397,11 @@
         <h4 class="footer-heading">Navegação</h4>
         <div class="footer-nav-grid">
           <a href="#versiculo" class="footer-link">Versículo do Dia</a>
-          <a href="#oracao" class="footer-link">Timer de Oração</a>
-          <a href="#jornadas" class="footer-link">Jornadas de Fé</a>
-          <a href="#diario" class="footer-link">Diário Espiritual</a>
-          <a href="#pedidos" class="footer-link">Intercessão</a>
-          <a href="#testemunhos" class="footer-link">Testemunhos</a>
-          <a href="#loja" class="footer-link">Loja Cristã</a>
+          <a href="oracao.html" class="footer-link">Sala de Oração</a>
+          <a href="jornadas.html" class="footer-link">Jornadas de Fé</a>
+          <a href="diario.html" class="footer-link">Diário Espiritual</a>
+          <a href="comunidade.html" class="footer-link">Comunidade & Fé</a>
+          <a href="#loja" class="footer-link">Loja & Semeadores</a>
         </div>
       </div>
 
@@ -667,7 +415,7 @@
             <span class="footer-secret-tag">✦ O QUARTO SECRETO ✦</span>
             <p class="footer-secret-verse">"Entra no teu quarto e, fechada a porta, ora a teu Pai em secreto."</p>
             <span class="footer-secret-ref">Mateus 6:6</span>
-            <a href="#oracao" class="btn btn-xs btn-primary footer-secret-btn">
+            <a href="oracao.html" class="btn btn-xs btn-primary footer-secret-btn">
               <span>✦ Entrar em Oração</span>
             </a>
           </div>
@@ -687,7 +435,7 @@
        MOBILE APP BOTTOM NAVIGATION BAR (BARRA DO APLICATIVO)
        ========================================== -->
   <nav class="mobile-app-bar" id="mobile-app-bar" aria-label="Navegação do Aplicativo">
-    <a href="#hero" class="app-tab active" data-tab="hero" onclick="setActiveAppTab(this)">
+    <a href="index.html#hero" class="app-tab active" data-tab="hero">
       <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
         <polyline points="9 22 9 12 15 12 15 22"/>
@@ -695,12 +443,11 @@
       <span class="app-tab-label">Início</span>
     </a>
 
-    <a href="#versiculo" class="app-tab" data-tab="versiculo" onclick="setActiveAppTab(this)">
+    <a href="oracao.html" class="app-tab" data-tab="oracao">
       <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
       </svg>
-      <span class="app-tab-label">Palavra</span>
+      <span class="app-tab-label">Orar</span>
     </a>
 
     <!-- Botão Central Dourado: Momento no Aposento -->
@@ -710,22 +457,21 @@
           <path d="M12 2C9.5 6 7 9.5 7 14C7 17.5 9.2 21 12 21C14.8 21 17 17.5 17 14C17 11 15 8 13.5 6C13.2 8.5 11.5 10 10.5 11C10 8.5 11.2 5 12 2Z" fill="#080C18"/>
         </svg>
       </div>
-      <span class="app-tab-label">Orar</span>
+      <span class="app-tab-label">Momento</span>
     </a>
 
-    <a href="#jornadas" class="app-tab" data-tab="jornadas" onclick="setActiveAppTab(this)">
+    <a href="jornadas.html" class="app-tab" data-tab="jornadas">
       <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
       </svg>
       <span class="app-tab-label">Jornadas</span>
     </a>
 
-    <a href="#diario" class="app-tab" data-tab="diario" onclick="setActiveAppTab(this)">
+    <a href="comunidade.html" class="app-tab" data-tab="comunidade">
       <svg class="app-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 20h9"/>
-        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
-      <span class="app-tab-label">Diário</span>
+      <span class="app-tab-label">Comunidade</span>
     </a>
   </nav>
 

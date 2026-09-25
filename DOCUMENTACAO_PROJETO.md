@@ -66,35 +66,37 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
 
 ## 3. Arquitetura da Aplicação & Recursos Técnicos
 
-1. **Progressive Web App (PWA) Offline-First:**
+1. **Arquitetura em Portal Multi-Páginas Integrado:**
+   - Para proporcionar uma experiência leve, serena e organizada (sem a sobrecarga de uma página única excessivamente longa), o Aposento Alto foi estruturado como um portal com salas dedicadas:
+     - [index.html](file:///c:/Projetos/Pixel/Landing%20Pages/Aposento%20Alto/index.html): **Portal Central & Santuário** — Hero acolhedor, Versículo do Dia com filtro por estado do coração, os 4 Portais de Acesso aos Aposentos, Semeadores & Livraria Devocional, e Rodapé com cobertura espiritual.
+     - [oracao.html](file:///c:/Projetos/Pixel/Landing%20Pages/Aposento%20Alto/oracao.html): **Sala de Oração & Sons da Criação** — Ambiente de foco absoluto com temporizador circular (3m a 30m) e mixer de ambiência natural e celestial (chuva, fogueira, rio, harpa).
+     - [jornadas.html](file:///c:/Projetos/Pixel/Landing%20Pages/Aposento%20Alto/jornadas.html): **Jornadas Devocionais** — Trilhas guiadas de 7 dias com leitura diária, reflexão e oração dirigida.
+     - [diario.html](file:///c:/Projetos/Pixel/Landing%20Pages/Aposento%20Alto/diario.html): **Diário Espiritual Pessoal** — Caderno privativo para anotações íntimas com Deus, salvo com 100% de privacidade no navegador e gerador de PDF devocional.
+     - [comunidade.html](file:///c:/Projetos/Pixel/Landing%20Pages/Aposento%20Alto/comunidade.html): **Mural de Clamor & Milagres** — Intercessão comunitária em tempo real e compartilhamento de testemunhos de fé.
+   - **Continuidade de Estado:** Como o `localStorage` é compartilhado por todo o domínio, o streak de oração (`dias com Deus`), anotações do diário e progresso nas jornadas permanecem contínuos e unificados entre todas as páginas.
+2. **Progressive Web App (PWA) Offline-First:**
    - [service-worker.js](file:///c:/Projetos/Pixel/Landing%20Pages/Aposento%20Alto/service-worker.js) com cache estratégico de fontes, folhas de estilo, scripts e imagens.
    - [manifest.json](file:///c:/Projetos/Pixel/Landing%20Pages/Aposento%20Alto/manifest.json) completo com ícones de 192px e 512px, cor tema `#080C18`, e exibição em tela cheia independente (`standalone`).
    - Botão de instalação com detecção nativa do evento `beforeinstallprompt` (Android/Desktop) e tutorial assistido para Safari no iOS.
-2. **Gerador Dinâmico de Stories e Cards (Canvas 9:16):**
+3. **Gerador Dinâmico de Stories e Cards (Canvas 9:16):**
    - Criação de imagem para download direto com o versículo selecionado, logotipo da pomba sagrada, tipografia nobre e o domínio do projeto (`aposentoalto.com.br`).
-3. **Persistência de Dados & Comunidade Realtime:**
+4. **Persistência de Dados & Comunidade Realtime:**
    - **Supabase Realtime:** Sincronização instantânea para pedidos de intercessão e testemunhos compartilhados.
-   - **Armazenamento Híbrido Resiliente:** Os leads de newsletter são enviados à nuvem (Supabase) e guardados com redundância no `localStorage`.
-   - **Diário Espiritual Local e Privativo:** Todas as anotações do diário pessoal ficam seguras e privativas no navegador do usuário, com ferramenta de exportação/impressão em PDF.
+   - **Armazenamento Híbrido Resiliente:** Os dados essenciais operam com fallback gracioso em `localStorage`.
 
 ---
 
-## 4. Estrutura da Página e Textos Completos
+## 4. Estrutura das Páginas e Navegação
 
-### 4.1. Cabeçalho (Header)
-- **Marca:** Símbolo da Pomba da Paz em ouro com ramo de oliveira + texto `Aposento Alto`.
-- **Links de Navegação:**
-  - `Versículo` (`#versiculo`)
-  - `Oração` (`#oracao`)
-  - `Jornadas` (`#jornadas`)
-  - `Diário` (`#diario`)
-  - `Intercessão` (`#pedidos`)
-  - `Testemunhos` (`#testemunhos`)
-  - `Loja` (`#loja`)
-- **Ações Rápidas:**
-  - Botão de Instalação PWA: `Instalar App`
-  - Badge de Ofensiva: `1 dia com Deus` (abre o modal de constância)
-  - Botão de Ação Primária: `Entrar em Oração`
+### 4.1. Cabeçalho Otimizado (Header Desktop & Mobile)
+- **Design Desktop:** O cabeçalho foi otimizado para evitar qualquer corte ou transbordamento em telas de laptops e desktops intermediários (1024px–1280px com escalas de 125% do Windows):
+  - Container expandido para `1320px` com `gap: 16px` e `justify-content: space-between`.
+  - Links de navegação unificados em 5 destinos essenciais: `Início`, `Oração`, `Jornadas`, `Diário`, `Comunidade`.
+  - Breakpoints inteligentes: a 1140px oculta o botão redundante e a 980px aciona o menu gaveta lateral elegante.
+- **Ações Rápidas do Cabeçalho:**
+  - Badge de Constância: `1 dia com Deus` (abre o modal de ofensiva).
+  - Botão de Ação Primária: `✦ Momento Guiado` (inicia a experiência imersiva de 3 etapas).
+  - Botão Hambúrguer Mobile: Acesso suave ao menu lateral em dispositivos móveis e tablets.
 
 ---
 
@@ -284,12 +286,12 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
 
 ---
 
-### 4.9. Seção 7: Semeadores & Livraria Devocional
+### 4.9. Seção: Semeadores & Livraria Devocional
 - **Card Principal — Apoio Voluntário (Semeadores do Aposento Alto):**
   - **Badge:** `✦ APOIO VOLUNTÁRIO ✦`
   - **Título:** `Semeie no Aposento Alto`
   - **Proposta Ética:** Transparência total. O projeto é 100% gratuito e livre de anúncios invasivos. Quem desejar contribuir voluntariamente pode transferir qualquer valor diretamente.
-  - **Chave Pix Integrada:** CNPJ `53.315.364/0001-27` (InfinitePay / MEI).
+  - **Chave Pix Integrada:** CNPJ `53.315.364/0001-27` — **Beneficiário:** `Julio Cesar Cardone`.
   - **Recurso Interativo:** Botão `✦ Copiar Chave Pix` com cópia instantânea para a área de transferência do celular/computador e feedback visual animado.
   - **Citação Bíblica:** *"Cada um dê conforme determinou em seu coração, não com pesar ou por obrigação, pois Deus ama quem dá com alegria." (2 Co 9:7)*.
 - **Vitrine Devocional Recomendada (Modelo Afiliado Amazon — Logística Zero):**
