@@ -284,20 +284,24 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
 
 ---
 
-### 4.9. Seção 7: Loja Cristã (Produtos para a Jornada)
-- **Badge:** `✦ LOJA CRISTÃ`
-- **Título:** `Produtos para sua Jornada`
-- **Subtítulo:** `Produtos digitais e físicos para fortalecer sua vida espiritual. Em breve!`
-- **Cards de Produtos:**
-  1. **Plano de Leitura Bíblica (Gratuito / PDF):** 30 dias de leitura estruturada com reflexões diárias para baixar e imprimir.
-  2. **Diário de Oração Imprimível (Destaque):** Caderno completo diagramado para registro devocional, anotações de sermões e orações.
-  3. **Wallpapers Sagrados (Digital):** Coleção em alta resolução com versículos e paisagens da criação para celular e computador.
-- **Formulário de Notificação (Newsletter):**
-  - Título: `Seja o primeiro a saber!`
-  - Subtítulo: `Cadastre seu e-mail e avisamos assim que os produtos estiverem disponíveis.`
-  - Campo de e-mail + Botão: `Quero ser avisado`
+### 4.9. Seção 7: Semeadores & Livraria Devocional
+- **Card Principal — Apoio Voluntário (Semeadores do Aposento Alto):**
+  - **Badge:** `✦ APOIO VOLUNTÁRIO ✦`
+  - **Título:** `Semeie no Aposento Alto`
+  - **Proposta Ética:** Transparência total. O projeto é 100% gratuito e livre de anúncios invasivos. Quem desejar contribuir voluntariamente pode transferir qualquer valor diretamente.
+  - **Chave Pix Integrada:** CNPJ `53.315.364/0001-27` (InfinitePay / MEI).
+  - **Recurso Interativo:** Botão `✦ Copiar Chave Pix` com cópia instantânea para a área de transferência do celular/computador e feedback visual animado.
+  - **Citação Bíblica:** *"Cada um dê conforme determinou em seu coração, não com pesar ou por obrigação, pois Deus ama quem dá com alegria." (2 Co 9:7)*.
+- **Vitrine Devocional Recomendada (Modelo Afiliado Amazon — Logística Zero):**
+  - **Título:** `Instrumentos para sua Caminhada`
+  - **Produtos Curados:**
+    1. **Bíblia de Estudo NVI (Edição de Luxo):** Comentários teológicos e mapas para meditação profunda.
+    2. **Diário de Oração em Couro:** Caderno capa dura artesanal para registro íntimo de clamores e respostas.
+    3. **Mero Cristianismo (C.S. Lewis):** Obra clássica e indispensável da cosmovisão e fé cristã.
+  - **Links Diretos:** Redirecionamento seguro para a Amazon, sem necessidade de estoque físico ou pós-venda manual.
 
 ---
+
 
 ### 4.10. Rodapé Nobre (Footer)
 - **Coluna 1 — Marca & Aliança:**

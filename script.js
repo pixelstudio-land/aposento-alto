@@ -2115,5 +2115,45 @@ if (document.readyState === 'loading') {
   initMobileAppScrollSpy();
 }
 
+// ── 23. SEMEADORES & DOAÇÃO PIX ─────────────
+function copyPixKey() {
+  const rawKey = '53315364000127';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(rawKey).then(() => {
+      showPixFeedback('✦ Chave CNPJ copiada! Abra o app do seu banco e cole na opção Pix.');
+    }).catch(() => {
+      fallbackCopyPix(rawKey);
+    });
+  } else {
+    fallbackCopyPix(rawKey);
+  }
+}
 
+function fallbackCopyPix(text) {
+  const tempInput = document.createElement('input');
+  tempInput.value = text;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  try {
+    document.execCommand('copy');
+    showPixFeedback('✦ Chave CNPJ copiada! Abra o app do seu banco e cole na opção Pix.');
+  } catch (err) {
+    alert('Chave Pix: 53.315.364/0001-27\n\n(Copie os números para transferir no seu banco)');
+  }
+  document.body.removeChild(tempInput);
+}
 
+function showPixFeedback(msg) {
+  const fb = document.getElementById('pix-feedback');
+  const btnText = document.getElementById('btn-copy-pix-text');
+  if (fb) {
+    fb.textContent = msg;
+    fb.style.display = 'block';
+  }
+  if (btnText) {
+    btnText.textContent = '✓ Chave Copiada!';
+    setTimeout(() => {
+      btnText.textContent = '✦ Copiar Chave Pix';
+    }, 4500);
+  }
+}
