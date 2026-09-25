@@ -2037,7 +2037,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredInstallPrompt = e;
   const btn = document.getElementById('btn-pwa-install');
-  if (btn) btn.style.display = 'inline-flex';
+  if (btn && window.innerWidth > 768) btn.style.display = 'inline-flex';
 });
 
 window.addEventListener('appinstalled', () => {
@@ -2066,5 +2066,54 @@ function triggerPwaInstall() {
     }
   }
 }
+
+// ── 22. BARRA DE NAVEGAÇÃO MOBILE (ESTILO APP NATIVO) ──────
+function setActiveAppTab(element) {
+  if (!element) return;
+  document.querySelectorAll('.mobile-app-bar .app-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  element.classList.add('active');
+}
+
+// Atualizar aba ativa no scroll da página
+function initMobileAppScrollSpy() {
+  const sections = [
+    { id: 'hero', tab: 'hero' },
+    { id: 'versiculo', tab: 'versiculo' },
+    { id: 'jornadas', tab: 'jornadas' },
+    { id: 'diario', tab: 'diario' }
+  ];
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const tabId = entry.target.id;
+          const matchingTab = document.querySelector(`.mobile-app-bar .app-tab[data-tab="${tabId}"]`);
+          if (matchingTab) {
+            document.querySelectorAll('.mobile-app-bar .app-tab').forEach(t => t.classList.remove('active'));
+            matchingTab.classList.add('active');
+          }
+        }
+      });
+    }, {
+      rootMargin: '-20% 0px -55% 0px',
+      threshold: 0.15
+    });
+
+    sections.forEach(s => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMobileAppScrollSpy);
+} else {
+  initMobileAppScrollSpy();
+}
+
 
 

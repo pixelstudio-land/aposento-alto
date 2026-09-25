@@ -335,9 +335,26 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
 - Título: `X dias de oração consecutiva`.
 - Versículo: *"Orai sem cessar. Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco." (1 Ts 5:17-18)*.
 - Calendário semanal (Domingo a Sábado) indicando os dias com oração cumprida.
-- Mensagem encorajadora de fortalecimento de hábitos sagrados.
+### 5.3. Arquitetura Mobile e Experiência de Aplicativo Nativo
+- **Barra de Navegação Inferior Fixa (`.mobile-app-bar`):**
+  - Inspirada nos principais aplicativos de espiritualidade mundial (*Glorify*, *Hallow*, *YouVersion*).
+  - 5 abas de toque rápido:
+    1. **Início:** Retorna ao topo/Hero.
+    2. **Palavra:** Navega para o Versículo do Dia com seleção de categorias.
+    3. **Orar (Botão Central Flutuante Dourado):** Botão circular elevado com gradiente ouro sagrado e sombra pulsante, acionando diretamente a experiência do *Momento no Aposento*.
+    4. **Jornadas:** Acesso às trilhas de 7 dias de fé e meditação.
+    5. **Diário:** Acesso ao bloco de orações e testemunhos.
+  - Sincronização inteligente com `IntersectionObserver` que atualiza a aba ativa automaticamente à medida que o usuário rola a página.
+- **Prevenção Rigorosa de Overflow Horizontal:**
+  - Viewport travado a 100vw com `overflow-x: hidden` e `box-sizing: border-box`.
+  - No mobile, ações secundárias do topo (`#btn-pwa-install` e `.btn-primary`) são realocadas para a barra inferior e menu lateral, eliminando o estouro de largura do cabeçalho.
+- **Scroll Horizontal Suave (Touch Swipe):**
+  - Categorias de versículos e filtros de intercessão com rolagem horizontal suave ao deslizar do dedo (`-webkit-overflow-scrolling: touch`) e barras de rolagem nativas ocultadas.
+- **Modo PWA Standalone Instalado:**
+  - Suporte a `display-mode: standalone`, desabilitando seleções indesejadas e respeitando `safe-area-inset` em celulares com entalhe ou barra de navegação gestual.
 
 ---
+
 
 ## 6. Próximos Passos e Oportunidades de Expansão
 
