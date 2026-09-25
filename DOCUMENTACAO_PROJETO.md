@@ -300,11 +300,13 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
   - **Citação Bíblica:** *"Cada um dê conforme determinou em seu coração, não com pesar ou por obrigação, pois Deus ama quem dá com alegria." (2 Co 9:7)*.
 - **Vitrine Devocional Recomendada (Modelo Afiliado Amazon — Logística Zero):**
   - **Título:** `Instrumentos para sua Caminhada`
-  - **Produtos Curados:**
-    1. **Bíblia de Estudo NVI (Edição de Luxo):** Comentários teológicos e mapas para meditação profunda.
-    2. **Diário de Oração em Couro:** Caderno capa dura artesanal para registro íntimo de clamores e respostas.
-    3. **Mero Cristianismo (C.S. Lewis):** Obra clássica e indispensável da cosmovisão e fé cristã.
-  - **Links Diretos:** Redirecionamento seguro para a Amazon, sem necessidade de estoque físico ou pós-venda manual.
+  - **Produtos Curados (5 Instrumentos Sagrados):**
+    1. **Bíblia Sagrada NAA:** Letra maior e capa dura ilustrada preta (Nova Almeida Atualizada) — [`link.amazon/B03eBwmUn`](https://link.amazon/B03eBwmUn)
+    2. **Bíblia NVI de Anotações:** Capa luxo marrom artesanal com espaço pautado para journaling devocional — [`link.amazon/B00YOerEr`](https://link.amazon/B00YOerEr)
+    3. **Cristianismo Puro e Simples (C.S. Lewis):** Obra clássica e indispensável da cosmovisão e fé cristã — [`link.amazon/B02NQX816`](https://link.amazon/B02NQX816)
+    4. **Mananciais no Deserto (Lettie Cowman):** 365 meditações diárias para renovação da paz e alívio do coração — [`link.amazon/B0gNy8z1f`](https://link.amazon/B0gNy8z1f)
+    5. **Praticando a Presença de Deus (Irmão Lawrence):** O testemunho clássico sobre comunhão contínua e intimidade no secreto — [`link.amazon/B051lhWyG`](https://link.amazon/B051lhWyG)
+  - **Links Diretos:** Redirecionamento com tag de afiliado para a Amazon, sem necessidade de estoque físico ou pós-venda manual.
 
 ---
 
