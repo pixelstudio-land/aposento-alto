@@ -1387,6 +1387,30 @@ body {
   border-color: var(--border-hover);
 }
 
+.loja-card-img-wrap {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  margin-bottom: 8px;
+  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.07) 0%, rgba(10, 15, 30, 0.4) 75%);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 12px;
+  box-sizing: border-box;
+}
+.loja-card-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.65));
+  transition: transform var(--transition);
+}
+.loja-card:hover .loja-card-img {
+  transform: translateY(-5px) scale(1.05);
+}
 .loja-card-icon { font-size: 3rem; margin-bottom: 4px; }
 .loja-card h3 { font-family: var(--font-heading); font-size: 1.35rem; color: var(--text-main); }
 .loja-card p { font-size: 0.88rem; color: var(--text-sub); line-height: 1.65; flex: 1; }
@@ -2234,9 +2258,11 @@ body {
   .diario-grid,
   .pedidos-grid,
   .testemunhos-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 18px !important;
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .diario-form-card,
@@ -2247,25 +2273,124 @@ body {
   .testemunhos-mural {
     padding: 18px 14px !important;
     width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .pedidos-mural-header,
+  .testemunhos-mural-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
   }
 
   .pedidos-filter-tabs {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    padding-bottom: 6px !important;
+    padding-bottom: 8px !important;
     scrollbar-width: none !important;
     justify-content: flex-start !important;
   }
   .pedidos-filter-tabs::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
   .filter-tab-btn {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
     font-size: 0.78rem !important;
     padding: 6px 12px !important;
+  }
+
+  .pedidos-list,
+  .testemunhos-list {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  .pedido-item,
+  .testemunho-item {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 14px 12px !important;
+    overflow: hidden !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .pedido-item-header,
+  .testemunho-item-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    align-items: flex-start !important;
+  }
+
+  .pedido-item-nome,
+  .testemunho-item-nome {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+  }
+
+  .pedido-item-text,
+  .testemunho-item-text {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    font-size: 0.86rem !important;
+  }
+
+  .pedido-item-footer {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .pedido-item-pray,
+  .btn-contar-graca {
+    font-size: 0.74rem !important;
+    padding: 6px 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  .intercessoes-text {
+    width: 100% !important;
+    font-size: 0.72rem !important;
+    margin-top: 4px !important;
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   /* LOJA */

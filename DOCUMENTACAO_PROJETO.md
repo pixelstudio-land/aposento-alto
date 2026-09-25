@@ -306,6 +306,7 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
     3. **Cristianismo Puro e Simples (C.S. Lewis):** Obra clássica e indispensável da cosmovisão e fé cristã — [`link.amazon/B02NQX816`](https://link.amazon/B02NQX816)
     4. **Mananciais no Deserto (Lettie Cowman):** 365 meditações diárias para renovação da paz e alívio do coração — [`link.amazon/B0gNy8z1f`](https://link.amazon/B0gNy8z1f)
     5. **Praticando a Presença de Deus (Irmão Lawrence):** O testemunho clássico sobre comunhão contínua e intimidade no secreto — [`link.amazon/B051lhWyG`](https://link.amazon/B051lhWyG)
+  - **Identidade Visual dos Produtos:** Em vez de emojis genéricos ou ilustrações sintéticas, cada card utiliza a fotografia oficial e autêntica de capa do produto obtida diretamente do CDN da Amazon (`images/biblia_naa_preta.jpg`, `images/biblia_nvi_anotacoes.jpg`, `images/livro_cristianismo_puro.jpg`, `images/livro_mananciais_deserto.jpg`, `images/livro_presenca_deus.jpg`), envoltas em um halo sutil com gradiente dourado (`.loja-card-img-wrap`) e micro-elevação ao passar o mouse.
   - **Links Diretos:** Redirecionamento com tag de afiliado para a Amazon, sem necessidade de estoque físico ou pós-venda manual.
 
 ---
@@ -360,6 +361,7 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
 - **Prevenção Rigorosa de Overflow Horizontal:**
   - Viewport travado a 100vw com `overflow-x: hidden` e `box-sizing: border-box`.
   - No mobile, ações secundárias do topo (`#btn-pwa-install` e `.btn-primary`) são realocadas para a barra inferior e menu lateral, eliminando o estouro de largura do cabeçalho.
+  - Correção técnica nos grids devocionais (`.pedidos-grid`, `.testemunhos-grid`): uso mandatório de `grid-template-columns: minmax(0, 1fr)` e `min-width: 0`, impedindo que textos longos ou abas de filtro expandam o container para além da borda direita da tela de smartphones.
 - **Scroll Horizontal Suave (Touch Swipe):**
   - Categorias de versículos e filtros de intercessão com rolagem horizontal suave ao deslizar do dedo (`-webkit-overflow-scrolling: touch`) e barras de rolagem nativas ocultadas.
 - **Modo PWA Standalone Instalado:**

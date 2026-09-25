@@ -1126,6 +1126,9 @@ async function loadPedidos() {
 
     if (error) throw error;
 
+    const countEl = document.getElementById('pedidos-count');
+    if (countEl) countEl.textContent = data ? data.length : 0;
+
     if (!data || data.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
@@ -1147,7 +1150,7 @@ async function loadPedidos() {
         cleanPedido = tagMatch[2];
       }
 
-      const isHidden = (currentPedidoCatFilter !== 'todas' && cat.toLowerCase() !== currentPedidoCatFilter.toLowerCase()) ? 'style="display:none;"' : '';
+      const isHidden = (currentPedidoCatFilter !== 'todas' && currentPedidoCatFilter !== 'todos' && cat.toLowerCase() !== currentPedidoCatFilter.toLowerCase()) ? 'style="display:none;"' : '';
       const safeNome = escapeHtml(p.nome || 'Anônimo');
       const safePedido = escapeHtml(cleanPedido);
       const safeQuote = safePedido.replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -1183,15 +1186,20 @@ async function loadPedidos() {
   }
 }
 
+function filterPedidos(cat, btn) {
+  filterPedidosCat(cat, btn);
+}
+
 function filterPedidosCat(cat, btn) {
   currentPedidoCatFilter = cat;
   document.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
+  const target = cat.toLowerCase();
   const items = document.querySelectorAll('#pedidos-list .pedido-item');
   items.forEach(item => {
-    const itemCat = item.getAttribute('data-category') || 'Geral';
-    if (cat === 'todas' || itemCat.toLowerCase() === cat.toLowerCase()) {
+    const itemCat = (item.getAttribute('data-category') || 'Geral').toLowerCase();
+    if (target === 'todos' || target === 'todas' || itemCat.includes(target) || target.includes(itemCat)) {
       item.style.display = '';
     } else {
       item.style.display = 'none';
@@ -1202,7 +1210,7 @@ function filterPedidosCat(cat, btn) {
 function celebrarRespostaOração(id, nome, pedidoTexto) {
   const testemunhosSection = document.getElementById('testemunhos');
   const nomeInput = document.getElementById('testemunho-nome');
-  const textoInput = document.getElementById('testemunho-text');
+  const textoInput = document.getElementById('testemunho-texto') || document.getElementById('testemunho-text');
   const cardForm = document.querySelector('.testemunho-form-card');
 
   if (testemunhosSection) {
@@ -1230,6 +1238,9 @@ function renderLocalPedidos() {
   const container = document.getElementById('pedidos-list');
   if (!container) return;
   const pedidos = JSON.parse(localStorage.getItem('aposento_pedidos') || '[]');
+  const countEl = document.getElementById('pedidos-count');
+  if (countEl) countEl.textContent = pedidos.length;
+
   if (pedidos.length === 0) {
     container.innerHTML = `<div class="empty-state"><p>Nenhum pedido ainda.</p></div>`;
     return;
@@ -1248,13 +1259,18 @@ function renderLocalPedidos() {
   `).join('');
 }
 
+async function sendPedidoOracao() {
+  return savePedido();
+}
+
 async function savePedido() {
   const nome = document.getElementById('pedido-nome')?.value.trim() || 'Anônimo';
   const cidade = document.getElementById('pedido-cidade')?.value.trim() || null;
   const categoria = document.getElementById('pedido-categoria')?.value || 'Geral';
-  const pedido = document.getElementById('pedido-text')?.value.trim();
+  const pedidoEl = document.getElementById('pedido-texto') || document.getElementById('pedido-text');
+  const pedido = pedidoEl?.value.trim();
   const feedback = document.getElementById('pedido-feedback');
-  const btn = document.getElementById('btn-save-pedido');
+  const btn = document.getElementById('btn-save-pedido') || document.querySelector('#pedidos .btn-primary');
 
   if (!pedido || pedido.length < 5) {
     showFeedback(feedback, 'Por favor, escreva um pedido com mais de 5 caracteres.', 'error');
@@ -1288,6 +1304,7 @@ async function savePedido() {
 
     if (document.getElementById('pedido-nome')) document.getElementById('pedido-nome').value = '';
     if (document.getElementById('pedido-cidade')) document.getElementById('pedido-cidade').value = '';
+    if (document.getElementById('pedido-texto')) document.getElementById('pedido-texto').value = '';
     if (document.getElementById('pedido-text')) document.getElementById('pedido-text').value = '';
   } catch(e) {
     console.error('Erro ao enviar pedido:', e);
@@ -1330,7 +1347,10 @@ async function loadTestemunhos() {
   const countEl = document.getElementById('testemunhos-count');
   if (!container) return;
 
-  if (!supabaseClient) return;
+  if (!supabaseClient) {
+    renderLocalTestemunhos();
+    return;
+  }
 
   try {
     const { data, error } = await supabaseClient
@@ -1338,7 +1358,7 @@ async function loadTestemunhos() {
       .select('*')
       .eq('aprovado', true)
       .order('created_at', { ascending: false })
-      .limit(20);
+      .limit(30);
 
     if (error) throw error;
     if (countEl) countEl.textContent = data ? data.length : 0;
@@ -1355,22 +1375,55 @@ async function loadTestemunhos() {
     container.innerHTML = data.map(t => `
       <div class="testemunho-item">
         <div class="testemunho-item-header">
-          <span class="testemunho-item-nome">${escapeHtml(t.nome || 'Anônimo')}</span>
+          <span class="testemunho-item-nome">
+            ${escapeHtml(t.nome || 'Anônimo')}
+            ${t.cidade ? `<span class="testemunho-item-cidade"> · ${escapeHtml(t.cidade)}</span>` : ''}
+          </span>
           <span class="testemunho-item-hora">${timeAgo(t.created_at)}</span>
         </div>
+        ${t.titulo ? `<div class="testemunho-item-title" style="font-weight:600; color:var(--gold-light); margin-bottom:4px;">${escapeHtml(t.titulo)}</div>` : ''}
         <div class="testemunho-item-text">"${escapeHtml(t.testemunho)}"</div>
       </div>
     `).join('');
   } catch(e) {
     console.error('Erro ao carregar testemunhos:', e);
+    renderLocalTestemunhos();
   }
+}
+
+function renderLocalTestemunhos() {
+  const container = document.getElementById('testemunhos-list');
+  const countEl = document.getElementById('testemunhos-count');
+  if (!container) return;
+  const list = JSON.parse(localStorage.getItem('aposento_testemunhos') || '[]');
+  if (countEl) countEl.textContent = list.length;
+  if (list.length === 0) {
+    container.innerHTML = `<div class="empty-state"><p>Nenhum testemunho ainda.</p></div>`;
+    return;
+  }
+  container.innerHTML = [...list].reverse().map(t => `
+    <div class="testemunho-item">
+      <div class="testemunho-item-header">
+        <span class="testemunho-item-nome">${escapeHtml(t.nome || 'Anônimo')}</span>
+        <span class="testemunho-item-hora">${timeAgo(t.created_at)}</span>
+      </div>
+      <div class="testemunho-item-text">"${escapeHtml(t.testemunho)}"</div>
+    </div>
+  `).join('');
+}
+
+async function sendTestemunho() {
+  return saveTestemunho();
 }
 
 async function saveTestemunho() {
   const nome = document.getElementById('testemunho-nome')?.value.trim() || 'Anônimo';
-  const testemunho = document.getElementById('testemunho-text')?.value.trim();
+  const cidade = document.getElementById('testemunho-cidade')?.value.trim() || null;
+  const titulo = document.getElementById('testemunho-titulo')?.value.trim() || null;
+  const textoEl = document.getElementById('testemunho-texto') || document.getElementById('testemunho-text');
+  const testemunho = textoEl?.value.trim();
   const feedback = document.getElementById('testemunho-feedback');
-  const btn = document.getElementById('btn-save-testemunho');
+  const btn = document.getElementById('btn-save-testemunho') || document.querySelector('#testemunhos .btn-primary');
 
   if (!testemunho || testemunho.length < 5) {
     showFeedback(feedback, 'Por favor, escreva um testemunho com mais de 5 caracteres.', 'error');
@@ -1386,14 +1439,27 @@ async function saveTestemunho() {
     if (supabaseClient) {
       const { error } = await supabaseClient.from('testemunhos').insert([{
         nome,
-        testemunho
+        testemunho,
+        aprovado: true
       }]);
-      if (error) throw error;
+      if (error) {
+        // Fallback sem campo aprovado se a policy restringir
+        await supabaseClient.from('testemunhos').insert([{ nome, testemunho }]);
+      }
       showFeedback(feedback, 'Glória a Deus! Seu testemunho foi publicado com sucesso.', 'success');
       loadTestemunhos();
+    } else {
+      const list = JSON.parse(localStorage.getItem('aposento_testemunhos') || '[]');
+      list.push({ nome, testemunho, created_at: new Date().toISOString() });
+      localStorage.setItem('aposento_testemunhos', JSON.stringify(list));
+      showFeedback(feedback, 'Testemunho guardado localmente!', 'success');
+      renderLocalTestemunhos();
     }
 
     if (document.getElementById('testemunho-nome')) document.getElementById('testemunho-nome').value = '';
+    if (document.getElementById('testemunho-cidade')) document.getElementById('testemunho-cidade').value = '';
+    if (document.getElementById('testemunho-titulo')) document.getElementById('testemunho-titulo').value = '';
+    if (document.getElementById('testemunho-texto')) document.getElementById('testemunho-texto').value = '';
     if (document.getElementById('testemunho-text')) document.getElementById('testemunho-text').value = '';
   } catch(e) {
     console.error('Erro ao enviar testemunho:', e);

@@ -122,7 +122,8 @@
               <label for="pedido-texto">Seu Pedido de Oração</label>
               <textarea id="pedido-texto" class="form-textarea" rows="4" placeholder="Descreva sua causa para orarmos juntos..."></textarea>
             </div>
-            <button class="btn btn-primary btn-block" onclick="sendPedidoOracao()">
+            <p id="pedido-feedback" class="form-feedback" style="display:none;"></p>
+            <button class="btn btn-primary btn-block" id="btn-save-pedido" onclick="sendPedidoOracao()">
               ✦ Enviar para o Mural de Clamor
             </button>
           </div>
@@ -196,7 +197,8 @@
               <label for="testemunho-texto">Relato do Milagre</label>
               <textarea id="testemunho-texto" class="form-textarea" rows="5" placeholder="Conte como Deus respondeu à sua oração..."></textarea>
             </div>
-            <button class="btn btn-primary btn-block" onclick="sendTestemunho()">
+            <p id="testemunho-feedback" class="form-feedback" style="display:none;"></p>
+            <button class="btn btn-primary btn-block" id="btn-save-testemunho" onclick="sendTestemunho()">
               ✦ Publicar Testemunho
             </button>
           </div>
@@ -457,6 +459,8 @@
     </div>
   </div>
 
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
