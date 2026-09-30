@@ -80,7 +80,7 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
    - [manifest.json](file:///c:/Projetos/Pixel/Landing%20Pages/Aposento%20Alto/manifest.json) completo com ícones de 192px e 512px, cor tema `#080C18`, e exibição em tela cheia independente (`standalone`).
    - Botão de instalação com detecção nativa do evento `beforeinstallprompt` (Android/Desktop) e tutorial assistido para Safari no iOS.
 3. **Gerador Dinâmico de Stories e Cards (Canvas 9:16):**
-   - Criação de imagem para download direto com o versículo selecionado, logotipo da pomba sagrada, tipografia nobre e o domínio do projeto (`aposentoalto.com.br`).
+   - Criação de imagem para download direto com o versículo selecionado, brasão oficial do Leão de Judá, tipografia nobre e o domínio do projeto (`aposentoalto.com.br`).
 4. **Persistência de Dados & Comunidade Realtime:**
    - **Supabase Realtime:** Sincronização instantânea para pedidos de intercessão e testemunhos compartilhados.
    - **Armazenamento Híbrido Resiliente:** Os dados essenciais operam com fallback gracioso em `localStorage`.
@@ -366,6 +366,19 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
   - Categorias de versículos e filtros de intercessão com rolagem horizontal suave ao deslizar do dedo (`-webkit-overflow-scrolling: touch`) e barras de rolagem nativas ocultadas.
 - **Modo PWA Standalone Instalado:**
   - Suporte a `display-mode: standalone`, desabilitando seleções indesejadas e respeitando `safe-area-inset` em celulares com entalhe ou barra de navegação gestual.
+
+### 5.4. Sistema de Métricas Próprias, Lead Tracking & Painel Secreto Anti-Hacker
+- **Métricas First-Party sem Dependência de Terceiros:**
+  - Sistema de telemetria e conversão integrado diretamente com o Supabase (`eventos_analytics`).
+  - Identificação anônima persistente de aparelhos via `visitor_id` no `localStorage` (`vis_<timestamp>_<random>`), conectando o histórico de navegação ao e-mail no momento em que o usuário preenche a newsletter ou envia pedidos de oração (dispensando telas de login ou atrito de cadastro).
+  - Captura inteligente de canais de aquisição via URL (`utm_source`, `ref`, referrer externo de redes sociais como Instagram, WhatsApp, TikTok e Google).
+  - Rastreamento dos principais marcos da jornada: `page_view`, `pix_key_copied`, `amazon_product_click`, `momento_completed`, `prayer_timer_completed`, `verse_shared`, `lead_captured` e `prayer_request_submitted`.
+- **Painel Administrativo Secreto (`painel-interno-aa73.html`):**
+  - **Invisibilidade Total:** URL não linkada em nenhum lugar do código público.
+  - **Blindagem contra Robôs:** Bloqueio mandatório em `robots.txt` (`Disallow: /painel-interno-aa73.html`) e meta tags `noindex, nofollow, noarchive, nosnippet`.
+  - **Autenticação Criptográfica Segura:** Senha verificada por hash SHA-256 via Web Crypto API nativa do navegador (o código não armazena a senha legível em texto limpo).
+  - **Proteção Anti-Brute-Force:** Bloqueio automático de 15 minutos em caso de 5 tentativas consecutivas incorretas.
+  - **Visão Executiva em Tempo Real:** Indicadores de visitas, volume de orações, versículos compartilhados, apoio financeiro, livros clicados, e-mails capturados e feed ao vivo de eventos do banco de dados.
 
 ---
 
