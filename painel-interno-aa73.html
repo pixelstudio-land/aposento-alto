@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aposento Alto — Gestão Interna</title>
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="theme-color" content="#080C18">
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <style>
+    :root {
+      --bg: #080C18;
+      --card: rgba(16, 22, 45, 0.85);
+      --card-border: rgba(212, 175, 55, 0.2);
+      --gold: #D4AF37;
+      --gold-light: #F5D77F;
+      --gold-dim: rgba(212, 175, 55, 0.12);
+      --text: #F0EEE8;
+      --text-sub: #A8A3B8;
+      --danger: #FF5E5E;
+      --success: #2ECC71;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── TELA DE BLOQUEIO POR SENHA ── */
+    #lock-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at center, #10162D 0%, #080C18 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .lock-card {
+      background: rgba(16, 22, 45, 0.95);
+      border: 1px solid var(--gold);
+      border-radius: 20px;
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
+    }
+
+    .lock-icon {
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .lock-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 28px;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+    }
+
+    .lock-subtitle {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 24px;
+    }
+
+    .lock-input {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(8, 12, 24, 0.8);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 18px;
+      letter-spacing: 4px;
+      text-align: center;
+      margin-bottom: 16px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .lock-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-unlock {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #D4AF37, #AA820A);
+      color: #080C18;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-unlock:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .lock-msg {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--danger);
+      display: none;
+    }
+
+    /* ── DASHBOARD PRINCIPAL ── */
+    #dashboard {
+      display: none;
+      padding: 30px 20px 60px;
+      max-width: 1320px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .dash-brand h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 32px;
+      color: var(--gold-light);
+    }
+
+    .dash-brand p {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .dash-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(212, 175, 55, 0.25);
+    }
+
+    .btn-logout {
+      background: rgba(255, 94, 94, 0.15);
+      border: 1px solid var(--danger);
+      color: #ff9999;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* ── CARDS KPI ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--gold);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    /* ── SEÇÕES DETALHADAS ── */
+    .dash-sections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 600px) {
+      .dash-sections-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel-box {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .panel-box h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      color: var(--gold-light);
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--text-sub);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .data-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+
+    .badge-event {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--gold-dim);
+      color: var(--gold-light);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .feed-item {
+      background: rgba(8, 12, 24, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .feed-item-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .feed-item-time {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .empty-state {
+      padding: 30px;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       TELA DE LOGIN SEGURO COM CRIPTOGRAFIA
+       ========================================== -->
+  <div id="lock-screen">
+    <div class="lock-card">
+      <div class="lock-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <h2 class="lock-title">Aposento Alto</h2>
+      <p class="lock-subtitle">Acesso restrito ao painel de liderança e métricas</p>
+
+      <input type="password" id="pass-input" class="lock-input" placeholder="••••••••" autocomplete="off" autofocus>
+      <button class="btn-unlock" id="btn-unlock" onclick="handleUnlock()">✦ Entrar no Painel</button>
+      <p id="lock-msg" class="lock-msg"></p>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       DASHBOARD DE GESTÃO & ANALYTICS
+       ========================================== -->
+  <main id="dashboard">
+    <header class="dash-header">
+      <div class="dash-brand">
+        <h1>Painel de Visão &amp; Sementes</h1>
+        <p>Aposento Alto ✦ Métricas em tempo real e colheita de vidas</p>
+      </div>
+      <div class="dash-actions">
+        <button class="btn-secondary" onclick="loadAllAnalytics()">↻ Atualizar Dados</button>
+        <button class="btn-logout" onclick="logoutAdmin()">Sair</button>
+      </div>
+    </header>
+
+    <!-- CARDS DE METRICAS (KPIS) -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Visitantes Únicos</div>
+        <div class="kpi-value" id="kpi-visitors">0</div>
+        <div class="kpi-sub" id="kpi-visitors-sub">Total de navegadores únicos</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">Semeadores Pix</div>
+        <div class="kpi-value" id="kpi-pix">0</div>
+        <div class="kpi-sub">Cliques em "Copiar Chave Pix"</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">Interesse em Livros</div>
+        <div class="kpi-value" id="kpi-amazon">0</div>
+        <div class="kpi-sub">Cliques em Bíblias / Amazon</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">Momentos Concluídos</div>
+        <div class="kpi-value" id="kpi-momentos">0</div>
+        <div class="kpi-sub">Orações guiadas de 3 etapas</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">Leads Cadastrados</div>
+        <div class="kpi-value" id="kpi-leads">0</div>
+        <div class="kpi-sub">E-mails de irmãos na lista</div>
+      </div>
+    </div>
+
+    <!-- SEÇÕES DETALHADAS -->
+    <div class="dash-sections-grid">
+
+      <!-- Origem de Tráfego (UTMs e Campanhas) -->
+      <div class="panel-box">
+        <h3>✦ Origens do Tráfego (Onde Divulgamos)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Origem / Campanha</th>
+              <th style="text-align:right;">Acessos</th>
+            </tr>
+          </thead>
+          <tbody id="traffic-table-body">
+            <tr><td colspan="2" class="empty-state">Carregando origens...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Livros & Bíblias Clicadas -->
+      <div class="panel-box">
+        <h3>✦ Vitrine Devocional (Amazon)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Instrumento / Livro</th>
+              <th style="text-align:right;">Cliques</th>
+            </tr>
+          </thead>
+          <tbody id="books-table-body">
+            <tr><td colspan="2" class="empty-state">Carregando produtos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- E-mails Cadastrados (Leads) -->
+      <div class="panel-box">
+        <h3>✦ E-mails de Contato (<span id="leads-count-span">0</span>)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>E-mail</th>
+              <th style="text-align:right;">Data</th>
+            </tr>
+          </thead>
+          <tbody id="leads-table-body">
+            <tr><td colspan="2" class="empty-state">Nenhum e-mail capturado ainda.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Feed em Tempo Real de Eventos -->
+      <div class="panel-box">
+        <h3>✦ Ações em Tempo Real (Últimos Eventos)</h3>
+        <div class="feed-list" id="realtime-feed">
+          <div class="empty-state">Aguardando eventos...</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // ── HASH CRIPTOGRÁFICO SHA-256 DA SENHA (NUNCA EXPÕE A SENHA EM TEXTO LIMPO) ──
+    const AUTH_HASH = '4b19ef0c52a27afdda7cda67438466055f7fb8df47e8eb4d6fdd004732fee7aa';
+    const SUPABASE_URL = 'https://usecyyevfegavaxughbk.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZWN5eWV2ZmVnYXZheHVnaGJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMzQwOTQsImV4cCI6MjEwNTYxMDA5NH0.VHX13wfyS9pKriMZYFBeqvRSDNTZScn-5oEjx32M-Y0';
+    const supabase = (window.supabase && typeof window.supabase.createClient === 'function')
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+
+    async function sha256(text) {
+      const buffer = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function handleUnlock() {
+      const passInput = document.getElementById('pass-input');
+      const msg = document.getElementById('lock-msg');
+      const val = passInput.value.trim();
+
+      // Proteção de Lockout por tentativas
+      const lockoutUntil = parseInt(localStorage.getItem('admin_lockout_until') || '0', 10);
+      if (Date.now() < lockoutUntil) {
+        const remainingMin = Math.ceil((lockoutUntil - Date.now()) / 60000);
+        msg.textContent = `Muitas tentativas incorretas. Tente novamente em ${remainingMin} min.`;
+        msg.style.display = 'block';
+        return;
+      }
+
+      if (!val) return;
+
+      const inputHash = await sha256(val);
+      if (inputHash === AUTH_HASH) {
+        localStorage.removeItem('admin_failed_attempts');
+        sessionStorage.setItem('aposento_admin_auth', 'true');
+        showDashboard();
+      } else {
+        let fails = parseInt(localStorage.getItem('admin_failed_attempts') || '0', 10) + 1;
+        localStorage.setItem('admin_failed_attempts', String(fails));
+
+        if (fails >= 5) {
+          localStorage.setItem('admin_lockout_until', String(Date.now() + 15 * 60 * 1000));
+          msg.textContent = 'Muitas tentativas incorretas. Painel bloqueado por 15 minutos por segurança.';
+        } else {
+          msg.textContent = `Senha incorreta. Tentativa ${fails} de 5.`;
+        }
+        msg.style.display = 'block';
+        passInput.value = '';
+      }
+    }
+
+    document.getElementById('pass-input')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleUnlock();
+    });
+
+    function showDashboard() {
+      document.getElementById('lock-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadAllAnalytics();
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('aposento_admin_auth');
+      window.location.reload();
+    }
+
+    // Auto-login se já autenticado na sessão atual do navegador
+    if (sessionStorage.getItem('aposento_admin_auth') === 'true') {
+      showDashboard();
+    }
+
+    // ── CARREGAMENTO DE DADOS ──
+    async function loadAllAnalytics() {
+      if (!supabase) {
+        alert('Supabase client não inicializado.');
+        return;
+      }
+
+      try {
+        // 1. Buscar todos os eventos
+        const { data: events, error } = await supabase
+          .from('eventos_analytics')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(300);
+
+        if (!error && events) {
+          renderKPIs(events);
+          renderTrafficSources(events);
+          renderAmazonClicks(events);
+          renderRealtimeFeed(events);
+        } else {
+          // Fallback se tabela vazia
+          renderLocalFallback();
+        }
+
+        // 2. Buscar Leads de E-mail
+        const { data: leads } = await supabase
+          .from('newsletter_leads')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(100);
+
+        renderLeads(leads || []);
+
+      } catch(e) {
+        console.error('Erro ao carregar dados:', e);
+        renderLocalFallback();
+      }
+    }
+
+    function renderKPIs(events) {
+      const visitors = new Set();
+      let pixClicks = 0;
+      let amazonClicks = 0;
+      let momentos = 0;
+
+      events.forEach(e => {
+        if (e.visitor_id) visitors.add(e.visitor_id);
+        if (e.event_name === 'pix_key_copied') pixClicks++;
+        if (e.event_name === 'amazon_product_click') amazonClicks++;
+        if (e.event_name === 'momento_completed') momentos++;
+      });
+
+      document.getElementById('kpi-visitors').textContent = visitors.size;
+      document.getElementById('kpi-pix').textContent = pixClicks;
+      document.getElementById('kpi-amazon').textContent = amazonClicks;
+      document.getElementById('kpi-momentos').textContent = momentos;
+    }
+
+    function renderTrafficSources(events) {
+      const counts = {};
+      events.filter(e => e.event_name === 'page_view').forEach(e => {
+        const key = (e.source && e.source !== 'direto') 
+          ? `${e.source} (${e.campaign || 'geral'})`
+          : 'Acesso Direto / Bio';
+        counts[key] = (counts[key] || 0) + 1;
+      });
+
+      const body = document.getElementById('traffic-table-body');
+      const entries = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+
+      if (entries.length === 0) {
+        body.innerHTML = `<tr><td colspan="2" class="empty-state">Nenhum acesso registrado ainda.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = entries.map(([source, count]) => `
+        <tr>
+          <td><strong>${source}</strong></td>
+          <td style="text-align:right;"><span class="badge-event">${count}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderAmazonClicks(events) {
+      const counts = {};
+      events.filter(e => e.event_name === 'amazon_product_click').forEach(e => {
+        const prod = (e.details && e.details.product) ? e.details.product : 'Produto Amazon';
+        counts[prod] = (counts[prod] || 0) + 1;
+      });
+
+      const body = document.getElementById('books-table-body');
+      const entries = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+
+      if (entries.length === 0) {
+        body.innerHTML = `<tr><td colspan="2" class="empty-state">Nenhum clique em livros ainda.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = entries.map(([prod, count]) => `
+        <tr>
+          <td>${prod}</td>
+          <td style="text-align:right;"><span class="badge-event">${count} cliques</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderLeads(leads) {
+      document.getElementById('kpi-leads').textContent = leads.length;
+      document.getElementById('leads-count-span').textContent = leads.length;
+
+      const body = document.getElementById('leads-table-body');
+      if (leads.length === 0) {
+        body.innerHTML = `<tr><td colspan="2" class="empty-state">Nenhum e-mail capturado ainda.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = leads.map(l => `
+        <tr>
+          <td><strong style="color:var(--gold-light);">${l.email}</strong></td>
+          <td style="text-align:right; font-size:12px; color:var(--text-sub);">
+            ${new Date(l.created_at || Date.now()).toLocaleDateString('pt-BR')}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderRealtimeFeed(events) {
+      const container = document.getElementById('realtime-feed');
+      if (events.length === 0) {
+        container.innerHTML = `<div class="empty-state">Nenhum evento registrado ainda.</div>`;
+        return;
+      }
+
+      const labels = {
+        page_view: 'Visitou uma página',
+        pix_key_copied: '✦ Copiou a chave Pix',
+        amazon_product_click: 'Clicou em livro na Amazon',
+        momento_completed: '✦ Concluiu momento de oração',
+        prayer_timer_completed: 'Completou timer devocional',
+        verse_shared: 'Compartilhou versículo no WhatsApp',
+        lead_captured: 'Cadastrou e-mail na newsletter',
+        prayer_request_submitted: 'Enviou pedido de oração'
+      };
+
+      container.innerHTML = events.slice(0, 30).map(e => `
+        <div class="feed-item">
+          <div class="feed-item-left">
+            <span style="font-weight:600; color: #fff;">${labels[e.event_name] || e.event_name}</span>
+            <span style="color:var(--text-sub); font-size:11px;">Página: /${e.page || 'inicio'} ${e.details ? '• ' + JSON.stringify(e.details) : ''}</span>
+          </div>
+          <div style="text-align:right;">
+            <span class="badge-event">${e.is_mobile ? '📱 Mobile' : '💻 PC'}</span>
+            <div class="feed-item-time">${new Date(e.created_at).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderLocalFallback() {
+      // Se não vier do banco, lê o buffer do aparelho
+      const local = JSON.parse(localStorage.getItem('aposento_eventos_log') || '[]');
+      if (local.length > 0) {
+        renderKPIs(local);
+        renderTrafficSources(local);
+        renderAmazonClicks(local);
+        renderRealtimeFeed(local);
+      }
+    }
+  </script>
+</body>
+</html>

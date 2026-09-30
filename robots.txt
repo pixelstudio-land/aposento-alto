@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /painel-interno-aa73.html
 
 Sitemap: https://aposentoalto.com.br/sitemap.xml
