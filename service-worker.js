@@ -1,9 +1,14 @@
 // Aposento Alto — Service Worker (PWA Offline Shell)
-const CACHE_NAME = 'aposento-alto-v1.2';
+const CACHE_NAME = 'aposento-alto-v2.0';
 
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './oracao.html',
+  './jornadas.html',
+  './diario.html',
+  './comunidade.html',
+  './semeadores.html',
   './style.css',
   './script.js',
   './manifest.json',
@@ -17,11 +22,17 @@ const STATIC_ASSETS = [
   './images/og_share.jpg'
 ];
 
-// Instalação do Service Worker & Cache de Ativos
+// Instalação do Service Worker & Cache de Ativos Resiliente
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      for (const asset of STATIC_ASSETS) {
+        try {
+          await cache.add(asset);
+        } catch (err) {
+          console.warn('PWA cache notice:', asset, err);
+        }
+      }
     }).then(() => self.skipWaiting())
   );
 });

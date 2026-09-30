@@ -41,6 +41,99 @@ function showFeedback(el, msg, type) {
   }, 6000);
 }
 
+/* ── 0.2. SISTEMA PRÓPRIO DE ANALYTICS & LEADS ──── */
+function getOrCreateVisitorId() {
+  try {
+    let id = localStorage.getItem('aposento_visitor_id');
+    if (!id) {
+      id = 'vis_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 9);
+      localStorage.setItem('aposento_visitor_id', id);
+    }
+    return id;
+  } catch(e) {
+    return 'vis_anonymous';
+  }
+}
+
+function captureTrafficSource() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const utmSource = params.get('utm_source');
+    const utmCampaign = params.get('utm_campaign');
+    const utmMedium = params.get('utm_medium');
+    const referrer = document.referrer || 'direto';
+
+    if (utmSource || utmCampaign) {
+      const source = {
+        source: utmSource || 'organico',
+        campaign: utmCampaign || 'geral',
+        medium: utmMedium || 'social',
+        referrer: referrer,
+        captured_at: new Date().toISOString()
+      };
+      localStorage.setItem('aposento_traffic_source', JSON.stringify(source));
+      return source;
+    }
+
+    const saved = localStorage.getItem('aposento_traffic_source');
+    if (saved) return JSON.parse(saved);
+
+    const defaultSource = { source: 'direto', campaign: 'nenhuma', referrer: referrer, captured_at: new Date().toISOString() };
+    localStorage.setItem('aposento_traffic_source', JSON.stringify(defaultSource));
+    return defaultSource;
+  } catch(e) {
+    return { source: 'direto' };
+  }
+}
+
+async function trackEvent(eventName, eventDetails = {}) {
+  const visitorId = getOrCreateVisitorId();
+  const source = captureTrafficSource();
+  const isMobile = window.innerWidth <= 768;
+  const pagePath = window.location.pathname.split('/').pop() || 'index.html';
+
+  const payload = {
+    visitor_id: visitorId,
+    event_name: eventName,
+    page: pagePath,
+    details: eventDetails,
+    source: source.source,
+    campaign: source.campaign,
+    is_mobile: isMobile,
+    created_at: new Date().toISOString()
+  };
+
+  // 1. Armazena buffer local dos últimos 50 eventos (sempre seguro)
+  try {
+    const localLog = JSON.parse(localStorage.getItem('aposento_eventos_log') || '[]');
+    localLog.push(payload);
+    if (localLog.length > 50) localLog.shift();
+    localStorage.setItem('aposento_eventos_log', JSON.stringify(localLog));
+  } catch(e) {}
+
+  // 2. Dispara no Supabase em segundo plano
+  if (supabaseClient) {
+    try {
+      supabaseClient.from('eventos_analytics').insert([{
+        visitor_id: visitorId,
+        event_name: eventName,
+        page: pagePath,
+        details: eventDetails,
+        source: source.source,
+        campaign: source.campaign,
+        is_mobile: isMobile
+      }]).then(() => {}).catch(() => {});
+    } catch(e) {}
+  }
+}
+
+// Disparo de Page View inicial
+if (typeof window !== 'undefined') {
+  setTimeout(() => {
+    trackEvent('page_view', { title: document.title });
+  }, 1000);
+}
+
 /* ── 1. ESTRELAS ─────────────────────────── */
 (function initStars() {
   const canvas = document.getElementById('stars-canvas');
@@ -287,13 +380,16 @@ function newVerse() {
 }
 
 function shareVerse() {
-  const v    = VERSICULOS[currentVerseIndex];
-  const text = `"${v.text}" (${v.ref})\n\nAposento Alto`;
+  const v = VERSICULOS[currentVerseIndex];
+  const url = (window.location && window.location.origin && !window.location.origin.includes('localhost') && !window.location.origin.includes('127.0.0.1'))
+    ? window.location.origin
+    : 'https://aposentoalto.com.br';
+  const text = `"${v.text}" (${v.ref})\n\n✦ Encontre paz e oração no Aposento Alto:\n${url}`;
   if (navigator.share) {
-    navigator.share({ text });
+    navigator.share({ title: `Aposento Alto — ${v.ref}`, text });
   } else if (navigator.clipboard) {
     navigator.clipboard.writeText(text);
-    alert('Versículo copiado para a área de transferência!');
+    alert('Versículo e link copiados com sucesso para compartilhar!');
   }
 }
 
@@ -1093,6 +1189,7 @@ async function loadGlobalPrayers() {
 }
 
 async function recordPrayerCompletion(durationMinutes) {
+  trackEvent('prayer_timer_completed', { minutos: durationMinutes });
   if (!supabaseClient) return;
   try {
     await supabaseClient.rpc('registrar_oracao_concluida', { minutos: durationMinutes });
@@ -1264,12 +1361,30 @@ async function sendPedidoOracao() {
 }
 
 async function savePedido() {
+  const feedback = document.getElementById('pedido-feedback');
+
+  // 1. Verificação Honeypot Anti-Spam (bots invisíveis)
+  const hp = document.getElementById('pedido-hp')?.value.trim();
+  if (hp) {
+    showFeedback(feedback, 'Pedido publicado com sucesso! A comunidade estará orando por você.', 'success');
+    if (document.getElementById('pedido-texto')) document.getElementById('pedido-texto').value = '';
+    return;
+  }
+
+  // 2. Proteção Cooldown contra envios repetitivos (45 segundos)
+  const lastSubmit = parseInt(localStorage.getItem('aposento_last_pedido') || '0', 10);
+  const now = Date.now();
+  if (now - lastSubmit < 45000) {
+    const waitSec = Math.ceil((45000 - (now - lastSubmit)) / 1000);
+    showFeedback(feedback, `Por favor, aguarde ${waitSec} segundos antes de enviar outro clamor.`, 'error');
+    return;
+  }
+
   const nome = document.getElementById('pedido-nome')?.value.trim() || 'Anônimo';
   const cidade = document.getElementById('pedido-cidade')?.value.trim() || null;
   const categoria = document.getElementById('pedido-categoria')?.value || 'Geral';
   const pedidoEl = document.getElementById('pedido-texto') || document.getElementById('pedido-text');
   const pedido = pedidoEl?.value.trim();
-  const feedback = document.getElementById('pedido-feedback');
   const btn = document.getElementById('btn-save-pedido') || document.querySelector('#pedidos .btn-primary');
 
   if (!pedido || pedido.length < 5) {
@@ -1292,12 +1407,16 @@ async function savePedido() {
         pedido: formattedPedido
       }]);
       if (error) throw error;
+      localStorage.setItem('aposento_last_pedido', String(Date.now()));
+      trackEvent('prayer_request_submitted', { categoria });
       showFeedback(feedback, 'Pedido publicado com sucesso! A comunidade estará orando por você.', 'success');
       loadPedidos();
     } else {
       const pedidos = JSON.parse(localStorage.getItem('aposento_pedidos') || '[]');
       pedidos.push({ nome, cidade, pedido: formattedPedido, categoria, created_at: new Date().toISOString() });
       localStorage.setItem('aposento_pedidos', JSON.stringify(pedidos));
+      localStorage.setItem('aposento_last_pedido', String(Date.now()));
+      trackEvent('prayer_request_submitted', { categoria });
       showFeedback(feedback, 'Pedido salvo localmente!', 'success');
       renderLocalPedidos();
     }
@@ -1491,11 +1610,14 @@ async function subscribeNewsletter() {
   }
 
   try {
+    trackEvent('lead_captured', { email });
+
     // 1. Enviar para a tabela do Supabase (newsletter_leads)
     if (supabaseClient) {
       try {
         await supabaseClient.from('newsletter_leads').insert([{
           email,
+          visitor_id: getOrCreateVisitorId(),
           interesse: 'loja_devocionais'
         }]);
       } catch (subErr) {
@@ -1817,6 +1939,7 @@ function startMomentoTimer() {
 }
 
 function finishMomentoAposento() {
+  trackEvent('momento_completed');
   clearInterval(momentoTimerInterval);
   recordPrayerDay();
   recordPrayerCompletion(3);
@@ -2124,7 +2247,10 @@ function completeJornadaDay(key, dayNum) {
 }
 
 function shareJornadaDay(title, verse, ref) {
-  const shareText = `*Aposento Alto — ${title}*\n\n"${verse}" (${ref})\n\nVenha orar conosco: ${window.location.origin || 'https://aposentoalto.org'}`;
+  const url = (window.location && window.location.origin && !window.location.origin.includes('localhost') && !window.location.origin.includes('127.0.0.1'))
+    ? window.location.origin
+    : 'https://aposentoalto.com.br';
+  const shareText = `*Aposento Alto — ${title}*\n\n"${verse}" (${ref})\n\n✦ Venha orar conosco:\n${url}/jornadas.html`;
   if (navigator.share) {
     navigator.share({ title: `Aposento Alto: ${title}`, text: shareText }).catch(() => {});
   } else if (navigator.clipboard) {
@@ -2237,6 +2363,7 @@ if (document.readyState === 'loading') {
 
 // ── 23. SEMEADORES & DOAÇÃO PIX ─────────────
 function copyPixKey() {
+  trackEvent('pix_key_copied', { chave: 'CNPJ', tipo: 'apoio_voluntario' });
   const rawKey = '53315364000127';
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(rawKey).then(() => {
