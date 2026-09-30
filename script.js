@@ -405,6 +405,10 @@ function generateVerseCard() {
     `;
   }
 
+  const lionLogo = new Image();
+  lionLogo.crossOrigin = 'anonymous';
+  lionLogo.src = 'images/logo_leao_header.png';
+
   setTimeout(() => {
     try {
       const W = 1080;
@@ -491,43 +495,49 @@ function generateVerseCard() {
       ctx.fillStyle = 'rgba(212, 175, 55, 0.8)';
       ctx.fillText('PALAVRA VIVA & DEVOCIONAL', W / 2, 280);
 
-      // Emblema Sagrado e Halo Celestial (Substituindo a antiga vela por selo dourado angelical)
+      // 6. Emblema do Leão de Judá Coroado
       ctx.save();
-      const emblemCenterY = 400;
+      const emblemCenterY = 390;
+      const lionSize = 130;
 
-      // Aura dourada suave
-      const auraGrad = ctx.createRadialGradient(W / 2, emblemCenterY, 4, W / 2, emblemCenterY, 65);
-      auraGrad.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
-      auraGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.12)');
+      // Aura dourada majestosa
+      const auraGrad = ctx.createRadialGradient(W / 2, emblemCenterY, 8, W / 2, emblemCenterY, 90);
+      auraGrad.addColorStop(0, 'rgba(255, 215, 0, 0.45)');
+      auraGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.15)');
       auraGrad.addColorStop(1, 'rgba(212, 175, 55, 0)');
       ctx.fillStyle = auraGrad;
       ctx.beginPath();
-      ctx.arc(W / 2, emblemCenterY, 65, 0, Math.PI * 2);
+      ctx.arc(W / 2, emblemCenterY, 90, 0, Math.PI * 2);
       ctx.fill();
 
       // Círculo delicado contínuo
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.65)';
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(W / 2, emblemCenterY, 32, 0, Math.PI * 2);
+      ctx.arc(W / 2, emblemCenterY, 72, 0, Math.PI * 2);
       ctx.stroke();
 
       // Círculo pontilhado externo
-      ctx.setLineDash([3, 5]);
+      ctx.setLineDash([4, 6]);
       ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
       ctx.beginPath();
-      ctx.arc(W / 2, emblemCenterY, 40, 0, Math.PI * 2);
+      ctx.arc(W / 2, emblemCenterY, 80, 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Estrela sagrada reluzente central
-      ctx.font = '32px "Plus Jakarta Sans", sans-serif';
-      ctx.fillStyle = '#F5D77F';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(212, 175, 55, 0.85)';
-      ctx.shadowBlur = 18;
-      ctx.fillText('✦', W / 2, emblemCenterY);
+      // Desenha o Leão de Judá Coroado
+      if (lionLogo.complete && lionLogo.naturalWidth > 0) {
+        ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
+        ctx.shadowBlur = 18;
+        ctx.drawImage(lionLogo, W / 2 - lionSize / 2, emblemCenterY - lionSize / 2, lionSize, lionSize);
+        ctx.shadowBlur = 0;
+      } else {
+        ctx.font = '36px "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = '#F5D77F';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('✦', W / 2, emblemCenterY);
+      }
       ctx.restore();
 
       // 6. Texto do versículo (Tipografia serifada e quebra inteligente)
@@ -1485,7 +1495,7 @@ async function loadTestemunhos() {
     if (!data || data.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <svg width="32" height="32" viewBox="0 0 60 60" fill="none" class="empty-state-svg" xmlns="http://www.w3.org/2000/svg"><path d="M30 8C22 8 10 16 10 28C10 34 14 39 20 42C18 45 14 48 10 50C16 50 24 47 28 44C29 44.3 30 44.5 30 44.5C38 44.5 50 37 50 28C50 16 38 8 30 8Z" fill="#D4AF37" opacity="0.85"/><circle cx="23" cy="24" r="2" fill="#0a0f1e"/><path d="M30 8L38 2L34 12" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/></svg>
+          <img src="images/logo_leao_header.png" alt="Leão de Judá" class="empty-state-svg" width="36" height="36" style="filter: drop-shadow(0 0 8px rgba(245, 215, 127, 0.5));">
           <p>Nenhum testemunho registrado ainda. Seja o primeiro a glorificar o nome de Deus!</p>
         </div>`;
       return;

@@ -126,7 +126,7 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
   - `Gratidão e Louvor`
   - `Força e Vitória`
 - **Card Principal:**
-  - Emblema sagrado com a pomba em halo radiante.
+  - Emblema sagrado do Leão de Judá coroado em halo radiante.
   - Texto do versículo exibido dinamicamente (com dezenas de passagens bíblicas curadas).
 - **Ações do Versículo:**
   - `Compartilhar` (Web Share API com texto e referência bíblica).
@@ -314,7 +314,7 @@ A paleta foi desenhada para remeter a uma noite estrelada de comunhão no cenác
 
 ### 4.10. Rodapé Nobre (Footer)
 - **Coluna 1 — Marca & Aliança:**
-  - Brasão da pomba dourada e logotipo.
+  - Brasão do Leão de Judá coroado e logotipo.
   - Descrição: *"Um santuário devocional para aquietar o coração, meditar na Palavra e cultivar uma vida diária de oração com Deus."*
   - Versículo de Cobertura Completo:  
     *"Aquele que habita no esconderijo do Altíssimo, à sombra do Onipotente descansará."* — **Salmo 91:1**
