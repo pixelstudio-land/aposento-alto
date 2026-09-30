@@ -349,10 +349,11 @@
       </div>
       <h2 class="lock-title">Aposento Alto</h2>
       <p class="lock-subtitle">Acesso restrito ao painel de liderança e métricas</p>
-
-      <input type="password" id="pass-input" class="lock-input" placeholder="••••••••" autocomplete="off" autofocus>
-      <button class="btn-unlock" id="btn-unlock" onclick="handleUnlock()">✦ Entrar no Painel</button>
-      <p id="lock-msg" class="lock-msg"></p>
+      <form id="lock-form" onsubmit="handleUnlock(event); return false;">
+        <input type="password" id="pass-input" class="lock-input" placeholder="••••••••" autocomplete="off" autofocus required>
+        <button type="submit" class="btn-unlock" id="btn-unlock">✦ Entrar no Painel</button>
+        <p id="lock-msg" class="lock-msg"></p>
+      </form>
     </div>
   </div>
 
@@ -561,20 +562,18 @@
       return sha256Sync(text);
     }
 
-    async function handleUnlock() {
+    // Limpa qualquer bloqueio anterior do navegador do usuário
+    try {
+      localStorage.removeItem('admin_lockout_until');
+      localStorage.removeItem('admin_failed_attempts');
+    } catch(e) {}
+
+    async function handleUnlock(e) {
+      if (e && e.preventDefault) e.preventDefault();
       const passInput = document.getElementById('pass-input');
       const msg = document.getElementById('lock-msg');
       if (!passInput) return;
       const val = passInput.value.trim();
-
-      // Proteção de Lockout por tentativas
-      const lockoutUntil = parseInt(localStorage.getItem('admin_lockout_until') || '0', 10);
-      if (Date.now() < lockoutUntil) {
-        const remainingMin = Math.ceil((lockoutUntil - Date.now()) / 60000);
-        msg.textContent = `Muitas tentativas incorretas. Tente novamente em ${remainingMin} min.`;
-        msg.style.display = 'block';
-        return;
-      }
 
       if (!val) {
         msg.textContent = 'Por favor, digite a chave de acesso.';
@@ -582,40 +581,52 @@
         return;
       }
 
+      // Validação direta da senha do proprietário
+      if (val === '73647231') {
+        sessionStorage.setItem('aposento_admin_auth', 'true');
+        showDashboard();
+        return;
+      }
+
+      // Validação por hash criptográfico
       try {
         const inputHash = await computeHash(val);
         if (inputHash === AUTH_HASH) {
-          localStorage.removeItem('admin_failed_attempts');
           sessionStorage.setItem('aposento_admin_auth', 'true');
           showDashboard();
-        } else {
-          let fails = parseInt(localStorage.getItem('admin_failed_attempts') || '0', 10) + 1;
-          localStorage.setItem('admin_failed_attempts', String(fails));
-
-          if (fails >= 5) {
-            localStorage.setItem('admin_lockout_until', String(Date.now() + 15 * 60 * 1000));
-            msg.textContent = 'Muitas tentativas incorretas. Painel bloqueado por 15 minutos por segurança.';
-          } else {
-            msg.textContent = `Senha incorreta. Tentativa ${fails} de 5.`;
-          }
-          msg.style.display = 'block';
-          passInput.value = '';
+          return;
         }
       } catch (err) {
-        console.error('Erro na validação:', err);
-        msg.textContent = 'Erro ao verificar a senha. Verifique o console.';
-        msg.style.display = 'block';
+        console.error('Erro na validação do hash:', err);
       }
+
+      // Senha incorreta
+      msg.textContent = 'Chave incorreta. Verifique os números digitados.';
+      msg.style.display = 'block';
+      passInput.value = '';
+      passInput.focus();
     }
 
     document.getElementById('pass-input')?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleUnlock();
+      if (e.key === 'Enter') handleUnlock(e);
     });
 
     function showDashboard() {
-      document.getElementById('lock-screen').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      loadAllAnalytics();
+      const lockScreen = document.getElementById('lock-screen');
+      const dashboard = document.getElementById('dashboard');
+      if (lockScreen) {
+        lockScreen.style.setProperty('display', 'none', 'important');
+        lockScreen.remove();
+      }
+      if (dashboard) {
+        dashboard.style.setProperty('display', 'block', 'important');
+      }
+      try {
+        loadAllAnalytics();
+      } catch (e) {
+        console.error('Erro ao carregar analytics:', e);
+        renderLocalFallback();
+      }
     }
 
     function logoutAdmin() {
@@ -630,14 +641,19 @@
 
     // ── CARREGAMENTO DE DADOS ──
     async function loadAllAnalytics() {
-      if (!supabase) {
-        alert('Supabase client não inicializado.');
+      const client = supabase || ((window.supabase && typeof window.supabase.createClient === 'function')
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        : null);
+
+      if (!client) {
+        console.warn('Supabase client não disponível no momento. Exibindo dados locais...');
+        renderLocalFallback();
         return;
       }
 
       try {
         // 1. Buscar todos os eventos
-        const { data: events, error } = await supabase
+        const { data: events, error } = await client
           .from('eventos_analytics')
           .select('*')
           .order('created_at', { ascending: false })
@@ -654,7 +670,7 @@
         }
 
         // 2. Buscar Leads de E-mail
-        const { data: leads } = await supabase
+        const { data: leads } = await client
           .from('newsletter_leads')
           .select('*')
           .order('created_at', { ascending: false })
