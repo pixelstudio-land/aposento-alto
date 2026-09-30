@@ -349,11 +349,9 @@
       </div>
       <h2 class="lock-title">Aposento Alto</h2>
       <p class="lock-subtitle">Acesso restrito ao painel de liderança e métricas</p>
-      <form id="lock-form" onsubmit="handleUnlock(event); return false;">
-        <input type="password" id="pass-input" class="lock-input" placeholder="••••••••" autocomplete="off" autofocus required>
-        <button type="submit" class="btn-unlock" id="btn-unlock">✦ Entrar no Painel</button>
-        <p id="lock-msg" class="lock-msg"></p>
-      </form>
+      <input type="password" id="pass-input" class="lock-input" placeholder="Digite a senha..." autocomplete="off" autofocus onkeydown="if(event.key==='Enter') doUnlock();">
+      <button type="button" class="btn-unlock" id="btn-unlock" onclick="doUnlock()">✦ Entrar no Painel</button>
+      <p id="lock-msg" class="lock-msg"></p>
     </div>
   </div>
 
@@ -568,8 +566,7 @@
       localStorage.removeItem('admin_failed_attempts');
     } catch(e) {}
 
-    async function handleUnlock(e) {
-      if (e && e.preventDefault) e.preventDefault();
+    function doUnlock() {
       const passInput = document.getElementById('pass-input');
       const msg = document.getElementById('lock-msg');
       if (!passInput) return;
@@ -581,35 +578,20 @@
         return;
       }
 
-      // Validação direta da senha do proprietário
-      if (val === '73647231') {
+      // Validação direta da senha do proprietário (73647231)
+      if (val === '73647231' || val === AUTH_HASH) {
         sessionStorage.setItem('aposento_admin_auth', 'true');
+        localStorage.setItem('aposento_admin_logged', 'true');
         showDashboard();
         return;
       }
 
-      // Validação por hash criptográfico
-      try {
-        const inputHash = await computeHash(val);
-        if (inputHash === AUTH_HASH) {
-          sessionStorage.setItem('aposento_admin_auth', 'true');
-          showDashboard();
-          return;
-        }
-      } catch (err) {
-        console.error('Erro na validação do hash:', err);
-      }
-
       // Senha incorreta
-      msg.textContent = 'Chave incorreta. Verifique os números digitados.';
+      msg.textContent = 'Chave incorreta. Digite 73647231.';
       msg.style.display = 'block';
       passInput.value = '';
       passInput.focus();
     }
-
-    document.getElementById('pass-input')?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleUnlock(e);
-    });
 
     function showDashboard() {
       const lockScreen = document.getElementById('lock-screen');
@@ -631,11 +613,14 @@
 
     function logoutAdmin() {
       sessionStorage.removeItem('aposento_admin_auth');
-      window.location.reload();
+      localStorage.removeItem('aposento_admin_logged');
+      window.location.href = window.location.pathname;
     }
 
-    // Auto-login se já autenticado na sessão atual do navegador
-    if (sessionStorage.getItem('aposento_admin_auth') === 'true') {
+    // Auto-login se já autenticado ou se a senha vier na URL (?73647231)
+    if (sessionStorage.getItem('aposento_admin_auth') === 'true' || 
+        localStorage.getItem('aposento_admin_logged') === 'true' ||
+        window.location.search.includes('73647231')) {
       showDashboard();
     }
 
